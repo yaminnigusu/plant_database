@@ -1,0 +1,34 @@
+/* custom-styles.css */
+
+.custom-form-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 20vh;
+}
+
+.custom-form {
+    width: 83%; /* Set form width to cover 60% of the screen */
+    padding: 10px;
+    
+    
+}
+
+/* Footer container */
+footer {
+    background-color: #343a40; /* Dark background color */
+    color: #fff; /* Text color */
+    padding: 20px 0; /* Padding at the top and bottom */
+}
+
+/* Center the text inside the container */
+footer .container {
+    text-align: center;
+}
+
+/* Style the footer text */
+
+
+
+
+
