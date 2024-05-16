@@ -1,3 +1,28 @@
+<?php
+// Include database connection file
+include("../config.php");
+
+// Handle delete action
+if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+    // Sanitize the ID to prevent SQL injection
+    $costId = mysqli_real_escape_string($conn, $_GET['id']);
+
+    // SQL to delete cost from the 'costs' table based on the provided ID
+    $sql_delete_cost = "DELETE FROM costs WHERE id = '$costId'";
+
+    // Execute the delete query
+    if ($conn->query($sql_delete_cost) === TRUE) {
+        // Redirect back to the cost.php page after successful deletion
+        header("Location: cost.php");
+        exit();
+    } else {
+        // Display an error message if the deletion fails
+        echo "Error deleting record: " . $conn->error;
+        exit(); // Terminate script to prevent further output
+    }
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -51,11 +76,11 @@
                 
             </div>
             <nav>
-                <a href="../pages/home.php">Home</a>
-                <a href="../pages/shop.php">Shop</a>
-                <a href="../pages/about.php">About Us</a>
-                <a href="../pages/contactus.php">Contact Us</a>
-                <a href="database.php">Database</a>
+                <a href="../../pages/home.php">Home</a>
+                <a href="../../pages/shop.php">Shop</a>
+                <a href="../../pages/about.php">About Us</a>
+                <a href="../../pages/contactus.php">Contact Us</a>
+                <a href="../database.php">Database</a>
                 <div class="col-auto">
                     <button id="login-icon" onclick="toggleLoginForm()" aria-label="Login" class="btn btn-success">Login</button>
                 </div>
@@ -64,30 +89,34 @@
     </header>
 
     <aside class="side-nav" id="sideNav">
-    <ul>
-        <li><a href="sidenav/home.php"><b>Home</b></a></li>
-        <li class="has-submenu">
-            <a href="#" ><b>Plants</b></a>
-            <ul class="submenu">
-                <li><a href="sidenav/tress.php">Trees</a></li>
-                <li><a href="sidenav/shrubs.php">Shrubs</a></li>
-                <li><a href="sidenav/ferns.php">Ferns</a></li>
-                <li><a href="sidenav/climbers.php">Climbers</a></li>
-                <li><a href="sidenav/waterplants.php">Water Plants</a></li>
-                <li><a href="sidenav/palms.php">Palms</a></li>
-                <li><a href="sidenav/cactus.php">Cactus</a></li>
-                <li><a href="sidenav/succulent.php">Succulent</a></li>
-                <li><a href="sidenav\annuals.php">Annuals</a></li>
-                <li><a href="sidenav/perinnals.php">Perennials</a></li>
-                <li><a href="sidenav/indoorplants.php">Indoor Plants</a></li>
-                <li><a href="sidenav/herbs.php">Herbs</a></li>
-            </ul>
-        </li>
-        <li> <a href="../plan/plan.php"><b>Plan</b></a></li>
-        <li> <a href="cost.php"><b>Cost and Analytics</b></a></li>
-    </ul>
-</aside>
-
+        <ul>
+            <br>
+            <br>
+            
+            <li><a href="../database.php"><b>Home</b></a></li>
+            <li><a href="../sidenav/home.php"><b>Search</b></a></li>
+            <li class="has-submenu">
+                <a href="#"><b>Plants</b></a>
+                <ul class="submenu">
+                    <li><a href="../sidenav/tress.php">Trees</a></li>
+                    <li><a href="../sidenav/shrubs.php">Shrubs</a></li>
+                    <li><a href="../sidenav/ferns.php">Ferns</a></li>
+                    <li><a href="../sidenav/climbers.php">Climbers</a></li>
+                    <li><a href="../sidenav/waterplants.php">Water Plants</a></li>
+                    <li><a href="../sidenav/palms.php">Palms</a></li>
+                    <li><a href="../sidenav/cactus.php">Cactus</a></li>
+                    <li><a href="../sidenav/succulent.php">Succulent</a></li>
+                    <li><a href="../sidenav\annuals.php">Annuals</a></li>
+                    <li><a href="sidenav/perinnals.php">Perennials</a></li>
+                    <li><a href="sidenav/indoorplants.php">Indoor Plants</a></li>
+                    <li><a href="sidenav/herbs.php">Herbs</a></li>
+                </ul>
+            </li>
+           <li> <a href="../plan/plan.php"><b>Plan</b></a></li>
+           <li> <a href="../cost/cost.php"><b>Cost and Analytics</b></a></li>
+        </ul>
+       
+    </aside>
     <div class="main-content">
     <h1>Costs & Analytics</h1>
         <h2>Register Costs</h2>
@@ -105,10 +134,59 @@
         </form>
 
         <hr>
+        <?php
+// Include database connection file
+include("../config.php");
 
-        <h2>Analytics</h2>
-        <!-- Display analytics here (e.g., charts, data tables) -->
-        <canvas id="costsChart"></canvas>
+
+// Retrieve all costs from the 'costs' table
+$sql_costs = "SELECT id, description, cost_amount, created_at FROM costs";
+$result_costs = $conn->query($sql_costs);
+
+if ($result_costs->num_rows > 0) {
+    echo '<h2>All Costs</h2>';
+    echo '<table class="table">';
+    echo '<thead>';
+    echo '<tr>';
+    echo '<th>Description</th>';
+    echo '<th>Amount</th>';
+    echo '<th>Date</th>';
+    echo '<th>Action</th>'; // Add new column for action buttons
+    echo '</tr>';
+    echo '</thead>';
+    echo '<tbody>';
+
+    while ($row = $result_costs->fetch_assoc()) {
+        echo '<tr>';
+        echo '<td>' . htmlspecialchars($row['description']) . '</td>';
+        echo '<td>' . number_format($row['cost_amount'], 2) . ' Birr</td>';
+        echo '<td>' . htmlspecialchars($row['created_at']) . '</td>';
+        echo '<td>';
+        
+        // Edit button (links to edit.php with cost ID as parameter)
+        echo '<a href="edit.php?id=' . $row['id'] . '" class="btn btn-primary btn-sm">Edit</a>';
+        
+        // Delete button (links to delete.php with cost ID as parameter)
+        echo '<a href="cost.php?action=delete&id=' . $row['id'] . '" class="btn btn-danger btn-sm" onclick="return confirm(\'Are you sure you want to delete this cost?\')">Delete</a>';
+
+        
+        echo '</td>';
+        echo '</tr>';
+    }
+
+    echo '</tbody>';
+    echo '</table>';
+} else {
+    echo '<p>No costs found.</p>';
+}
+
+// Close result set and database connection
+$result_costs->close();
+$conn->close();
+?>
+
+
+       
 <br>
 <br>
 <?php
@@ -148,6 +226,7 @@ if ($result_plant_info->num_rows > 0) {
         // Calculate selling price for the plant with a 40% profit margin
         $sellingPrice = $costWithAdditional + ($costWithAdditional * 0.4); // Selling price with profit margin
         $profit = $sellingPrice - $costWithAdditional; // Profit per plant
+        
 
         echo '<tr>';
         echo '<td>' . htmlspecialchars($plantName) . '</td>';
@@ -170,10 +249,17 @@ $result_plant_info->close();
 $conn->close();
 ?>
 
-    </div>
+<h2>Analytics</h2>
+        <!-- Display analytics here (e.g., charts, data tables) -->
+        
 
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<canvas id="analyticsChart"></canvas>
+
+
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+ 
     <script src="script.js"></script>
     <script src="../../js/script2.js"></script>
      <!-- Include any custom JavaScript -->

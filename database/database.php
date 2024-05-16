@@ -65,9 +65,9 @@
 
     <aside class="side-nav" id="sideNav">
     <ul>
-        <li><a href="sidenav/home.php">Home</a></li>
+        <li><a href="sidenav/home.php"><b>Home</b></a></li>
         <li class="has-submenu">
-            <a href="#" >Plants</a>
+            <a href="#" ><b>Plants</b></a>
             <ul class="submenu">
                 <li><a href="sidenav/tress.php">Trees</a></li>
                 <li><a href="sidenav/shrubs.php">Shrubs</a></li>
@@ -83,6 +83,8 @@
                 <li><a href="sidenav/herbs.php">Herbs</a></li>
             </ul>
         </li>
+        <li> <a href="plan/plan.php"><b>Plan</b></a></li>
+           <li> <a href="cost/cost.php"><b>Cost and Analytics</b></a></li>
     </ul>
 </aside>
 

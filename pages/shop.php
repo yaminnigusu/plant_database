@@ -1,6 +1,23 @@
 <?php
 session_start();
-include("../database/config.php");
+
+include("../database/config.php"); // Include database configuration
+
+// Calculate total costs from the 'costs' table
+$sql_total_costs = "SELECT SUM(cost_amount) AS totalCosts FROM costs";
+$result_total_costs = $conn->query($sql_total_costs);
+$totalCosts = $result_total_costs->fetch_assoc()['totalCosts'] ?? 0; // Total costs from 'costs' table
+
+// Calculate total quantity of all plants
+$sql_total_quantity = "SELECT SUM(quantity) AS totalQuantity FROM plants";
+$result_total_quantity = $conn->query($sql_total_quantity);
+$totalQuantity = $result_total_quantity->fetch_assoc()['totalQuantity'] ?? 0; // Total quantity of all plants
+
+// Calculate additional cost per plant by evenly distributing the total costs
+$additionalCostPerPlant = ($totalCosts > 0 && $totalQuantity > 0) ? ($totalCosts / $totalQuantity) : 0;
+
+// Desired profit margin (adjust as needed)
+$profitMargin = 0.4; // 20% profit margin
 
 // Retrieve search term, selected plant types, and price range from URL parameters or session
 $searchTerm = $_GET['search'] ?? '';
@@ -92,7 +109,10 @@ if ($result && $result->num_rows > 0) {
     // Populate $plants array with fetched plant data
     while ($row = $result->fetch_assoc()) {
         $plantTypes = explode(', ', $row['plant_type']);
-        $valuePerQuantity = $row['value'] / $row['quantity'];
+        $costPerPlant = $row['value'] / $row['quantity'];
+
+        // Calculate selling price including additional cost and profit
+        $sellingPrice = $costPerPlant + $additionalCostPerPlant + ($costPerPlant * $profitMargin);
 
         // Create plant array with required data
         $plants[] = [
@@ -100,7 +120,7 @@ if ($result && $result->num_rows > 0) {
             'photo_path' => htmlspecialchars($row['photo_path']),
             'quantity' => $row['quantity'],
             'plant_type' => $plantTypes,
-            'valuePerQuantity' => $valuePerQuantity
+            'sellingPrice' => $sellingPrice, // Adjusted selling price
         ];
     }
 }
@@ -108,6 +128,7 @@ if ($result && $result->num_rows > 0) {
 // Close database connection
 $conn->close();
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">
@@ -233,7 +254,7 @@ $conn->close();
                                     <img src="../database/uploads/<?= htmlspecialchars($plant['photo_path']) ?>" width="100px" height="200px" alt="<?= htmlspecialchars($plant['plant_name']) ?>" class="card-img-top">
                                     <div class="card-body">
                                         <h5 class="card-title"><?= htmlspecialchars($plant['plant_name']) ?></h5>
-                                        <p class="card-text">Price: Birr <b><?= number_format($plant['valuePerQuantity'], 2) ?></b></p>
+                                        <p class="card-text">Price: Birr <b><?= number_format($plant['sellingPrice'], 2) ?></b></p>
                                         <p class="card-text">Available Quantity: <?= round($plant['quantity'] * 0.85) ?></p>
                                         <p class="card-text">Plant Type: <?= implode(', ', $plant['plant_type']) ?></p>
                                     </div>
