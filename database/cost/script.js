@@ -1,28 +1,23 @@
-console.log('Document ready');
-$.ajax({
-    url: 'get_analytics_data.php',
-    method: 'GET',
-    success: function(data) {
-        console.log('Data received:', data);
+$(document).ready(function() {
+    $.ajax({
+        url: 'get_analytics_data.php',
+        method: 'GET',
+        dataType: 'json',
+        success: function(data) {
+            if (data.error) {
+                console.error('Error fetching analytics data:', data.error);
+                return;
+            }
+            var plantNames = [];
+            var profitMargins = [];
 
-        var plantNames = [];
-        var profitMargins = [];
-
-        if (Array.isArray(data)) {
             data.forEach(function(item) {
-                console.log('Plant Name:', item.plantName);
-                console.log('Profit Margin:', item.profitMargin);
-
                 plantNames.push(item.plantName);
                 profitMargins.push(item.profitMargin);
             });
 
-            console.log('Plant Names:', plantNames);
-            console.log('Profit Margins:', profitMargins);
-
-            // Create Chart.js chart with parsed data
             var ctx = document.getElementById('analyticsChart').getContext('2d');
-            var chart = new Chart(ctx, {
+            new Chart(ctx, {
                 type: 'bar',
                 data: {
                     labels: plantNames,
@@ -42,11 +37,12 @@ $.ajax({
                     }
                 }
             });
-        } else {
-            console.error('Invalid data format:', data);
+        },
+        error: function(xhr, status, error) {
+            console.error('Error fetching analytics data:', error);
+            console.error('Response:', xhr.responseText);
         }
-    },
-    error: function(xhr, status, error) {
-        console.error('Error fetching analytics data:', error);
-    }
+    });
 });
+
+// get_plant_type_dat

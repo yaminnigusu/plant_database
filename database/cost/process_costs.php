@@ -1,22 +1,19 @@
 <?php
 include("../config.php");
 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $costDescription = $_POST['costDescription'];
-    $costAmount = $_POST['costAmount'];
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $costDescription = mysqli_real_escape_string($conn, $_POST['costDescription']);
+    $costAmount = mysqli_real_escape_string($conn, $_POST['costAmount']);
 
-    // Insert cost data into database
-    $sql_insert = "INSERT INTO costs (description, cost_amount) VALUES (?, ?)";
-    $stmt = $conn->prepare($sql_insert);
-    $stmt->bind_param("sd", $costDescription, $costAmount);
+    $sql = "INSERT INTO costs (description, cost_amount) VALUES ('$costDescription', '$costAmount')";
 
-    if ($stmt->execute()) {
-        echo "Cost registered successfully.";
+    if ($conn->query($sql) === TRUE) {
+        header("Location: cost.php");
+        exit();
     } else {
-        echo "Error registering cost: " . $conn->error;
+        echo "Error: " . $sql . "<br>" . $conn->error;
     }
 
-    $stmt->close();
     $conn->close();
 }
 ?>

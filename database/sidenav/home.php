@@ -314,15 +314,8 @@
     </div>
     
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('.has-submenu > a').click(function(e) {
-                e.preventDefault(); // Prevent default link behavior
-
-                // Toggle the submenu visibility
-                $(this).siblings('.submenu').slideToggle();
-            });
-        });
+    <script src="../../js/script2.js">
+        
     </script>
 </body>
 </html>

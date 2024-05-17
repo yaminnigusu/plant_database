@@ -65,7 +65,8 @@
 
     <aside class="side-nav" id="sideNav">
     <ul>
-        <li><a href="sidenav/home.php"><b>Home</b></a></li>
+        <li><a href="database.php"><b>Home</b></a></li>
+        <li><a href="sidenav/home.php"><b>Search</b></a></li>
         <li class="has-submenu">
             <a href="#" ><b>Plants</b></a>
             <ul class="submenu">

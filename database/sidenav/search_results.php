@@ -217,6 +217,9 @@ if (isset($_GET['report']) && isset($_GET['format']) && $_GET['format'] === 'pdf
     font-size: 18px; /* Increase font size for total quantity and total value */
     margin-bottom: 10px; /* Add space below each paragraph */
 }
+.submenu {
+    display: none;
+}
 
         
     </style>
@@ -248,23 +251,31 @@ if (isset($_GET['report']) && isset($_GET['format']) && $_GET['format'] === 'pdf
     </header>
 
     <aside class="side-nav" id="sideNav">
-        
-        <ul>
-            <li><a href="home.php">Home</a></li>
-            <li><a href="tress.php">Trees</a></li>
-            <li><a href="shrubs.php">Shrubs</a></li>
-            <li><a href="ferns.php">Ferns</a></li>
-            <li><a href="climbers.php">Climbers</a></li>
-            <li><a href="waterplants.php">Water Plants</a></li>
-            <li><a href="palms.php">Palms</a></li>
-            <li><a href="cactus.php">Cactus</a></li>
-            <li><a href="succulent.php">Succulent</a></li>
-            <li><a href="annuals.php">Annuals</a></li>
-            <li><a href="perinnals.php">Perennials</a></li>
-            <li><a href="indoorplants.php">Indoor Plants</a></li>
-            <li><a href="herbs.php">Herbs</a></li>
-        </ul>
-    </aside>
+    <ul>
+    <li><a href="../database.php"><b>Home</b></a></li>
+        <li><a href="home.php"><b>Search</b></a></li>
+        <li class="has-submenu">
+            <a href="#" ><b>Plants</b></a>
+            <ul class="submenu">
+                <li><a href="tress.php">Trees</a></li>
+                <li><a href="shrubs.php">Shrubs</a></li>
+                <li><a href="ferns.php">Ferns</a></li>
+                <li><a href="climbers.php">Climbers</a></li>
+                <li><a href="waterplants.php">Water Plants</a></li>
+                <li><a href="palms.php">Palms</a></li>
+                <li><a href="cactus.php">Cactus</a></li>
+                <li><a href="succulent.php">Succulent</a></li>
+                <li><a href="annuals.php">Annuals</a></li>
+                <li><a href="perinnals.php">Perennials</a></li>
+                <li><a href="indoorplants.php">Indoor Plants</a></li>
+                <li><a href="herbs.php">Herbs</a></li>
+            </ul>
+        </li>
+        <li> <a href="../plan/plan.php"><b>Plan</b></a></li>
+           <li> <a href="../cost/cost.php"><b>Cost and Analytics</b></a></li>
+    </ul>
+</aside>
+
 
 <div class="container-search-result">
     <h1>Search Results</h1>
@@ -384,6 +395,8 @@ $stmt->close();
 $conn->close();
 ?>
 <a href="home.php" style="margin-top: 10px; padding: 10px 20px; background-color: #4CAF50; color: #fff; text-decoration: none; border-radius: 5px;">Back to Advanced Search</a>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="../../js/script2.js"></script>
 </body>
 </html>
 
