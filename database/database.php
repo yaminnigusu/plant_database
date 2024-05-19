@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plant Database</title>
+    <title>Le Jardin-Plant Database</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="icon" href="../images/logo.png" type="image/jpg">
@@ -43,11 +43,16 @@
         <div class="container">
             <div class="row justify-content-between align-items-center">
                 <div class="col">
-                    <h1>Le Jardin de Kakoo</h1>
+                
+                    
+                    
+                    
                 </div>
-                <div class="col-auto">
-                <button id="navToggleButton" onclick="toggleNavVisibility()" class="btn btn-dark d-block d-lg-none">Menu</button>
+                <div class="col-left">
+                <img src="../images/logo.png" alt="Logo" width="50">
+                
             </div>
+            <h1>Le Jardin de Kakoo</h1>
                 
             </div>
             <nav>
@@ -175,7 +180,7 @@ $totalValue = 0;
 
         if ($result->num_rows > 0) {
             echo '<table id="plantTable">';
-            echo '<thead><tr><th>Photo</th><th>Common Name</th><th>Scientific Name</th><th>Quantity</th><th>Plastic Size</th><th>Plantation Date</th><th>Plant Type</th><th>Value</th><th>Actions</th></tr></thead>';
+            echo '<thead ><tr><th>Photo</th><th>Common Name</th><th>Scientific Name</th><th>Quantity</th><th>Plastic Size</th><th>Plantation Date</th><th>Plant Type</th><th>Value</th><th>Actions</th></tr></thead>';
             echo '<tbody>';
 
             while ($row = $result->fetch_assoc()) {
