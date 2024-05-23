@@ -121,8 +121,8 @@
     </div>
     
     <div class="checkbox-item">
-        <input type="checkbox" id="shrub" name="plantType[]" value="shrub">
-        <label for="shrub">Shrub</label>
+            <input type="checkbox" id="shrub" name="plantType[]" value="shrub">
+            <label for="shrub">Shrub</label>
     </div>
     
     <div class="checkbox-item">

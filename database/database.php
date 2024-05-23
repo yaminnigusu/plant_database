@@ -129,16 +129,71 @@
                         <option value="xlarge">X-Large</option>
                     </select>
                 </div>
-                <div class="form-group">
-                    <label>Plant Type:</label><br>
-                    <div class="checkbox-container">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="tree" name="plantType[]" value="tree">
-                            <label for="tree">Tree</label>
-                        </div>
-                        <!-- Add other checkbox items here -->
-                    </div>
-                </div>
+                
+                <label>Plant Type:</label><br>
+    <div class="form-group checkbox-container">
+    
+    
+    <div class="checkbox-item">
+        <input type="checkbox" id="tree" name="plantType[]" value="tree">
+        <label for="tree">Tree</label>
+    </div>
+    
+    <div class="checkbox-item">
+            <input type="checkbox" id="shrub" name="plantType[]" value="shrub">
+            <label for="shrub">Shrub</label>
+    </div>
+    
+    <div class="checkbox-item">
+        <input type="checkbox" id="fern" name="plantType[]" value="fern">
+        <label for="fern">Fern</label>
+    </div>
+    
+    <div class="checkbox-item">
+        <input type="checkbox" id="climber" name="plantType[]" value="climber">
+        <label for="climber">Climber</label>
+    </div>
+    
+    <div class="checkbox-item">
+        <input type="checkbox" id="waterPlant" name="plantType[]" value="water_plant">
+        <label for="waterPlant">Water Plant</label>
+    </div>
+    
+    <div class="checkbox-item">
+        <input type="checkbox" id="palm" name="plantType[]" value="palm">
+        <label for="palm">Palm</label>
+    </div>
+    
+    <div class="checkbox-item">
+        <input type="checkbox" id="cactus" name="plantType[]" value="cactus">
+        <label for="cactus">Cactus</label>
+    </div>
+    
+    <div class="checkbox-item">
+        <input type="checkbox" id="succulent" name="plantType[]" value="succulent">
+        <label for="succulent">Succulent</label>
+    </div>
+    
+    <div class="checkbox-item">
+        <input type="checkbox" id="annual" name="plantType[]" value="annual">
+        <label for="annual">Annual</label>
+    </div>
+    
+    <div class="checkbox-item">
+        <input type="checkbox" id="perennial" name="plantType[]" value="perennial">
+        <label for="perennial">Perennial</label>
+    </div>
+    
+    <div class="checkbox-item">
+        <input type="checkbox" id="indoorPlant" name="plantType[]" value="indoorplant">
+        <label for="indoorPlant">Indoor Plant</label>
+    </div>
+    
+    <div class="checkbox-item">
+        <input type="checkbox" id="herb" name="plantType[]" value="herb">
+        <label for="herb">Herb</label>
+    </div>
+</div>
                 <div class="form-group">
                     <label for="plantationDate">Plantation Date:</label>
                     <input type="date" id="plantationDate" name="plantationDate" required class="form-control">
