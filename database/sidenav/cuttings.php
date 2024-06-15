@@ -1,3 +1,13 @@
+<?php
+include("../config.php");
+
+function fetchCuttingsData($conn) {
+    $sql = "SELECT * FROM optional_plants";
+    $result = $conn->query($sql);
+    return $result;
+}
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -7,8 +17,8 @@
     <title>Le Jardin-Plant Database</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="icon" href="../images/logo.png" type="image/jpg">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="../../images/logo.png" type="image/jpg">
+    <link rel="stylesheet" href="../styles.css">
     <style>
         /* Custom CSS for specific styling */
         .checkbox-item {
@@ -44,16 +54,16 @@
             <div class="row justify-content-between align-items-center">
                 <div class="col"></div>
                 <div class="col-left">
-                    <img src="../images/logo.png" alt="Logo" width="50">
+                    <img src="../../images/logo.png" alt="Logo" width="50">
                 </div>
                 <h1>Le Jardin de Kakoo</h1>
             </div>
             <nav>
-                <a href="../pages/home.php">Home</a>
-                <a href="../pages/shop.php">Shop</a>
-                <a href="../pages/about.php">About Us</a>
-                <a href="../pages/contactus.php">Contact Us</a>
-                <a href="database.php">Database</a>
+            <a href="../../pages/home.php">Home</a>
+                <a href="../../pages/shop.php">Shop</a>
+                <a href="../../pages/about.php">About Us</a>
+                <a href="../../pages/contactus.php">Contact Us</a>
+                <a href="../database.php">Database</a>
                 <div class="col-auto">
                     <button id="login-icon" onclick="toggleLoginForm()" aria-label="Login" class="btn btn-success">Login</button>
                 </div>
@@ -63,29 +73,28 @@
 
     <aside class="side-nav" id="sideNav">
         <ul>
-            <li><a href="database.php"><b>Home</b></a></li>
-            <li><a href="sidenav/home.php"><b>Search</b></a></li>
+            <li><a href="../database.php"><b>Home</b></a></li>
+            <li><a href="home.php"><b>Search</b></a></li>
             <li class="has-submenu">
                 <a href="#"><b>Plants</b></a>
                 <ul class="submenu">
-                    <li><a href="sidenav/tress.php">Trees</a></li>
-                    <li><a href="sidenav/shrubs.php">Shrubs</a></li>
-                    <li><a href="sidenav/ferns.php">Ferns</a></li>
-                    <li><a href="sidenav/climbers.php">Climbers</a></li>
-                    <li><a href="sidenav/waterplants.php">Water Plants</a></li>
-                    <li><a href="sidenav/palms.php">Palms</a></li>
-                    <li><a href="sidenav/cactus.php">Cactus</a></li>
-                    <li><a href="sidenav/succulent.php">Succulent</a></li>
-                    <li><a href="sidenav/annuals.php">Annuals</a></li>
-                    <li><a href="sidenav/perinnals.php">Perennials</a></li>
-                    <li><a href="sidenav/indoorplants.php">Indoor Plants</a></li>
-                    <li><a href="sidenav/herbs.php">Herbs</a></li>
-
+                <li><a href="tress.php">Trees</a></li>
+                <li><a href="shrubs.php">Shrubs</a></li>
+                <li><a href="ferns.php">Ferns</a></li>
+                <li><a href="climbers.php">Climbers</a></li>
+                <li><a href="waterplants.php">Water Plants</a></li>
+                <li><a href="palms.php">Palms</a></li>
+                <li><a href="cactus.php">Cactus</a></li>
+                <li><a href="succulent.php">Succulent</a></li>
+                <li><a href="annuals.php">Annuals</a></li>
+                <li><a href="perinnals.php">Perennials</a></li>
+                <li><a href="indoorplants.php">Indoor Plants</a></li>
+                <li><a href="herbs.php">Herbs</a></li>
                 </ul>
             </li>
-            <li><a href="sidenav/cuttings.php"><b>Cuttings</b></a></li>
-            <li><a href="plan/plan.php"><b>Plan</b></a></li>
-            <li><a href="cost/cost.php"><b>Cost and Analytics</b></a></li>
+            <li><a href="cuttings.php"><b>Cuttings</b></a></li>
+            <li><a href="../plan/plan.php"><b>Plan</b></a></li>
+            <li><a href="../cost/cost.php"><b>Cost and Analytics</b></a></li>
         </ul>
     </aside>
 
@@ -94,7 +103,7 @@
             <h1 class="mt-4">Plant Database</h1>
             <button id="formToggleButton" onclick="toggleFormVisibility()" class="btn btn-primary mb-4">Add New Data</button>
 
-            <form id="plantForm" enctype="multipart/form-data" method="post" action="process_form.php" style="display: none;">
+            <form id="plantForm" enctype="multipart/form-data" method="post" action="../process_form.php" style="display: none;">
                 <div class="form-group">
                     <input type="checkbox" id="optionalData" name="optionalData" value="1" onchange="toggleOptionalFields()">
                     <label for="optionalData">Add Optional Data</label>
@@ -187,17 +196,17 @@
                 </div>
                 <button type="submit" class="btn btn-success">Submit</button>
             </form>
-
+    
+        <div class="table-responsive">
+            <h1 class="mt-4">Cuttings Data Display</h1>
             <div class="table-responsive">
                 <?php
-                include("config.php");
-
                 // Handle record deletion
                 if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
                     $id = $_GET['id'];
 
                     // Prepare the DELETE query using a parameterized statement to prevent SQL injection
-                    $sql_delete = "DELETE FROM plants WHERE id = ?";
+                    $sql_delete = "DELETE FROM optional_plants WHERE id = ?";
                     $stmt = $conn->prepare($sql_delete);
                     $stmt->bind_param("i", $id); // "i" indicates integer parameter type
 
@@ -209,36 +218,25 @@
 
                     $stmt->close(); // Close the prepared statement
                 }
-
-                // Fetch plant data from the database
-                $sql = "SELECT * FROM plants";
-                $result = $conn->query($sql);
-                $totalQuantity = 0;
-                $totalValue = 0;
-
+                $result = fetchCuttingsData($conn);
                 if ($result->num_rows > 0) {
-                    echo '<table id="plantTable">';
-                    echo '<thead><tr><th>Photo</th><th>Common Name</th><th>Scientific Name</th><th>Quantity</th><th>Plastic Size</th><th>Plantation Date</th><th>Plant Type</th><th>Value</th><th>Actions</th></tr></thead>';
+                    echo '<table class="table table-bordered">';
+                    echo '<thead><tr><th>Common Name</th><th>Quantity</th><th>Plastic Size</th><th>Plantation Date</th><th>Value</th><th>Actions</th></tr></thead>';
                     echo '<tbody>';
+
+                    $totalQuantity = 0;
+                    $totalValue = 0;
 
                     while ($row = $result->fetch_assoc()) {
                         echo '<tr>';
-                        echo '<td class="photo-cell"><img src="uploads/' . htmlspecialchars($row['photo_path']) . '" alt="' . htmlspecialchars($row['plant_name']) . '"></td>';
                         echo '<td>' . htmlspecialchars($row['plant_name']) . '</td>';
-                        echo '<td>' . htmlspecialchars($row['scientific_name']) . '</td>';
                         echo '<td>' . htmlspecialchars($row['quantity']) . '</td>';
                         echo '<td>' . htmlspecialchars($row['plastic_size']) . '</td>';
                         echo '<td>' . htmlspecialchars($row['plantation_date']) . '</td>';
-                        echo '<td>';
-                        $plantTypes = explode(', ', $row['plant_type']);
-                        foreach ($plantTypes as $type) {
-                            echo htmlspecialchars($type) . '<br>';
-                        }
-                        echo '</td>';
                         echo '<td>' . htmlspecialchars($row['value']) . '</td>';
                         echo '<td class="action-buttons">';
-                        echo '<a class="actionButton editButton" href="edit.php?id=' . $row['id'] . '">Edit</a>';
-                        echo '<a class="actionButton deleteButton" href="database.php?action=delete&id=' . $row['id'] . '">Delete</a>';
+                        echo '<a class="actionButton editButton" href="../edit_optional_plants.php?id=' . $row['id'] . '">Edit</a>';
+                        echo '<a class="actionButton deleteButton" href="cuttings.php?action=delete&id=' . $row['id'] . '">Delete</a>';
                         echo '</td>';
                         echo '</tr>';
                         $totalQuantity += intval($row['quantity']);
@@ -251,7 +249,7 @@
                     echo '<p>Total Value: ' . $totalValue . '</p>';
                     echo '</div>';
                 } else {
-                    echo '<p>No plant records found</p>';
+                    echo '<p>No cutting records found</p>';
                 }
 
                 // Close result set and database connection
@@ -260,7 +258,8 @@
                 ?>
             </div>
         </div>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
         <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 

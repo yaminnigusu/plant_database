@@ -126,6 +126,7 @@ $totalRecordsResult->close();
                     <li><a href="../sidenav/herbs.php">Herbs</a></li>
                 </ul>
             </li>
+            <li><a href="../sidenav/cuttings.php"><b>Cuttings</b></a></li>
             <li><a href="../plan/plan.php"><b>Plan</b></a></li>
             <li><a href="../cost/cost.php"><b>Cost and Analytics</b></a></li>
         </ul>
