@@ -251,30 +251,32 @@ if (isset($_GET['report']) && isset($_GET['format']) && $_GET['format'] === 'pdf
     </header>
 
     <aside class="side-nav" id="sideNav">
-    <ul>
-    <li><a href="../database.php"><b>Home</b></a></li>
-        <li><a href="home.php"><b>Search</b></a></li>
-        <li class="has-submenu">
-            <a href="#" ><b>Plants</b></a>
-            <ul class="submenu">
-                <li><a href="tress.php">Trees</a></li>
-                <li><a href="shrubs.php">Shrubs</a></li>
-                <li><a href="ferns.php">Ferns</a></li>
-                <li><a href="climbers.php">Climbers</a></li>
-                <li><a href="waterplants.php">Water Plants</a></li>
-                <li><a href="palms.php">Palms</a></li>
-                <li><a href="cactus.php">Cactus</a></li>
-                <li><a href="succulent.php">Succulent</a></li>
-                <li><a href="annuals.php">Annuals</a></li>
-                <li><a href="perinnals.php">Perennials</a></li>
-                <li><a href="indoorplants.php">Indoor Plants</a></li>
-                <li><a href="herbs.php">Herbs</a></li>
-            </ul>
-        </li>
-        <li> <a href="../plan/plan.php"><b>Plan</b></a></li>
-           <li> <a href="../cost/cost.php"><b>Cost and Analytics</b></a></li>
-    </ul>
-</aside>
+        <ul>
+            <li><a href="../database.php"><b>Home</b></a></li>
+            <li><a href="home.php"><b>Search</b></a></li>
+            <li class="has-submenu">
+                <a href="#"><b>Plants</b></a>
+                <ul class="submenu">
+                    <li><a href="tress.php">Trees</a></li>
+                    <li><a href="shrubs.php">Shrubs</a></li>
+                    <li><a href="ferns.php">Ferns</a></li>
+                    <li><a href="climbers.php">Climbers</a></li>
+                    <li><a href="waterplants.php">Water Plants</a></li>
+                    <li><a href="palms.php">Palms</a></li>
+                    <li><a href="cactus.php">Cactus</a></li>
+                    <li><a href="succulent.php">Succulent</a></li>
+                    <li><a href="annuals.php">Annuals</a></li>
+                    <li><a href="perinnals.php">Perennials</a></li>
+                    <li><a href="indoorplants.php">Indoor Plants</a></li>
+                    <li><a href="herbs.php">Herbs</a></li>
+                </ul>
+            </li>
+            <li><a href="cuttings.php"><b>Cuttings</b></a></li>
+            <li><a href="../plan/plan.php"><b>Plan</b></a></li>
+            <li><a href="../cost/cost.php"><b>Cost and Analytics</b></a></li>
+        </ul>
+    </aside>
+
 
 
 <div class="container-search-result">

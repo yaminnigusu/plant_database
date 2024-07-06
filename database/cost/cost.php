@@ -23,13 +23,9 @@ if (isset($_GET['page']) && is_numeric($_GET['page'])) {
 }
 
 // Fetch records for the current page
-
 $recordsPerPage = 20;
 $offset = ($currentPage - 1) * $recordsPerPage;
 $sql_costs_page = "SELECT id, description, cost_amount, created_at FROM costs ORDER BY created_at DESC LIMIT $recordsPerPage OFFSET $offset";
-
-
-
 $result_costs_page = $conn->query($sql_costs_page);
 
 // Count total records
@@ -38,6 +34,41 @@ $totalRecordsResult = $conn->query($totalRecordsQuery);
 $totalRecords = $totalRecordsResult->fetch_assoc()['totalRecords'];
 $totalPages = ceil($totalRecords / $recordsPerPage);
 $totalRecordsResult->close();
+
+// Calculate total costs and profit per month
+$totalCostPerMonthQuery = "
+    SELECT 
+        DATE_FORMAT(created_at, '%Y-%m') AS month, 
+        SUM(cost_amount) AS totalCost
+    FROM costs
+    GROUP BY month
+";
+$totalCostPerMonthResult = $conn->query($totalCostPerMonthQuery);
+
+$totalProfitPerMonthQuery = "
+    SELECT 
+        DATE_FORMAT(costs.created_at, '%Y-%m') AS month, 
+        SUM(cost_amount) AS totalCost, 
+        SUM(plants.quantity * (plants.value + (plants.value * 0.4))) - SUM(plants.quantity * plants.value) - SUM(cost_amount) AS totalProfit
+    FROM costs
+    JOIN plants ON DATE_FORMAT(plants.plantation_date, '%Y-%m') = DATE_FORMAT(costs.created_at, '%Y-%m')
+    GROUP BY month
+";
+$totalProfitPerMonthResult = $conn->query($totalProfitPerMonthQuery);
+
+$totalCostPerMonth = [];
+while ($row = $totalCostPerMonthResult->fetch_assoc()) {
+    $totalCostPerMonth[$row['month']] = $row['totalCost'];
+}
+
+$totalProfitPerMonth = [];
+while ($row = $totalProfitPerMonthResult->fetch_assoc()) {
+    $totalProfitPerMonth[$row['month']] = $row['totalProfit'];
+}
+
+$totalCostPerMonthResult->close();
+$totalProfitPerMonthResult->close();
+$conn->close();
 ?>
 
 
@@ -253,7 +284,24 @@ $totalRecordsResult->close();
         <a href="?page=<?php echo $i; ?>" <?php if ($i === $currentPage) echo 'class="current"'; ?>><?php echo $i; ?></a>
     <?php } ?>
 </div>
-
+<table class="table">
+            <thead>
+                <tr>
+                    <th>Month</th>
+                    <th>Total Cost</th>
+                    <th>Total Profit</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($totalCostPerMonth as $month => $totalCost) { ?>
+                    <tr>
+                        <td><?php echo htmlspecialchars($month); ?></td>
+                        <td><?php echo number_format($totalCost, 2); ?> Birr</td>
+                        <td><?php echo number_format($totalProfitPerMonth[$month], 2); ?> Birr</td>
+                    </tr>
+                <?php } ?>
+            </tbody>
+        </table>
 
 
         <h2>Analytics</h2>

@@ -1,8 +1,25 @@
 <?php
 include("../config.php");
 
-function fetchCuttingsData($conn) {
-    $sql = "SELECT * FROM optional_plants";
+function fetchCuttingsData($conn, $search = '', $plasticSizeFilter = '', $startDate = '', $endDate = '') {
+    $sql = "SELECT * FROM optional_plants WHERE 1=1";
+
+    if ($search) {
+        $sql .= " AND plant_name LIKE '%" . $conn->real_escape_string($search) . "%'";
+    }
+
+    if ($plasticSizeFilter) {
+        $sql .= " AND plastic_size = '" . $conn->real_escape_string($plasticSizeFilter) . "'";
+    }
+
+    if ($startDate) {
+        $sql .= " AND plantation_date >= '" . $conn->real_escape_string($startDate) . "'";
+    }
+
+    if ($endDate) {
+        $sql .= " AND plantation_date <= '" . $conn->real_escape_string($endDate) . "'";
+    }
+
     $result = $conn->query($sql);
     return $result;
 }
@@ -31,19 +48,47 @@ function fetchCuttingsData($conn) {
         }
 
         .total-info {
-            margin-top: 20px; /* Add space above the total info section */
-            text-align: center; /* Center-align the content */
-            background-color: #f0f0f0; /* Background color for the total info section */
-            padding: 15px; /* Add padding around the content */
+            margin-top: 20px;
+            text-align: center;
+            background-color: #f0f0f0;
+            padding: 15px;
         }
 
         .total-info p {
-            font-size: 18px; /* Increase font size for total quantity and total value */
-            margin-bottom: 10px; /* Add space below each paragraph */
+            font-size: 18px;
+            margin-bottom: 10px;
         }
 
         .submenu {
             display: none;
+        }
+
+        #searchFilterForm {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        #searchFilterForm input[type="text"],
+        #searchFilterForm select,
+        #searchFilterForm input[type="date"],
+        #searchFilterForm button {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        #searchFilterForm label {
+            margin-right: 5px;
+        }
+
+        .action-buttons a {
+            margin-right: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
         }
     </style>
 </head>
@@ -59,7 +104,7 @@ function fetchCuttingsData($conn) {
                 <h1>Le Jardin de Kakoo</h1>
             </div>
             <nav>
-            <a href="../../pages/home.php">Home</a>
+                <a href="../../pages/home.php">Home</a>
                 <a href="../../pages/shop.php">Shop</a>
                 <a href="../../pages/about.php">About Us</a>
                 <a href="../../pages/contactus.php">Contact Us</a>
@@ -78,22 +123,22 @@ function fetchCuttingsData($conn) {
             <li class="has-submenu">
                 <a href="#"><b>Plants</b></a>
                 <ul class="submenu">
-                <li><a href="tress.php">Trees</a></li>
-                <li><a href="shrubs.php">Shrubs</a></li>
-                <li><a href="ferns.php">Ferns</a></li>
-                <li><a href="climbers.php">Climbers</a></li>
-                <li><a href="waterplants.php">Water Plants</a></li>
-                <li><a href="palms.php">Palms</a></li>
-                <li><a href="cactus.php">Cactus</a></li>
-                <li><a href="succulent.php">Succulent</a></li>
-                <li><a href="annuals.php">Annuals</a></li>
-                <li><a href="perinnals.php">Perennials</a></li>
-                <li><a href="indoorplants.php">Indoor Plants</a></li>
-                <li><a href="herbs.php">Herbs</a></li>
+                    <li><a href="tress.php">Trees</a></li>
+                    <li><a href="shrubs.php">Shrubs</a></li>
+                    <li><a href="ferns.php">Ferns</a></li>
+                    <li><a href="climbers.php">Climbers</a></li>
+                    <li><a href="waterplants.php">Water Plants</a></li>
+                    <li><a href="palms.php">Palms</a></li>
+                    <li><a href="cactus.php">Cactus</a></li>
+                    <li><a href="succulent.php">Succulent</a></li>
+                    <li><a href="annuals.php">Annuals</a></li>
+                    <li><a href="perinnals.php">Perennials</a></li>
+                    <li><a href="indoorplants.php">Indoor Plants</a></li>
+                    <li><a href="herbs.php">Herbs</a></li>
                 </ul>
             </li>
             <li><a href="cuttings.php"><b>Cuttings</b></a></li>
-            <li><a href="../plan/plan.php"><b>Plan</b></a></li>
+            <li><a href="../plan/plan.php"><b>Plan</a></li>
             <li><a href="../cost/cost.php"><b>Cost and Analytics</b></a></li>
         </ul>
     </aside>
@@ -191,108 +236,135 @@ function fetchCuttingsData($conn) {
                     <input type="date" id="plantationDate" name="plantationDate" class="form-control">
                 </div>
                 <div class="form-group">
-                    <label for="value">Value:</label>
+                    <label for="value">Cost:</label>
                     <input type="number" id="value" name="value" class="form-control">
                 </div>
                 <button type="submit" class="btn btn-success">Submit</button>
             </form>
-    
-        <div class="table-responsive">
-            <h1 class="mt-4">Cuttings Data Display</h1>
+
+            <!-- Search and Filter Form -->
+            <form id="searchFilterForm" method="get" action="cuttings.php" class="form-inline my-4">
+                <input type="text" name="search" class="form-control mr-2" placeholder="Search by Common Name">
+                <select name="plasticSizeFilter" class="form-control mr-2">
+                    <option value="">All Plastic Sizes</option>
+                    <option value="xsmall">X-Small</option>
+                    <option value="small">Small</option>
+                    <option value="medium">Medium</option>
+                    <option value="large">Large</option>
+                    <option value="xlarge">X-Large</</option>
+                </select>
+                <label for="startDate" class="mr-2">Start Date:</label>
+                <input type="date" id="startDate" name="startDate" class="form-control mr-2">
+                <label for="endDate" class="mr-2">End Date:</label>
+                <input type="date" id="endDate" name="endDate" class="form-control mr-2">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </form>
+
             <div class="table-responsive">
-                <?php
-                // Handle record deletion
-                if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
-                    $id = $_GET['id'];
+                <h1 class="mt-4">Cuttings Data Display</h1>
+                <div class="table-responsive">
+                    <?php
+                    // Handle record deletion
+                    if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+                        $id = $_GET['id'];
 
-                    // Prepare the DELETE query using a parameterized statement to prevent SQL injection
-                    $sql_delete = "DELETE FROM optional_plants WHERE id = ?";
-                    $stmt = $conn->prepare($sql_delete);
-                    $stmt->bind_param("i", $id); // "i" indicates integer parameter type
+                        // Prepare the DELETE query using a parameterized statement to prevent SQL injection
+                        $sql_delete = "DELETE FROM optional_plants WHERE id = ?";
+                        $stmt = $conn->prepare($sql_delete);
+                        $stmt->bind_param("i", $id); // "i" indicates integer parameter type
 
-                    if ($stmt->execute()) {
-                        echo '<p class="success-message">Record deleted successfully</p>';
+                        if ($stmt->execute()) {
+                            echo '<p class="success-message">Record deleted successfully</p>';
+                        } else {
+                            echo '<p class="error-message">Error deleting record: ' . $conn->error . '</p>';
+                        }
+
+                        $stmt->close(); // Close the prepared statement
+                    }
+
+                    // Get search and filter parameters
+                    $search = isset($_GET['search']) ? $_GET['search'] : '';
+                    $plasticSizeFilter = isset($_GET['plasticSizeFilter']) ? $_GET['plasticSizeFilter'] : '';
+                    $startDate = isset($_GET['startDate']) ? $_GET['startDate'] : '';
+                    $endDate = isset($_GET['endDate']) ? $_GET['endDate'] : '';
+
+                    $result = fetchCuttingsData($conn, $search, $plasticSizeFilter, $startDate, $endDate);
+
+                    if ($result->num_rows > 0) {
+                        echo '<table class="table table-bordered">';
+                        echo '<thead><tr><th>Common Name</th><th>Quantity</th><th>Plastic Size</th><th>Plantation Date</th><th>Cost</th><th>Actions</th></tr></thead>';
+                        echo '<tbody>';
+
+                        $totalQuantity = 0;
+                        $totalValue = 0;
+
+                        while ($row = $result->fetch_assoc()) {
+                            echo '<tr>';
+                            echo '<td>' . htmlspecialchars($row['plant_name']) . '</td>';
+                            echo '<td>' . htmlspecialchars($row['quantity']) . '</td>';
+                            echo '<td>' . htmlspecialchars($row['plastic_size']) . '</td>';
+                            echo '<td>' . htmlspecialchars($row['plantation_date']) . '</td>';
+                            echo '<td>' . htmlspecialchars($row['value']) . '</td>';
+                            echo '<td class="action-buttons">';
+                            echo '<a class="actionButton editButton" href="../edit_optional_plants.php?id=' . $row['id'] . '">Edit</a>';
+                            echo '<a class="actionButton deleteButton" href="cuttings.php?action=delete&id=' . $row['id'] . '">Delete</a>';
+                            echo '</td>';
+                            echo '</tr>';
+                            $totalQuantity += intval($row['quantity']);
+                            $totalValue += intval($row['value']);
+                        }
+
+                        echo '</tbody></table>';
+                        echo '<div class="total-info">';
+                        echo '<p>Total Quantity: ' . $totalQuantity . '</p>';
+                        echo '<p>Total Value: ' . $totalValue . '</p>';
+                        echo '</div>';
                     } else {
-                        echo '<p class="error-message">Error deleting record: ' . $conn->error . '</p>';
+                        echo '<p>No cutting records found</p>';
                     }
 
-                    $stmt->close(); // Close the prepared statement
-                }
-                $result = fetchCuttingsData($conn);
-                if ($result->num_rows > 0) {
-                    echo '<table class="table table-bordered">';
-                    echo '<thead><tr><th>Common Name</th><th>Quantity</th><th>Plastic Size</th><th>Plantation Date</th><th>Value</th><th>Actions</th></tr></thead>';
-                    echo '<tbody>';
-
-                    $totalQuantity = 0;
-                    $totalValue = 0;
-
-                    while ($row = $result->fetch_assoc()) {
-                        echo '<tr>';
-                        echo '<td>' . htmlspecialchars($row['plant_name']) . '</td>';
-                        echo '<td>' . htmlspecialchars($row['quantity']) . '</td>';
-                        echo '<td>' . htmlspecialchars($row['plastic_size']) . '</td>';
-                        echo '<td>' . htmlspecialchars($row['plantation_date']) . '</td>';
-                        echo '<td>' . htmlspecialchars($row['value']) . '</td>';
-                        echo '<td class="action-buttons">';
-                        echo '<a class="actionButton editButton" href="../edit_optional_plants.php?id=' . $row['id'] . '">Edit</a>';
-                        echo '<a class="actionButton deleteButton" href="cuttings.php?action=delete&id=' . $row['id'] . '">Delete</a>';
-                        echo '</td>';
-                        echo '</tr>';
-                        $totalQuantity += intval($row['quantity']);
-                        $totalValue += intval($row['value']);
-                    }
-
-                    echo '</tbody></table>';
-                    echo '<div class="total-info">';
-                    echo '<p>Total Quantity: ' . $totalQuantity . '</p>';
-                    echo '<p>Total Value: ' . $totalValue . '</p>';
-                    echo '</div>';
-                } else {
-                    echo '<p>No cutting records found</p>';
-                }
-
-                // Close result set and database connection
-                $result->close();
-                $conn->close();
-                ?>
+                    // Close result set and database connection
+                    $result->close();
+                    $conn->close();
+                    ?>
+                </div>
             </div>
         </div>
     </div>
+
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-
-        <script>
-            function toggleFormVisibility() {
-                const plantForm = document.getElementById('plantForm');
-                if (plantForm.style.display === 'none') {
-                    plantForm.style.display = 'block';
-                } else {
-                    plantForm.style.display = 'none';
-                }
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function toggleFormVisibility() {
+            const plantForm = document.getElementById('plantForm');
+            if (plantForm.style.display === 'none') {
+                plantForm.style.display = 'block';
+            } else {
+                plantForm.style.display = 'none';
             }
+        }
 
-            function toggleOptionalFields() {
-                const isOptional = document.getElementById('optionalData').checked;
-                document.getElementById('photo').required = !isOptional;
-                document.getElementById('photoGroup').style.display = isOptional ? 'none' : 'block';
-                document.getElementById('scientificNameGroup').style.display = isOptional ? 'none' : 'block';
-                document.getElementById('plantName').required = !isOptional;
-                document.getElementById('quantity').required = !isOptional;
-                document.getElementById('plasticSize').required = !isOptional;
-                document.getElementById('plantationDate').required = !isOptional;
-                document.getElementById('value').required = !isOptional;
-            }
-        </script>
-        <script>
-            function toggleNavVisibility() {
-                const sideNav = document.getElementById('sideNav');
-                sideNav.classList.toggle('open');
-            }
-        </script>
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="../js/script2.js"></script>
-    </body>
+        function toggleOptionalFields() {
+            const isOptional = document.getElementById('optionalData').checked;
+            document.getElementById('photo').required = !isOptional;
+            document.getElementById('photoGroup').style.display = isOptional ? 'none' : 'block';
+            document.getElementById('scientificNameGroup').style.display = isOptional ? 'none' : 'block';
+            document.getElementById('plantName').required = !isOptional;
+            document.getElementById('quantity').required = !isOptional;
+            document.getElementById('plasticSize').required = !isOptional;
+            document.getElementById('plantationDate').required = !isOptional;
+            document.getElementById('value').required = !isOptional;
+        }
+    </script>
+    <script>
+        function toggleNavVisibility() {
+            const sideNav = document.getElementById('sideNav');
+            sideNav.classList.toggle('open');
+        }
+    </script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="../js/script2.js"></script>
+</body>
 
-    </html>
+</html>

@@ -210,8 +210,16 @@
                     $stmt->close(); // Close the prepared statement
                 }
 
-                // Fetch plant data from the database
-                $sql = "SELECT * FROM plants";
+                $records_per_page = 15;
+                $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+                $offset = ($current_page - 1) * $records_per_page;
+
+                $sql_total = "SELECT COUNT(*) FROM plants";
+                $result_total = $conn->query($sql_total);
+                $total_records = $result_total->fetch_row()[0];
+                $total_pages = ceil($total_records / $records_per_page);
+
+                $sql = "SELECT * FROM plants LIMIT $records_per_page OFFSET $offset";
                 $result = $conn->query($sql);
                 $totalQuantity = 0;
                 $totalValue = 0;
@@ -254,11 +262,27 @@
                     echo '<p>No plant records found</p>';
                 }
 
-                // Close result set and database connection
                 $result->close();
                 $conn->close();
                 ?>
             </div>
+            <nav aria-label="Page navigation">
+                <ul class="pagination justify-content-center">
+                    <?php if ($current_page > 1): ?>
+                        <li class="page-item"><a class="page-link" href="database.php?page=<?php echo $current_page - 1; ?>">Previous</a></li>
+                    <?php endif; ?>
+
+                    <?php for ($page = 1; $page <= $total_pages; $page++): ?>
+                        <li class="page-item <?php if ($page == $current_page) echo 'active'; ?>">
+                            <a class="page-link" href="database.php?page=<?php echo $page; ?>"><?php echo $page; ?></a>
+                        </li>
+                    <?php endfor; ?>
+
+                    <?php if ($current_page < $total_pages): ?>
+                        <li class="page-item"><a class="page-link" href="database.php?page=<?php echo $current_page + 1; ?>">Next</a></li>
+                    <?php endif; ?>
+                </ul>
+            </nav>
         </div>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
         <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
