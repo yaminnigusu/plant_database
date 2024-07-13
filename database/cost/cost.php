@@ -13,62 +13,6 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])
         exit();
     }
 }
-
-// Set default current page
-$currentPage = 1;
-
-// Check if page parameter is set
-if (isset($_GET['page']) && is_numeric($_GET['page'])) {
-    $currentPage = intval($_GET['page']);
-}
-
-// Fetch records for the current page
-$recordsPerPage = 20;
-$offset = ($currentPage - 1) * $recordsPerPage;
-$sql_costs_page = "SELECT id, description, cost_amount, created_at FROM costs ORDER BY created_at DESC LIMIT $recordsPerPage OFFSET $offset";
-$result_costs_page = $conn->query($sql_costs_page);
-
-// Count total records
-$totalRecordsQuery = "SELECT COUNT(*) AS totalRecords FROM costs";
-$totalRecordsResult = $conn->query($totalRecordsQuery);
-$totalRecords = $totalRecordsResult->fetch_assoc()['totalRecords'];
-$totalPages = ceil($totalRecords / $recordsPerPage);
-$totalRecordsResult->close();
-
-// Calculate total costs and profit per month
-$totalCostPerMonthQuery = "
-    SELECT 
-        DATE_FORMAT(created_at, '%Y-%m') AS month, 
-        SUM(cost_amount) AS totalCost
-    FROM costs
-    GROUP BY month
-";
-$totalCostPerMonthResult = $conn->query($totalCostPerMonthQuery);
-
-$totalProfitPerMonthQuery = "
-    SELECT 
-        DATE_FORMAT(costs.created_at, '%Y-%m') AS month, 
-        SUM(cost_amount) AS totalCost, 
-        SUM(plants.quantity * (plants.value + (plants.value * 0.4))) - SUM(plants.quantity * plants.value) - SUM(cost_amount) AS totalProfit
-    FROM costs
-    JOIN plants ON DATE_FORMAT(plants.plantation_date, '%Y-%m') = DATE_FORMAT(costs.created_at, '%Y-%m')
-    GROUP BY month
-";
-$totalProfitPerMonthResult = $conn->query($totalProfitPerMonthQuery);
-
-$totalCostPerMonth = [];
-while ($row = $totalCostPerMonthResult->fetch_assoc()) {
-    $totalCostPerMonth[$row['month']] = $row['totalCost'];
-}
-
-$totalProfitPerMonth = [];
-while ($row = $totalProfitPerMonthResult->fetch_assoc()) {
-    $totalProfitPerMonth[$row['month']] = $row['totalProfit'];
-}
-
-$totalCostPerMonthResult->close();
-$totalProfitPerMonthResult->close();
-$conn->close();
 ?>
 
 
@@ -220,88 +164,101 @@ $conn->close();
 
         <br><br>
         <?php
-        include("../config.php");
+include("../config.php");
 
-        $sql_total_costs = "SELECT SUM(cost_amount) AS totalCosts FROM costs";
-        $result_total_costs = $conn->query($sql_total_costs);
-        $totalCosts = $result_total_costs->fetch_assoc()['totalCosts'] ?? 0;
+$search = $_GET['search'] ?? '';
+$search = $conn->real_escape_string($search);
+$whereClause = '';
 
-        $sql_total_quantity = "SELECT SUM(quantity) AS totalQuantity FROM plants";
-        $result_total_quantity = $conn->query($sql_total_quantity);
-        $totalQuantity = $result_total_quantity->fetch_assoc()['totalQuantity'] ?? 0;
+if (!empty($search)) {
+    $whereClause = "WHERE plant_name LIKE '%$search%'";
+}
 
-        $additionalCostPerPlant = ($totalCosts > 0 && $totalQuantity > 0) ? ($totalCosts / $totalQuantity) : 0;
+// Determine total number of records with search condition
+$sql_total_records = "SELECT COUNT(*) AS totalRecords FROM plants $whereClause";
+$result_total_records = $conn->query($sql_total_records);
+$totalRecords = $result_total_records->fetch_assoc()['totalRecords'] ?? 0;
 
-        $sql_plant_info = "SELECT plant_name, SUM(value) AS totalValue, SUM(quantity) AS totalQuantity FROM plants GROUP BY plant_name";
-        $result_plant_info = $conn->query($sql_plant_info);
+$limit = 15; // Number of records per page
+$totalPages = ceil($totalRecords / $limit);
 
-        if ($result_plant_info->num_rows > 0) {
-        
-            echo '<h2>Profit Margins for Each Plant</h2>';
-            echo '<input type="text" id="plantSearchInput" placeholder="Search plant names...">
+$page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$start = ($page - 1) * $limit;
 
-            ';
-            echo '<table id="plantTable" class="table">';
-            echo '<thead>';
-            echo '<tr><th>Plant Name</th><th>Cost per Plant</th><th>Additional Cost per Plant</th><th>Selling Price</th><th>Profit</th></tr>';
-            echo '</thead>';
-            echo '<tbody>';
+$sql_total_costs = "SELECT SUM(cost_amount) AS totalCosts FROM costs";
+$result_total_costs = $conn->query($sql_total_costs);
+$totalCosts = $result_total_costs->fetch_assoc()['totalCosts'] ?? 0;
 
-            while ($row = $result_plant_info->fetch_assoc()) {
-                $plantName = $row['plant_name'];
-                $totalValue = $row['totalValue'];
-                $totalQuantity = $row['totalQuantity'];
+$sql_total_quantity = "SELECT SUM(quantity) AS totalQuantity FROM plants";
+$result_total_quantity = $conn->query($sql_total_quantity);
+$totalQuantity = $result_total_quantity->fetch_assoc()['totalQuantity'] ?? 0;
 
-                $costPerPlant = ($totalValue / $totalQuantity);
-                $costWithAdditional = $costPerPlant + $additionalCostPerPlant;
+$additionalCostPerPlant = ($totalCosts > 0 && $totalQuantity > 0) ? ($totalCosts / $totalQuantity) : 0;
 
-                $sellingPrice = $costWithAdditional + ($costWithAdditional * 0.4);
-                $profit = $sellingPrice - $costWithAdditional;
+$sql_plant_info = "SELECT plant_name, SUM(value) AS totalValue, SUM(quantity) AS totalQuantity 
+                   FROM plants $whereClause 
+                   GROUP BY plant_name 
+                   LIMIT $start, $limit";
+$result_plant_info = $conn->query($sql_plant_info);
 
-                echo '<tr>';
-                echo '<td>' . htmlspecialchars($plantName) . '</td>';
-                echo '<td>' . number_format($costWithAdditional, 2) . ' Birr</td>';
-                echo '<td>' . number_format($additionalCostPerPlant, 2) . ' Birr</td>';
-                echo '<td>' . number_format($sellingPrice, 2) . ' Birr</td>';
-                echo '<td>' . number_format($profit, 2) . ' Birr</td>';
-                echo '</tr>';
-            }
+echo '<h2>Profit Margins for Each Plant</h2>';
+echo '<form method="GET" action="">';
+echo '<input type="text" name="search" id="plantSearchInput" placeholder="Search plant names..." value="' . htmlspecialchars($_GET['search'] ?? '') . '">';
+echo '<input type="submit" value="Search">';
+echo '</form>';
 
-            echo '</tbody>';
-            echo '</table>';
-        } else {
-            echo '<p>No plant names found.</p>';
-        }
+if ($result_plant_info->num_rows > 0) {
+    echo '<table id="plantTable" class="table">';
+    echo '<thead>';
+    echo '<tr><th>Plant Name</th><th>Cost per Plant</th><th>Additional Cost per Plant</th><th>Selling Price</th><th>Profit</th></tr>';
+    echo '</thead>';
+    echo '<tbody>';
 
-        $result_total_costs->close();
-        $result_total_quantity->close();
-        $result_plant_info->close();
-        
-        $conn->close();
-        ?>
-        <div class="pagination">
-    <?php for ($i = 1; $i <= $totalPages; $i++) { ?>
-        <a href="?page=<?php echo $i; ?>" <?php if ($i === $currentPage) echo 'class="current"'; ?>><?php echo $i; ?></a>
-    <?php } ?>
-</div>
-<table class="table">
-            <thead>
-                <tr>
-                    <th>Month</th>
-                    <th>Total Cost</th>
-                    <th>Total Profit</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($totalCostPerMonth as $month => $totalCost) { ?>
-                    <tr>
-                        <td><?php echo htmlspecialchars($month); ?></td>
-                        <td><?php echo number_format($totalCost, 2); ?> Birr</td>
-                        <td><?php echo number_format($totalProfitPerMonth[$month], 2); ?> Birr</td>
-                    </tr>
-                <?php } ?>
-            </tbody>
-        </table>
+    while ($row = $result_plant_info->fetch_assoc()) {
+        $plantName = $row['plant_name'];
+        $totalValue = $row['totalValue'];
+        $totalQuantity = $row['totalQuantity'];
+
+        $costPerPlant = ($totalValue / $totalQuantity);
+        $costWithAdditional = $costPerPlant + $additionalCostPerPlant;
+
+        $sellingPrice = $costWithAdditional + ($costWithAdditional * 0.4);
+        $profit = $sellingPrice - $costWithAdditional;
+
+        echo '<tr>';
+        echo '<td>' . htmlspecialchars($plantName) . '</td>';
+        echo '<td>' . number_format($costWithAdditional, 2) . ' Birr</td>';
+        echo '<td>' . number_format($additionalCostPerPlant, 2) . ' Birr</td>';
+        echo '<td>' . number_format($sellingPrice, 2) . ' Birr</td>';
+        echo '<td>' . number_format($profit, 2) . ' Birr</td>';
+        echo '</tr>';
+    }
+
+    echo '</tbody>';
+    echo '</table>';
+
+    // Pagination links
+    echo '<nav>';
+    echo '<ul class="pagination">';
+    for ($i = 1; $i <= $totalPages; $i++) {
+        $active = ($i == $page) ? 'active' : '';
+        echo '<li class="page-item ' . $active . '"><a class="page-link" href="?page=' . $i . '&search=' . urlencode($search) . '">' . $i . '</a></li>';
+    }
+    echo '</ul>';
+    echo '</nav>';
+} else {
+    echo '<p>No plant names found.</p>';
+}
+
+$result_total_costs->close();
+$result_total_quantity->close();
+$result_plant_info->close();
+$result_total_records->close();
+
+$conn->close();
+?>
+
+
 
 
         <h2>Analytics</h2>

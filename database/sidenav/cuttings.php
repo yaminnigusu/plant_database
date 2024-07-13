@@ -316,7 +316,7 @@ function fetchCuttingsData($conn, $search = '', $plasticSizeFilter = '', $startD
 
                         echo '</tbody></table>';
                         echo '<div class="total-info">';
-                        echo '<p>Total Quantity: ' . $totalQuantity . '</p>';
+                        echo '<p>Total Quantity: ' . $totalQuantity .  '/3000</p>';
                         echo '<p>Total Value: ' . $totalValue . '</p>';
                         echo '</div>';
                     } else {
@@ -363,8 +363,8 @@ function fetchCuttingsData($conn, $search = '', $plasticSizeFilter = '', $startD
             sideNav.classList.toggle('open');
         }
     </script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="../js/script2.js"></script>
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="../../js/script2.js"></script>
 </body>
 
 </html>
