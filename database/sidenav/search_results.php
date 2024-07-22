@@ -34,104 +34,113 @@ if (isset($_GET['report']) && isset($_GET['format']) && $_GET['format'] === 'pdf
             $startDate = $year . '-01-01';
             $endDate = $year . '-12-31';
             break;
+        case 'all':
+            $startDate = '';
+            $endDate = '';
+            break;
         default:
             // Handle invalid report type
             break;
     }
 
-    if ($startDate !== '' && $endDate !== '') {
-        // Add a page
-        $pdf->AddPage();
+    // Add a page
+    $pdf->AddPage();
 
-        // Set report title
-        $reportTitle = ucfirst($reportType) . ' Report (' . $year . ')';
-        $html = '<div style="text-align: center; margin-bottom: 20px;">
-                    <img src="path_to_your_logo.png" alt="Logo" style="max-width: 150px; height: auto; margin-bottom: 10px;">
-                    <h1 style="font-size: 28px; color: #333; font-weight: bold;">Le Jardin de Kakoo</h1>
-                    <h2 style="font-size: 24px; color: #555; margin-top: 0;">' . $reportTitle . '</h2>
-                </div>';
+    // Set report title
+    $reportTitle = ucfirst($reportType) . ' Report (' . $year . ')';
+    $html = '<div style="text-align: center; margin-bottom: 20px;">
+                <img src="path_to_your_logo.png" alt="Logo" style="max-width: 150px; height: auto; margin-bottom: 10px;">
+                <h1 style="font-size: 28px; color: #333; font-weight: bold;">Le Jardin de Kakoo</h1>
+                <h2 style="font-size: 24px; color: #555; margin-top: 0;">' . $reportTitle . '</h2>
+            </div>';
 
-        // Generate SQL query to fetch detailed plant data for the specified date range
-        $sql = "SELECT plant_type, plant_name, quantity 
-                FROM plants 
-                WHERE plantation_date BETWEEN ? AND ?";
-
+    // Generate SQL query to fetch detailed plant data for the specified date range
+    if ($reportType === 'all') {
+        $sql = "SELECT plant_type, plant_name, plastic_size, quantity FROM plants";
         $stmt = $conn->prepare($sql);
+    } else {
+        $sql = "SELECT plant_type, plant_name, plastic_size, quantity FROM plants WHERE plantation_date BETWEEN ? AND ?";
+        $stmt = $conn->prepare($sql);
+    }
 
-        if ($stmt) {
+    if ($stmt) {
+        if ($reportType !== 'all') {
             $stmt->bind_param('ss', $startDate, $endDate);
-            $stmt->execute();
-            $result = $stmt->get_result();
+        }
+        $stmt->execute();
+        $result = $stmt->get_result();
 
-            // Check if query was successful
-            if ($result->num_rows > 0) {
-                // Initialize arrays to store plant data
-                $plantsByType = array();
-                $totalAllQuantity = 0;
+        // Check if query was successful
+        if ($result->num_rows > 0) {
+            // Initialize arrays to store plant data
+            $plantsByType = array();
+            $totalAllQuantity = 0;
 
-                while ($row = $result->fetch_assoc()) {
-                    $plantType = htmlspecialchars($row['plant_type']);
-                    $plantName = htmlspecialchars($row['plant_name']);
-                    $quantity = htmlspecialchars($row['quantity']);
+            while ($row = $result->fetch_assoc()) {
+                $plantType = htmlspecialchars($row['plant_type']);
+                $plantName = htmlspecialchars($row['plant_name']);
+                $plasticSize = htmlspecialchars($row['plastic_size']);
+                $quantity = htmlspecialchars($row['quantity']);
 
-                    // Store plant data into the array by plant type
-                    if (!isset($plantsByType[$plantType])) {
-                        $plantsByType[$plantType] = array('total_quantity' => 0, 'plants' => array());
-                    }
-
-                    // Add plant name and quantity to the corresponding plant type
-                    $plantsByType[$plantType]['plants'][] = array('name' => $plantName, 'quantity' => $quantity);
-                    $plantsByType[$plantType]['total_quantity'] += $quantity;
-
-                    // Accumulate total quantity for all plant types
-                    $totalAllQuantity += $quantity;
+                // Store plant data into the array by plant type
+                if (!isset($plantsByType[$plantType])) {
+                    $plantsByType[$plantType] = array('total_quantity' => 0, 'plants' => array());
                 }
 
-                // Start generating HTML for the report
-                foreach ($plantsByType as $type => $data) {
-                    // Add section header for each plant type
-                    $html .= '<h3 style="font-size: 20px; color: #444; margin-top: 20px;">' . ucfirst($type) . '</h3>';
+                // Add plant name, plastic size, and quantity to the corresponding plant type
+                $plantsByType[$plantType]['plants'][] = array('name' => $plantName, 'plastic_size' => $plasticSize, 'quantity' => $quantity);
+                $plantsByType[$plantType]['total_quantity'] += $quantity;
 
-                    // Start table for displaying plant names and quantities
-                    $html .= '<table style="width: 100%; border-collapse: collapse;">
-                                <tr style="background-color: #f2f2f2;">
-                                    <th style="padding: 10px; text-align: left; color: #333; font-weight: bold; font-size: 16px;">Plant Name</th>
-                                    <th style="padding: 10px; text-align: center; color: #333; font-weight: bold; font-size: 16px;">Quantity</th>
-                                </tr>';
-
-                    foreach ($data['plants'] as $plant) {
-                        $html .= '<tr>
-                                    <td style="padding: 10px; border-bottom: 1px solid #ddd; color: #333; font-weight: bold; font-size: 14px;">' . $plant['name'] . '</td>
-                                    <td style="padding: 10px; border-bottom: 1px solid #ddd; text-align: center; color: #333; font-weight: bold; font-size: 14px;">' . $plant['quantity'] . '</td>
-                                  </tr>';
-                    }
-
-                    // Display total quantity for this plant type
-                    $html .= '<tr>
-                                <td style="padding: 10px; text-align: right; font-weight: bold; font-size: 16px;" colspan="2">Total: ' . $data['total_quantity'] . '</td>
-                              </tr>';
-
-                    $html .= '</table>'; // Close table for this plant type
-                }
-
-                // Display total quantity for all plant types
-                $html .= '<p style="text-align: center; font-weight: bold; margin-top: 20px; font-size: 22px; color: #333;">Total Quantity for All Plant Types: ' . $totalAllQuantity . '</p>';
-            } else {
-                $html .= '<p style="text-align: center;">No data found for the selected date range.</p>';
+                // Accumulate total quantity for all plant types
+                $totalAllQuantity += $quantity;
             }
 
-            // Close statement
-            $stmt->close();
+            // Start generating HTML for the report
+            foreach ($plantsByType as $type => $data) {
+                // Add section header for each plant type
+                $html .= '<h3 style="font-size: 20px; color: #444; margin-top: 20px;">' . ucfirst($type) . '</h3>';
+
+                // Start table for displaying plant names, plastic size, and quantities
+                $html .= '<table style="width: 100%; border-collapse: collapse;">
+                            <tr style="background-color: #f2f2f2;">
+                                <th style="padding: 10px; text-align: left; color: #333; font-weight: bold; font-size: 16px;">Plant Name</th>
+                                <th style="padding: 10px; text-align: center; color: #333; font-weight: bold; font-size: 16px;">Plastic Size</th>
+                                <th style="padding: 10px; text-align: center; color: #333; font-weight: bold; font-size: 16px;">Quantity</th>
+                            </tr>';
+
+                foreach ($data['plants'] as $plant) {
+                    $html .= '<tr>
+                                <td style="padding: 10px; border-bottom: 1px solid #ddd; color: #333; font-weight: bold; font-size: 14px;">' . $plant['name'] . '</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #ddd; text-align: center; color: #333; font-weight: bold; font-size: 14px;">' . $plant['plastic_size'] . '</td>
+                                <td style="padding: 10px; border-bottom: 1px solid #ddd; text-align: center; color: #333; font-weight: bold; font-size: 14px;">' . $plant['quantity'] . '</td>
+                              </tr>';
+                }
+
+                // Display total quantity for this plant type
+                $html .= '<tr>
+                            <td colspan="3" style="padding: 10px; text-align: right; font-weight: bold; font-size: 16px;">Total: ' . $data['total_quantity'] . '</td>
+                          </tr>';
+
+                $html .= '</table>'; // Close table for this plant type
+            }
+
+            // Display total quantity for all plant types
+            $html .= '<p style="text-align: center; font-weight: bold; margin-top: 20px; font-size: 22px; color: #333;">Total Quantity for All Plant Types: ' . $totalAllQuantity . '</p>';
         } else {
-            $html .= '<p style="text-align: center; color: red;">Error executing SQL query: ' . $conn->error . '</p>';
+            $html .= '<p style="text-align: center;">No data found for the selected date range.</p>';
         }
 
-        // Output HTML content to PDF
-        $pdf->writeHTML($html, true, false, true, false, '');
-
-        // Close and output PDF document
-        $pdf->Output('plant_report.pdf', 'I');
+        // Close statement
+        $stmt->close();
+    } else {
+        $html .= '<p style="text-align: center; color: red;">Error executing SQL query: ' . $conn->error . '</p>';
     }
+
+    // Output HTML content to PDF
+    $pdf->writeHTML($html, true, false, true, false, '');
+
+    // Close and output PDF document
+    $pdf->Output('plant_report.pdf', 'I');
 }
 ?>
 

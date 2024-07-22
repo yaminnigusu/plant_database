@@ -225,7 +225,8 @@ if ($result->num_rows > 0) {
         echo '<td>' . htmlspecialchars($row['value']) . '</td>';
         echo '<td class="action-buttons">';
         echo '<a class="actionButton editButton" href="../edit.php?id=' . $row['id'] . '">Edit</a>';
-        echo '<a class="actionButton deleteButton" href="../database.php?action=delete&id=' . $row['id'] . '">Delete</a>';
+        echo '<a class="actionButton deleteButton" href="database.php?action=delete&id=' . $row['id'] . '" onclick="return confirm(\'Are you sure you want to delete this record?\')">Delete</a>';
+        echo '</td>';
         echo '</td>';
         echo '</tr>';
     }

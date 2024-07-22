@@ -1,20 +1,16 @@
-
-
 <!DOCTYPE html>
 <html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plant Database</title>
+    <title>Edit Cost</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="icon" href="../../images/logo.png" type="image/jpg">
     <link rel="stylesheet" href="../styles.css">
     <link rel="stylesheet" href="style.css">
     <style>
-       
-
         .submenu {
             display: none;
         }
@@ -49,7 +45,6 @@
         <ul>
             <br>
             <br>
-            
             <li><a href="../database.php"><b>Home</b></a></li>
             <li><a href="../sidenav/home.php"><b>Search</b></a></li>
             <li class="has-submenu">
@@ -63,7 +58,7 @@
                     <li><a href="../sidenav/palms.php">Palms</a></li>
                     <li><a href="../sidenav/cactus.php">Cactus</a></li>
                     <li><a href="../sidenav/succulent.php">Succulent</a></li>
-                    <li><a href="../sidenav\annuals.php">Annuals</a></li>
+                    <li><a href="../sidenav/annuals.php">Annuals</a></li>
                     <li><a href="sidenav/perinnals.php">Perennials</a></li>
                     <li><a href="sidenav/indoorplants.php">Indoor Plants</a></li>
                     <li><a href="sidenav/herbs.php">Herbs</a></li>
@@ -72,72 +67,83 @@
            <li> <a href="plan.php"><b>Plan</b></a></li>
            <li> <a href="../cost/cost.php"><b>Cost and Analytics</b></a></li>
         </ul>
-       
     </aside>
-        <div class="main-content">
-            <h2>Edit Cost</h2>
 
-            <?php
-            // Check if cost ID is provided in the URL
-            if (isset($_GET['id']) && !empty($_GET['id'])) {
-                // Include config file
-                include("../config.php");
+    <div class="main-content">
+        <h2>Edit Cost</h2>
 
-                // Prepare SQL query to fetch cost details by ID
-                $costId = $_GET['id'];
-                $sql = "SELECT * FROM costs WHERE id = $costId";
-                $result = $conn->query($sql);
+        <?php
+        // Check if cost ID is provided in the URL
+        if (isset($_GET['id']) && !empty($_GET['id'])) {
+            // Include config file
+            include("../config.php");
 
-                if ($result->num_rows == 1) {
-                    $row = $result->fetch_assoc();
-                    $costDescription = $row['description'];
-                    $costAmount = $row['cost_amount'];
-                } else {
-                    echo '<p class="text-danger">Cost not found.</p>';
-                    exit;
-                }
+            // Prepare SQL query to fetch cost details by ID
+            $costId = $_GET['id'];
+            $sql = "SELECT * FROM costs WHERE id = $costId";
+            $result = $conn->query($sql);
 
-                // Close result set
-                $result->close();
-
-                // Process update on form submission
-                if ($_SERVER["REQUEST_METHOD"] == "POST") {
-                    $newCostDescription = $_POST['costDescription'];
-                    $newCostAmount = $_POST['costAmount'];
-
-                    // Update cost in database
-                    $updateSql = "UPDATE costs SET description = '$newCostDescription', cost_amount = $newCostAmount WHERE id = $costId";
-
-                    if ($conn->query($updateSql) === TRUE) {
-                        echo '<p class="text-success">Cost updated successfully.</p>';
-                    } else {
-                        echo '<p class="text-danger">Error updating cost: ' . $conn->error . '</p>';
-                    }
-                }
-
-                // Close database connection
-                $conn->close();
+            if ($result->num_rows == 1) {
+                $row = $result->fetch_assoc();
+                $costDescription = $row['description'];
+                $costAmount = $row['cost_amount'];
+                $costCategory = $row['category'];
             } else {
-                echo '<p class="text-danger">Invalid request.</p>';
+                echo '<p class="text-danger">Cost not found.</p>';
                 exit;
             }
-            ?>
 
-            <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) . '?id=' . $costId; ?>" method="POST">
-                <div class="form-group">
-                    <label for="costDescription">Cost Description:</label>
-                    <input type="text" class="form-control" id="costDescription" name="costDescription" value="<?php echo htmlspecialchars($costDescription); ?>" required>
-                </div>
-                <div class="form-group">
-                    <label for="costAmount">Cost Amount:</label>
-                    <input type="number" class="form-control" id="costAmount" name="costAmount" value="<?php echo $costAmount; ?>" required>
-                </div>
-                <button type="submit" class="btn btn-primary">Update</button>
-                <a href="../pages/database.php" class="btn btn-secondary ml-2">Cancel</a>
-            </form>
-        </div>
+            // Close result set
+            $result->close();
 
-        <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    </body>
+            // Process update on form submission
+            if ($_SERVER["REQUEST_METHOD"] == "POST") {
+                $newCostDescription = $_POST['costDescription'];
+                $newCostAmount = $_POST['costAmount'];
+                $newCostCategory = $_POST['costCategory'];
 
-    </html>
+                // Update cost in database
+                $updateSql = "UPDATE costs SET description = '$newCostDescription', cost_amount = $newCostAmount, category = '$newCostCategory' WHERE id = $costId";
+
+                if ($conn->query($updateSql) === TRUE) {
+                    echo '<p class="text-success">Cost updated successfully.</p>';
+                } else {
+                    echo '<p class="text-danger">Error updating cost: ' . $conn->error . '</p>';
+                }
+            }
+
+            // Close database connection
+            $conn->close();
+        } else {
+            echo '<p class="text-danger">Invalid request.</p>';
+            exit;
+        }
+        ?>
+
+        <form action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]) . '?id=' . $costId; ?>" method="POST">
+            <div class="form-group">
+                <label for="costDescription">Cost Description:</label>
+                <input type="text" class="form-control" id="costDescription" name="costDescription" value="<?php echo htmlspecialchars($costDescription); ?>" required>
+            </div>
+            <div class="form-group">
+                <label for="costAmount">Cost Amount:</label>
+                <input type="number" class="form-control" id="costAmount" name="costAmount" value="<?php echo $costAmount; ?>" required>
+            </div>
+            <div class="form-group">
+                <label for="costCategory">Cost Category:</label>
+                <select class="form-control" id="costCategory" name="costCategory" required>
+                    <option value="asset" <?php echo $costCategory == 'asset' ? 'selected' : ''; ?>>Asset</option>
+                    <option value="capital" <?php echo $costCategory == 'capital' ? 'selected' : ''; ?>>Capital</option>
+                    <option value="expense" <?php echo $costCategory == 'expense' ? 'selected' : ''; ?>>Expense</option>
+                    <option value="liability" <?php echo $costCategory == 'liability' ? 'selected' : ''; ?>>Liability</option>
+                </select>
+            </div>
+            <button type="submit" class="btn btn-primary">Update</button>
+            <a href="../pages/database.php" class="btn btn-secondary ml-2">Cancel</a>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+</body>
+
+</html>

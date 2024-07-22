@@ -189,82 +189,83 @@
             </form>
 
             <div class="table-responsive">
-                <?php
-                include("config.php");
+            <?php
+include("config.php");
 
-                // Handle record deletion
-                if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
-                    $id = $_GET['id'];
+// Handle record deletion
+if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
+    $id = $_GET['id'];
 
-                    // Prepare the DELETE query using a parameterized statement to prevent SQL injection
-                    $sql_delete = "DELETE FROM plants WHERE id = ?";
-                    $stmt = $conn->prepare($sql_delete);
-                    $stmt->bind_param("i", $id); // "i" indicates integer parameter type
+    // Prepare the DELETE query using a parameterized statement to prevent SQL injection
+    $sql_delete = "DELETE FROM plants WHERE id = ?";
+    $stmt = $conn->prepare($sql_delete);
+    $stmt->bind_param("i", $id); // "i" indicates integer parameter type
 
-                    if ($stmt->execute()) {
-                        echo '<p class="success-message">Record deleted successfully</p>';
-                    } else {
-                        echo '<p class="error-message">Error deleting record: ' . $conn->error . '</p>';
-                    }
+    if ($stmt->execute()) {
+        echo '<p class="success-message">Record deleted successfully</p>';
+    } else {
+        echo '<p class="error-message">Error deleting record: ' . $conn->error . '</p>';
+    }
 
-                    $stmt->close(); // Close the prepared statement
-                }
+    $stmt->close(); // Close the prepared statement
+}
 
-                $records_per_page = 15;
-                $current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-                $offset = ($current_page - 1) * $records_per_page;
+$records_per_page = 15;
+$current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+$offset = ($current_page - 1) * $records_per_page;
 
-                $sql_total = "SELECT COUNT(*) FROM plants";
-                $result_total = $conn->query($sql_total);
-                $total_records = $result_total->fetch_row()[0];
-                $total_pages = ceil($total_records / $records_per_page);
+$sql_total = "SELECT COUNT(*) FROM plants";
+$result_total = $conn->query($sql_total);
+$total_records = $result_total->fetch_row()[0];
+$total_pages = ceil($total_records / $records_per_page);
 
-                $sql = "SELECT * FROM plants LIMIT $records_per_page OFFSET $offset";
-                $result = $conn->query($sql);
-                $totalQuantity = 0;
-                $totalValue = 0;
+$sql = "SELECT * FROM plants LIMIT $records_per_page OFFSET $offset";
+$result = $conn->query($sql);
+$totalQuantity = 0;
+$totalValue = 0;
 
-                if ($result->num_rows > 0) {
-                    echo '<table id="plantTable">';
-                    echo '<thead><tr><th>Photo</th><th>Common Name</th><th>Scientific Name</th><th>Quantity</th><th>Plastic Size</th><th>Plantation Date</th><th>Plant Type</th><th>Value</th><th>Actions</th></tr></thead>';
-                    echo '<tbody>';
+if ($result->num_rows > 0) {
+    echo '<table id="plantTable">';
+    echo '<thead><tr><th>Photo</th><th>Common Name</th><th>Scientific Name</th><th>Quantity</th><th>Plastic Size</th><th>Plantation Date</th><th>Plant Type</th><th>Value</th><th>Actions</th></tr></thead>';
+    echo '<tbody>';
 
-                    while ($row = $result->fetch_assoc()) {
-                        echo '<tr>';
-                        echo '<td class="photo-cell"><img src="uploads/' . htmlspecialchars($row['photo_path']) . '" alt="' . htmlspecialchars($row['plant_name']) . '"></td>';
-                        echo '<td>' . htmlspecialchars($row['plant_name']) . '</td>';
-                        echo '<td>' . htmlspecialchars($row['scientific_name']) . '</td>';
-                        echo '<td>' . htmlspecialchars($row['quantity']) . '</td>';
-                        echo '<td>' . htmlspecialchars($row['plastic_size']) . '</td>';
-                        echo '<td>' . htmlspecialchars($row['plantation_date']) . '</td>';
-                        echo '<td>';
-                        $plantTypes = explode(', ', $row['plant_type']);
-                        foreach ($plantTypes as $type) {
-                            echo htmlspecialchars($type) . '<br>';
-                        }
-                        echo '</td>';
-                        echo '<td>' . htmlspecialchars($row['value']) . '</td>';
-                        echo '<td class="action-buttons">';
-                        echo '<a class="actionButton editButton" href="edit.php?id=' . $row['id'] . '">Edit</a>';
-                        echo '<a class="actionButton deleteButton" href="database.php?action=delete&id=' . $row['id'] . '">Delete</a>';
-                        echo '</td>';
-                        echo '</tr>';
-                        $totalQuantity += intval($row['quantity']);
-                        $totalValue += intval($row['value']);
-                    }
+    while ($row = $result->fetch_assoc()) {
+        echo '<tr>';
+        echo '<td class="photo-cell"><img src="uploads/' . htmlspecialchars($row['photo_path']) . '" alt="' . htmlspecialchars($row['plant_name']) . '"></td>';
+        echo '<td>' . htmlspecialchars($row['plant_name']) . '</td>';
+        echo '<td>' . htmlspecialchars($row['scientific_name']) . '</td>';
+        echo '<td>' . htmlspecialchars($row['quantity']) . '</td>';
+        echo '<td>' . htmlspecialchars($row['plastic_size']) . '</td>';
+        echo '<td>' . htmlspecialchars($row['plantation_date']) . '</td>';
+        echo '<td>';
+        $plantTypes = explode(', ', $row['plant_type']);
+        foreach ($plantTypes as $type) {
+            echo htmlspecialchars($type) . '<br>';
+        }
+        echo '</td>';
+        echo '<td>' . htmlspecialchars($row['value']) . '</td>';
+        echo '<td class="action-buttons">';
+        echo '<a class="actionButton editButton" href="edit.php?id=' . $row['id'] . '">Edit</a>';
+        echo '<a class="actionButton deleteButton" href="database.php?action=delete&id=' . $row['id'] . '" onclick="return confirm(\'Are you sure you want to delete this record?\')">Delete</a>';
+        echo '</td>';
+        echo '</tr>';
+        $totalQuantity += intval($row['quantity']);
+        $totalValue += intval($row['value']);
+    }
 
-                    echo '</tbody></table>';
-                    echo '<div class="total-info">';
-                    echo '<p>Total Quantity: ' . $totalQuantity . '</p>';
-                    echo '<p>Total Value: ' . $totalValue . '</p>';
-                    echo '</div>';
-                } else {
-                    echo '<p>No plant records found</p>';
-                }
+    echo '</tbody></table>';
+    echo '<div class="total-info">';
+    echo '<p>Total Quantity: ' . $totalQuantity . '</p>';
+    echo '<p>Total Value: ' . $totalValue . '</p>';
+    echo '</div>';
+} else {
+    echo '<p>No plant records found</p>';
+}
 
-                $result->close();
-                $conn->close();
-                ?>
+$result->close();
+$conn->close();
+?>
+
             </div>
             <nav aria-label="Page navigation">
                 <ul class="pagination justify-content-center">

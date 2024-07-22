@@ -303,6 +303,7 @@
                 </select>
                 <button type="submit" name="report" value="year" class="btn btn-primary">Generate Yearly Report (PDF)</button>
             </form>
+            <a href="search_results.php?report=all&format=pdf" class="btn btn-primary">Generate All Data Report (PDF)</a>
         </div>
     </div>
 
