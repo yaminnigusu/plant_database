@@ -6,36 +6,64 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Le Jardin-Plant Database</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="icon" href="../images/logo.png" type="image/jpg">
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Custom CSS for specific styling */
-        .checkbox-item {
-            margin-right: 20px;
-        }
-
-        .photo-cell img {
-            max-width: 100px;
-            max-height: 100px;
-        }
-
-        .total-info {
-            margin-top: 20px; /* Add space above the total info section */
-            text-align: center; /* Center-align the content */
-            background-color: #f0f0f0; /* Background color for the total info section */
-            padding: 15px; /* Add padding around the content */
-        }
-
-        .total-info p {
-            font-size: 18px; /* Increase font size for total quantity and total value */
-            margin-bottom: 10px; /* Add space below each paragraph */
-        }
-
         .submenu {
-            display: none;
+            display: none; /* Hide submenu by default */
         }
-    </style>
+    .statistics {
+        margin-top: 20px;
+        text-align: center;
+        background-color: #f0f0f0;
+        padding: 10px;
+        border-radius: 10px;
+        border: 2px solid #ddd;
+        box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+        max-width: 500px; /* Adjusted max width */
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    .statistics h2 {
+        font-size: 18px;
+        margin-bottom: 10px;
+        color: #333;
+    }
+
+    .stat-container {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 15px; /* Increased gap between items */
+    }
+
+    .stat-item {
+        font-size: 20px; /* Larger font size for text */
+        padding: 12px; /* Increased padding for larger boxes */
+        background-color: #e0e0e0;
+        border-radius: 6px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        border: 1px solid #ddd;
+        flex: 1 1 calc(33% - 20px); /* Adjusted flex basis for larger boxes */
+        aspect-ratio: 1; /* Keeps the item square */
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        min-width: 100px; /* Slightly larger minimum width */
+        min-height: 100px; /* Slightly larger minimum height */
+        max-width: 120px; /* Increased maximum width */
+        max-height: 120px; /* Increased maximum height */
+    }
+
+    .stat-item p {
+        margin: 0;
+        color: #555;
+        font-size: 20px; /* Consistent text size */
+        text-align: center; /* Center the text */
+    }
+</style>
+
 </head>
 
 <body class="w3-light-gray">
@@ -80,245 +108,170 @@
                     <li><a href="sidenav/perinnals.php">Perennials</a></li>
                     <li><a href="sidenav/indoorplants.php">Indoor Plants</a></li>
                     <li><a href="sidenav/herbs.php">Herbs</a></li>
-
                 </ul>
             </li>
             <li><a href="sidenav/cuttings.php"><b>Cuttings</b></a></li>
             <li><a href="plan/plan.php"><b>Plan</b></a></li>
             <li><a href="cost/cost.php"><b>Cost and Analytics</b></a></li>
+            <li><a href="sold.php"><b>sold units</b></a></li>
         </ul>
     </aside>
 
     <div class="main-content">
-        <div class="container">
+    <div class="container">
+        <div class="header-container">
             <h1 class="mt-4">Plant Database</h1>
-            <button id="formToggleButton" onclick="toggleFormVisibility()" class="btn btn-primary mb-4">Add New Data</button>
-
-            <form id="plantForm" enctype="multipart/form-data" method="post" action="process_form.php" style="display: none;">
-                <div class="form-group">
-                    <input type="checkbox" id="optionalData" name="optionalData" value="1" onchange="toggleOptionalFields()">
-                    <label for="optionalData">Add Optional Data</label>
-                </div>
-                <div class="form-group" id="photoGroup">
-                    <label for="photo">Add Photo:</label>
-                    <input type="file" id="photo" name="photo" accept="image/*" class="form-control">
-                </div>
-                <div class="form-group" id="plantNameGroup">
-                    <label for="plantName">Common Name:</label>
-                    <input type="text" id="plantName" name="plantName" class="form-control">
-                </div>
-                <div class="form-group" id="scientificNameGroup">
-                    <label for="scientificName">Scientific Name:</label>
-                    <input type="text" id="scientificName" name="scientificName" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="quantity">Quantity:</label>
-                    <input type="number" id="quantity" name="quantity" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="plasticSize">Plastic Size:</label>
-                    <select id="plasticSize" name="plasticSize" class="form-control">
-                        <option value="xsmall">X-Small</option>
-                        <option value="small">Small</option>
-                        <option value="medium">Medium</option>
-                        <option value="large">Large</option>
-                        <option value="xlarge">X-Large</option>
-                    </select>
-                </div>
-
-                <label>Plant Type:</label><br>
-                <div class="form-group checkbox-container">
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="tree" name="plantType[]" value="tree">
-                        <label for="tree">Tree</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="shrub" name="plantType[]" value="shrub">
-                        <label for="shrub">Shrub</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="fern" name="plantType[]" value="fern">
-                        <label for="fern">Fern</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="climber" name="plantType[]" value="climber">
-                        <label for="climber">Climber</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="waterPlant" name="plantType[]" value="water_plant">
-                        <label for="waterPlant">Water Plant</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="palm" name="plantType[]" value="palm">
-                        <label for="palm">Palm</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="cactus" name="plantType[]" value="cactus">
-                        <label for="cactus">Cactus</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="succulent" name="plantType[]" value="succulent">
-                        <label for="succulent">Succulent</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="annual" name="plantType[]" value="annual">
-                        <label for="annual">Annual</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="perennial" name="plantType[]" value="perennial">
-                        <label for="perennial">Perennial</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="indoorPlant" name="plantType[]" value="indoorplant">
-                        <label for="indoorPlant">Indoor Plant</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="herb" name="plantType[]" value="herb">
-                        <label for="herb">Herb</label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="plantationDate">Plantation Date:</label>
-                    <input type="date" id="plantationDate" name="plantationDate" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="value">Value:</label>
-                    <input type="number" id="value" name="value" class="form-control">
-                </div>
-                <button type="submit" class="btn btn-success">Submit</button>
-            </form>
-
-            <div class="table-responsive">
-            <?php
-include("config.php");
-
-// Handle record deletion
-if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
-    $id = $_GET['id'];
-
-    // Prepare the DELETE query using a parameterized statement to prevent SQL injection
-    $sql_delete = "DELETE FROM plants WHERE id = ?";
-    $stmt = $conn->prepare($sql_delete);
-    $stmt->bind_param("i", $id); // "i" indicates integer parameter type
-
-    if ($stmt->execute()) {
-        echo '<p class="success-message">Record deleted successfully</p>';
-    } else {
-        echo '<p class="error-message">Error deleting record: ' . $conn->error . '</p>';
-    }
-
-    $stmt->close(); // Close the prepared statement
-}
-
-$records_per_page = 15;
-$current_page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-$offset = ($current_page - 1) * $records_per_page;
-
-$sql_total = "SELECT COUNT(*) FROM plants";
-$result_total = $conn->query($sql_total);
-$total_records = $result_total->fetch_row()[0];
-$total_pages = ceil($total_records / $records_per_page);
-
-$sql = "SELECT * FROM plants LIMIT $records_per_page OFFSET $offset";
-$result = $conn->query($sql);
-$totalQuantity = 0;
-$totalValue = 0;
-
-if ($result->num_rows > 0) {
-    echo '<table id="plantTable">';
-    echo '<thead><tr><th>Photo</th><th>Common Name</th><th>Scientific Name</th><th>Quantity</th><th>Plastic Size</th><th>Plantation Date</th><th>Plant Type</th><th>Value</th><th>Actions</th></tr></thead>';
-    echo '<tbody>';
-
-    while ($row = $result->fetch_assoc()) {
-        echo '<tr>';
-        echo '<td class="photo-cell"><img src="uploads/' . htmlspecialchars($row['photo_path']) . '" alt="' . htmlspecialchars($row['plant_name']) . '"></td>';
-        echo '<td>' . htmlspecialchars($row['plant_name']) . '</td>';
-        echo '<td>' . htmlspecialchars($row['scientific_name']) . '</td>';
-        echo '<td>' . htmlspecialchars($row['quantity']) . '</td>';
-        echo '<td>' . htmlspecialchars($row['plastic_size']) . '</td>';
-        echo '<td>' . htmlspecialchars($row['plantation_date']) . '</td>';
-        echo '<td>';
-        $plantTypes = explode(', ', $row['plant_type']);
-        foreach ($plantTypes as $type) {
-            echo htmlspecialchars($type) . '<br>';
-        }
-        echo '</td>';
-        echo '<td>' . htmlspecialchars($row['value']) . '</td>';
-        echo '<td class="action-buttons">';
-        echo '<a class="actionButton editButton" href="edit.php?id=' . $row['id'] . '">Edit</a>';
-        echo '<a class="actionButton deleteButton" href="database.php?action=delete&id=' . $row['id'] . '" onclick="return confirm(\'Are you sure you want to delete this record?\')">Delete</a>';
-        echo '</td>';
-        echo '</tr>';
-        $totalQuantity += intval($row['quantity']);
-        $totalValue += intval($row['value']);
-    }
-
-    echo '</tbody></table>';
-    echo '<div class="total-info">';
-    echo '<p>Total Quantity: ' . $totalQuantity . '</p>';
-    echo '<p>Total Value: ' . $totalValue . '</p>';
-    echo '</div>';
-} else {
-    echo '<p>No plant records found</p>';
-}
-
-$result->close();
-$conn->close();
-?>
-
-            </div>
-            <nav aria-label="Page navigation">
-                <ul class="pagination justify-content-center">
-                    <?php if ($current_page > 1): ?>
-                        <li class="page-item"><a class="page-link" href="database.php?page=<?php echo $current_page - 1; ?>">Previous</a></li>
-                    <?php endif; ?>
-
-                    <?php for ($page = 1; $page <= $total_pages; $page++): ?>
-                        <li class="page-item <?php if ($page == $current_page) echo 'active'; ?>">
-                            <a class="page-link" href="database.php?page=<?php echo $page; ?>"><?php echo $page; ?></a>
-                        </li>
-                    <?php endfor; ?>
-
-                    <?php if ($current_page < $total_pages): ?>
-                        <li class="page-item"><a class="page-link" href="database.php?page=<?php echo $current_page + 1; ?>">Next</a></li>
-                    <?php endif; ?>
-                </ul>
-            </nav>
+            <button id="formToggleButton" onclick="toggleFormVisibility()" style="width: 150px; height: auto; padding: 0; font-size: 30px; text-align: center;  background-color: #28a745; color: white;  border: none; cursor: pointer;" aria-label="Add New Data">+</button>
         </div>
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-        <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-        <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 
-        <script>
-            function toggleFormVisibility() {
-                const plantForm = document.getElementById('plantForm');
-                if (plantForm.style.display === 'none') {
-                    plantForm.style.display = 'block';
-                } else {
-                    plantForm.style.display = 'none';
-                }
-            }
+        <form id="plantForm" enctype="multipart/form-data" method="post" action="process_form.php" style="display: none;">
+            <div class="form-group">
+                <input type="checkbox" id="optionalData" name="optionalData" value="1" onchange="toggleOptionalFields()">
+                <label for="optionalData">Add Optional Data</label>
+            </div>
+            <div class="form-group" id="photoGroup">
+                <label for="photo">Add Photo:</label>
+                <input type="file" id="photo" name="photo" accept="image/*" class="form-control">
+            </div>
+            <div class="form-group" id="plantNameGroup">
+                <label for="plantName">Common Name:</label>
+                <input type="text" id="plantName" name="plantName" class="form-control">
+            </div>
+            <div class="form-group" id="scientificNameGroup">
+                <label for="scientificName">Scientific Name:</label>
+                <input type="text" id="scientificName" name="scientificName" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="quantity">Quantity:</label>
+                <input type="number" id="quantity" name="quantity" class="form-control">
+            </div>
+            <div class="form-group">
+                <label for="plasticSize">Plastic Size:</label>
+                <select id="plasticSize" name="plasticSize" class="form-control">
+                    <option value="xsmall">X-Small</option>
+                    <option value="small">Small</option>
+                    <option value="medium">Medium</option>
+                    <option value="large">Large</option>
+                    <option value="xlarge">X-Large</option>
+                </select>
+            </div>
 
-            function toggleOptionalFields() {
-                const isOptional = document.getElementById('optionalData').checked;
-                document.getElementById('photo').required = !isOptional;
-                document.getElementById('photoGroup').style.display = isOptional ? 'none' : 'block';
-                document.getElementById('scientificNameGroup').style.display = isOptional ? 'none' : 'block';
-                document.getElementById('plantName').required = !isOptional;
-                document.getElementById('quantity').required = !isOptional;
-                document.getElementById('plasticSize').required = !isOptional;
-                document.getElementById('plantationDate').required = !isOptional;
-                document.getElementById('value').required = !isOptional;
-            }
-        </script>
-        <script>
-            function toggleNavVisibility() {
-                const sideNav = document.getElementById('sideNav');
-                sideNav.classList.toggle('open');
-            }
-        </script>
-        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-        <script src="../js/script2.js"></script>
-    </body>
+            <label>Plant Type:</label><br>
+            <div class="form-group checkbox-container">
+                <div class="checkbox-item">
+                    <input type="checkbox" id="tree" name="plantType[]" value="tree">
+                    <label for="tree">Tree</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="shrub" name="plantType[]" value="shrub">
+                    <label for="shrub">Shrub</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="fern" name="plantType[]" value="fern">
+                    <label for="fern">Fern</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="climber" name="plantType[]" value="climber">
+                    <label for="climber">Climber</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="waterPlant" name="plantType[]" value="water_plant">
+                    <label for="waterPlant">Water Plant</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="palm" name="plantType[]" value="palm">
+                    <label for="palm">Palm</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="cactus" name="plantType[]" value="cactus">
+                    <label for="cactus">Cactus</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="succulent" name="plantType[]" value="succulent">
+                    <label for="succulent">Succulent</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="annual" name="plantType[]" value="annual">
+                    <label for="annual">Annual</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="perennial" name="plantType[]" value="perennial">
+                    <label for="perennial">Perennial</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="indoorPlant" name="plantType[]" value="indoor_plant">
+                    <label for="indoorPlant">Indoor Plant</label>
+                </div>
+                <div class="checkbox-item">
+                    <input type="checkbox" id="herb" name="plantType[]" value="herb">
+                    <label for="herb">Herb</label>
+                </div>
+            </div>
+            <div class="form-group">
+            <label for="plantationDate">Plantation Date:</label>
+            <input type="date" id="plantationDate" name="plantationDate" required>
+        </div>
+        <div class="form-group">
+            <label for="value">Value:</label>
+            <input type="number" id="value" name="value" required>
+        </div>
+            <button type="submit" class="btn btn-primary">Submit</button>
+        </form>
+    </div>
 
-    </html>
+           
+               
+                <div class="stat-container">
+                   
+                    <div class="stat-item">
+                        <p>Total plant types:<br> <?php include 'statistics.php'; echo $totalScientificNames; ?></p>
+                    </div>
+                    <div class="stat-item">
+                        <p>Total Plant Varieties: <?php include 'statistics.php'; echo $totalPlantVarieties; ?></p>
+                    </div>
+                    <div class="stat-item">
+                    <p>Total Quantity: <?php echo $totalQuantity; ?></p>
+                </div>
+                    <div class="stat-item">
+                        <p>Total Cost: <?php include 'statistics.php'; echo number_format($totalCost, 2); ?> </p>
+                    </div>
+                    <div class="stat-item">
+                        <p>Total Cuttings: <?php include 'statistics.php'; echo $totalCuttings; ?></p>
+                    </div>
+                    <div class="stat-item">
+                        <p>Total Units Sold:<br> </p>
+                    </div>
+                    <!-- Add other statistics here -->
+                </div>
+            </div>
+        </div>
+    
+
+    <script>
+        function toggleFormVisibility() {
+            var form = document.getElementById('plantForm');
+            if (form.style.display === 'none' || form.style.display === '') {
+                form.style.display = 'block';
+            } else {
+                form.style.display = 'none';
+            }
+        }
+
+        document.querySelectorAll('.has-submenu > a').forEach(function (menuLink) {
+            menuLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                var submenu = menuLink.nextElementSibling;
+                submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+            });
+        });
+
+        function toggleOptionalFields() {
+            var optionalChecked = document.getElementById('optionalData').checked;
+            document.getElementById('photoGroup').style.display = optionalChecked ? 'block' : 'none';
+            document.getElementById('plantNameGroup').style.display = optionalChecked ? 'block' : 'none';
+            document.getElementById('scientificNameGroup').style.display = optionalChecked ? 'block' : 'none';
+        }
+    </script>
+</body>
+
+</html>
