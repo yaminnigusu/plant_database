@@ -140,6 +140,7 @@ function fetchCuttingsData($conn, $search = '', $plasticSizeFilter = '', $startD
             <li><a href="cuttings.php"><b>Cuttings</b></a></li>
             <li><a href="../plan/plan.php"><b>Plan</a></li>
             <li><a href="../cost/cost.php"><b>Cost and Analytics</b></a></li>
+            <li><a href="../sold.php"><b>sold units</b></a></li>
         </ul>
     </aside>
 

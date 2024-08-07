@@ -196,5 +196,30 @@
     </div>
     </div>
     <script src="path/to/bootstrap.min.js"></script> <!-- Update the path as needed -->
+    <script>
+        function toggleFormVisibility() {
+            var form = document.getElementById('plantForm');
+            if (form.style.display === 'none' || form.style.display === '') {
+                form.style.display = 'block';
+            } else {
+                form.style.display = 'none';
+            }
+        }
+
+        document.querySelectorAll('.has-submenu > a').forEach(function (menuLink) {
+            menuLink.addEventListener('click', function (e) {
+                e.preventDefault();
+                var submenu = menuLink.nextElementSibling;
+                submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+            });
+        });
+
+        function toggleOptionalFields() {
+            var optionalChecked = document.getElementById('optionalData').checked;
+            document.getElementById('photoGroup').style.display = optionalChecked ? 'block' : 'none';
+            document.getElementById('plantNameGroup').style.display = optionalChecked ? 'block' : 'none';
+            document.getElementById('scientificNameGroup').style.display = optionalChecked ? 'block' : 'none';
+        }
+    </script>
 </body>
 </html>

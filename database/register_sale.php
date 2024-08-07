@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $plant_id,
             $plant['plant_name'],
             $quantity_sold,
-            $sale_date,
+            $sale_date, // Ensure sale_date is included here
             $plant['cost_per_plant'],
             $plant['selling_price']
         );
@@ -76,8 +76,9 @@ $plants = fetchAvailablePlants($conn);
     <link rel="stylesheet" href="styles.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <style>
+        /* Existing styles */
         .submenu {
-            display: none; /* Hide submenu by default */
+            display: none;
         }
         .suggestions {
             border: 1px solid #ccc;
@@ -87,16 +88,13 @@ $plants = fetchAvailablePlants($conn);
             z-index: 1000;
             background-color: #fff;
         }
-
         .suggestion-item {
             padding: 8px;
             cursor: pointer;
         }
-
         .suggestion-item:hover {
             background-color: #f0f0f0;
         }
-
         form {
             max-width: 600px;
             margin: 0 auto;
@@ -104,12 +102,10 @@ $plants = fetchAvailablePlants($conn);
             border: 1px solid #ccc;
             border-radius: 4px;
         }
-
         label {
             display: block;
             margin: 8px 0 4px;
         }
-
         button {
             padding: 10px 15px;
             background-color: #4CAF50;
@@ -118,9 +114,12 @@ $plants = fetchAvailablePlants($conn);
             border-radius: 4px;
             cursor: pointer;
         }
-
         button:hover {
             background-color: #45a049;
+        }
+        #available_quantity {
+            margin-top: 10px;
+            color: #555;
         }
     </style>
     <script>
@@ -168,7 +167,6 @@ $plants = fetchAvailablePlants($conn);
         <div class="container">
             <div class="row justify-content-between align-items-center">
                 <div class="col"></div>
-                
                 <h1>Le Jardin de Kakoo</h1>
             </div>
             <nav>
@@ -210,7 +208,7 @@ $plants = fetchAvailablePlants($conn);
             <li><a href="sidenav/cuttings.php"><b>Cuttings</b></a></li>
             <li><a href="plan/plan.php"><b>Plan</b></a></li>
             <li><a href="cost/cost.php"><b>Cost and Analytics</b></a></li>
-            <li><a href="sold.php"><b>sold units</b></a></li>
+            <li><a href="sold.php"><b>Sold Units</b></a></li>
         </ul>
     </aside>
     <div class="container">

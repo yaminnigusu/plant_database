@@ -16,9 +16,7 @@
         .checkbox-item {
             margin-right: 20px; /* Adjust margin between checkbox items */
         }
-        .submenu {
-            display: none;
-        }
+        
     </style>
     
     
@@ -74,6 +72,7 @@
         </li>
         <li> <a href="../plan/plan.php"><b>Plan</b></a></li>
            <li> <a href="../cost/cost.php"><b>Cost and Analytics</b></a></li>
+           <li><a href="../sold.php"><b>sold units</b></a></li>
     </ul>
 </aside>
 

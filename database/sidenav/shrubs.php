@@ -27,9 +27,7 @@
     font-size: 18px; /* Increase font size for total quantity and total value */
     margin-bottom: 10px; /* Add space below each paragraph */
 }
-.submenu {
-    display: none;
-}
+
     </style>
     
     
@@ -86,6 +84,7 @@
         </li>
         <li> <a href="../plan/plan.php"><b>Plan</b></a></li>
            <li> <a href="../cost/cost.php"><b>Cost and Analytics</b></a></li>
+           <li><a href="../sold.php"><b>sold units</b></a></li>
     </ul>
 </aside>
 
