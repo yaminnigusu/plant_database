@@ -41,43 +41,81 @@
         background-color: #0056b3; /* Darker shade of primary color */
     }
     .table-custom {
-            border-collapse: separate;
-            border-spacing: 0;
-            width: 100%;
-            background-color: #f9f9f9;
-        }
+    border-collapse: collapse; /* Ensure borders are collapsed */
+    width: 100%;
+    background-color: #f9f9f9;
+    margin-top: 20px; /* Add some margin on top */
+  }
 
-        .table-custom th, .table-custom td {
-            border: 1px solid #ddd;
-            padding: 12px;
-        }
+  .table-custom th, .table-custom td {
+    border: 1px solid #ddd;
+    padding: 12px;
+    text-align: center; /* Center align text in headers and cells */
+  }
 
-        .table-custom th {
-            background-color: #343a40; /* Darker color for the header */
-            color: #fff; /* White text color */
-            text-align: left;
-        }
+  .table-custom th {
+    background-color: #007bff; /* Bootstrap primary color */
+    color: #fff; /* White text color */
+    font-weight: bold; /* Bold text for headers */
+  }
 
-        .table-custom tbody tr:nth-child(even) {
-            background-color: #f2f2f2; /* Light grey for even rows */
-        }
+  .table-custom tbody tr:nth-child(even) {
+    background-color: #f2f2f2; /* Light grey for even rows */
+  }
 
-        .table-custom tbody tr:hover {
-            background-color: #e9ecef; /* Light grey on hover */
-        }
+  .table-custom tbody tr:hover {
+    background-color: #e9ecef; /* Light grey on hover */
+  }
 
-        .table-custom td {
-            font-size: 14px; /* Adjust font size if needed */
-        }
+  .table-custom td {
+    font-size: 14px; /* Adjust font size if needed */
+  }
 
-        .table-custom th,
-        .table-custom td {
-            text-align: center; /* Center align text in headers and cells */
-        }
+  .table-custom th,
+  .table-custom td {
+    border: 1px solid #ddd; /* Border color */
+  }
 
-        .table-custom th {
-            font-weight: bold; /* Bold text for headers */
-        }
+  .table-custom th {
+    background-color: #343a40; /* Darker color for the header */
+    color: #fff; /* White text color */
+  }
+
+  .table-custom td {
+    background-color: #fff; /* White background for table cells */
+  }
+
+  .table-custom .total-row {
+    font-weight: bold; /* Bold font for total row */
+    background-color: #e9ecef; /* Light grey background for total row */
+  }
+  .summary-container {
+    margin: 20px auto; /* Center the container horizontally with auto margins */
+    padding: 15px; /* Padding inside the summary section */
+    border: 1px solid #ddd; /* Border color */
+    border-radius: 8px; /* Rounded corners */
+    background-color: #f9f9f9; /* Background color */
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1); /* Shadow for depth */
+    max-width: 500px; /* Set a max width for the container */
+    text-align: center; /* Center align text */
+  }
+
+  .summary-container h3 {
+    margin: 10px 0; /* Margin for spacing between headings */
+    font-size: 1.25rem; /* Font size for headings */
+    color: #333; /* Text color */
+  }
+
+  .summary-container .total-label {
+    font-weight: bold; /* Bold label text */
+    color: #007bff; /* Bootstrap primary color for label */
+  }
+
+  .summary-container .total-value {
+    font-weight: normal; /* Normal weight for values */
+    color: #333; /* Text color for values */
+  }
+
     </style>
 </head>
 <body>
@@ -145,53 +183,73 @@
             <button type="submit" class="btn btn-primary">Search</button>
         </form>
 
-        <table class="table table-striped table-bordered table-hover">
-    <thead class="thead-dark">
-        <tr>
-            <th>ID</th>
-            <th>Plant Name</th>
-            <th>Quantity Sold</th>
-            <th>Sale Date</th>
-            <th>Cost Per Plant</th>
-            <th>Selling Price</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php
-        // Database connection parameters
-        include("config.php");
+        <table class="table-custom">
+            <thead class="thead-dark">
+                <tr>
+                    
+                    <th>Plant Name</th>
+                    <th>Quantity Sold</th>
+                    <th>Sale Date</th>
+                    <th>Selling Price</th>
+                    <th>Total Amount</th>   
+                </tr>
+            </thead>
+            <tbody>
+            <?php
+// Database connection parameters
+include("config.php");
 
-        // Get the search term from the query string
-        $search = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']) : '';
+// Get the search term from the query string
+$search = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']) : '';
 
-        // Construct the SQL query with search functionality
-        $sql = "SELECT * FROM sold";
-        if ($search) {
-            $sql .= " WHERE plant_name LIKE '%$search%'";
-        }
+// Construct the SQL query with search functionality
+$sql = "SELECT * FROM sold";
+if ($search) {
+    $sql .= " WHERE plant_name LIKE '%$search%'";
+}
 
-        $result = $conn->query($sql);
+$result = $conn->query($sql);
 
-        if ($result->num_rows > 0) {
-            // Output data of each row
-            while($row = $result->fetch_assoc()) {
-                echo "<tr>";
-                echo "<td>" . $row["id"] . "</td>";
-                echo "<td>" . $row["plant_name"] . "</td>";
-                echo "<td>" . $row["quantity_sold"] . "</td>";
-                echo "<td>" . $row["sale_date"] . "</td>";
-                echo "<td>" . $row["cost_per_plant"] . "</td>";
-                echo "<td>" . $row["selling_price"] . "</td>";
-                echo "</tr>";
-            }
-        } else {
-            echo "<tr><td colspan='6'>No results found</td></tr>";
-        }
+// Variables to store total quantity sold and total selling price
+$total_quantity_sold = 0;
+$total_sales_amount = 0.0; // Initialize the variable
 
-        $conn->close();
-        ?>
-    </tbody>
-</table>
+if ($result->num_rows > 0) {
+    // Output data of each row
+    while ($row = $result->fetch_assoc()) {
+        $total_amount = $row["selling_price"] * $row["quantity_sold"];
+        echo "<tr>";
+        
+        echo "<td>" . $row["plant_name"] . "</td>";
+        echo "<td>" . $row["quantity_sold"] . "</td>";
+        echo "<td>" . $row["sale_date"] . "</td>";
+        
+        echo "<td>" . $row["selling_price"] . "</td>";
+        echo "<td>" . number_format($total_amount, 2) .  " Birr</td>"; // Display total amount
+        echo "</tr>";
+
+        // Update total quantity sold and total sales amount
+        $total_quantity_sold += $row["quantity_sold"];
+        $total_sales_amount += $total_amount;
+    }
+} else {
+    echo "<tr><td colspan='7'>No results found</td></tr>";
+}
+
+// Close database connection
+$conn->close();
+?>
+
+            </tbody>
+        </table>
+
+        <div class="summary-container mt-4">
+    <h3 class="total-label">Total Quantity Sold:</h3>
+    <p class="total-value"><?php echo $total_quantity_sold; ?></p>
+    <h3 class="total-label">Total Selling Price:</h3>
+    <p class="total-value"><?php echo number_format($total_sales_amount, 2); ?> Birr</p>
+</div>
+
 
     </div>
     </div>
@@ -207,19 +265,12 @@
         }
 
         document.querySelectorAll('.has-submenu > a').forEach(function (menuLink) {
-            menuLink.addEventListener('click', function (e) {
-                e.preventDefault();
+            menuLink.addEventListener('click', function (event) {
+                event.preventDefault();
                 var submenu = menuLink.nextElementSibling;
-                submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+                submenu.style.display = (submenu.style.display === 'block') ? 'none' : 'block';
             });
         });
-
-        function toggleOptionalFields() {
-            var optionalChecked = document.getElementById('optionalData').checked;
-            document.getElementById('photoGroup').style.display = optionalChecked ? 'block' : 'none';
-            document.getElementById('plantNameGroup').style.display = optionalChecked ? 'block' : 'none';
-            document.getElementById('scientificNameGroup').style.display = optionalChecked ? 'block' : 'none';
-        }
     </script>
 </body>
 </html>

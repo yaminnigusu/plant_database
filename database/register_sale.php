@@ -1,5 +1,4 @@
 <?php
-// Database connection parameters
 include("config.php");
 
 // Function to fetch available plants
@@ -19,6 +18,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $plant_id = $_POST['plant_id'];
     $quantity_sold = $_POST['quantity'];
     $sale_date = $_POST['sale_date'];
+    $selling_price = $_POST['selling_price'];
 
     // Fetch the plant details
     $sql = "SELECT * FROM plants WHERE id = ?";
@@ -32,13 +32,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $sql = "INSERT INTO sold (plant_id, plant_name, quantity_sold, sale_date, cost_per_plant, selling_price) VALUES (?, ?, ?, ?, ?, ?)";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param(
-            "isiddd",
+            "isissd",
             $plant_id,
             $plant['plant_name'],
             $quantity_sold,
-            $sale_date, // Ensure sale_date is included here
+            $sale_date,
             $plant['cost_per_plant'],
-            $plant['selling_price']
+            $selling_price
         );
         $stmt->execute();
 
@@ -164,81 +164,78 @@ $plants = fetchAvailablePlants($conn);
 </head>
 <body>
 <header class="sticky-top">
-        <div class="container">
-            <div class="row justify-content-between align-items-center">
-                <div class="col"></div>
-                <h1>Le Jardin de Kakoo</h1>
-            </div>
-            <nav>
-                <a href="../pages/home.php">Home</a>
-                <a href="../pages/shop.php">Shop</a>
-                <a href="../pages/about.php">About Us</a>
-                <a href="../pages/contactus.php">Contact Us</a>
-                <a href="database.php">Database</a>
-                <div class="col-auto">
-                    <button id="login-icon" onclick="toggleLoginForm()" aria-label="Login" class="btn btn-success">Login</button>
-                </div>
-            </nav>
-        </div>
-    </header>
-
-    <aside class="side-nav" id="sideNav">
-        <ul>
-            <br>
-            <br>
-            <li><a href="database.php"><b>Home</b></a></li>
-            <li><a href="sidenav/home.php"><b>Search</b></a></li>
-            <li class="has-submenu">
-                <a href="#"><b>Plants</b></a>
-                <ul class="submenu">
-                    <li><a href="sidenav/tress.php">Trees</a></li>
-                    <li><a href="sidenav/shrubs.php">Shrubs</a></li>
-                    <li><a href="sidenav/ferns.php">Ferns</a></li>
-                    <li><a href="sidenav/climbers.php">Climbers</a></li>
-                    <li><a href="sidenav/waterplants.php">Water Plants</a></li>
-                    <li><a href="sidenav/palms.php">Palms</a></li>
-                    <li><a href="sidenav/cactus.php">Cactus</a></li>
-                    <li><a href="sidenav/succulent.php">Succulent</a></li>
-                    <li><a href="sidenav/annuals.php">Annuals</a></li>
-                    <li><a href="sidenav/perinnals.php">Perennials</a></li>
-                    <li><a href="sidenav/indoorplants.php">Indoor Plants</a></li>
-                    <li><a href="sidenav/herbs.php">Herbs</a></li>
-                </ul>
-            </li>
-            <li><a href="sidenav/cuttings.php"><b>Cuttings</b></a></li>
-            <li><a href="plan/plan.php"><b>Plan</b></a></li>
-            <li><a href="cost/cost.php"><b>Cost and Analytics</b></a></li>
-            <li><a href="sold.php"><b>Sold Units</b></a></li>
-        </ul>
-    </aside>
     <div class="container">
-        <h1 class="mt-4">Register Plant Sale</h1>
-        <form method="post" action="">
-            <div class="form-group">
-                <label for="searchPlant">Search Plant:</label>
-                <input type="text" id="searchPlant" onkeyup="onInput()" placeholder="Search for plants..." autocomplete="off">
-                <div id="suggestions" class="suggestions"></div>
-                <div id="available_quantity" style="margin-top: 10px; color: #555;"></div>
+        <div class="row justify-content-between align-items-center">
+            <div class="col"></div>
+            <h1>Le Jardin de Kakoo</h1>
+        </div>
+        <nav>
+            <a href="../pages/home.php">Home</a>
+            <a href="../pages/shop.php">Shop</a>
+            <a href="../pages/about.php">About Us</a>
+            <a href="../pages/contactus.php">Contact Us</a>
+            <a href="database.php">Database</a>
+            <div class="col-auto">
+                <button id="login-icon" onclick="toggleLoginForm()" aria-label="Login" class="btn btn-success">Login</button>
             </div>
-            <div class="form-group">
-                <label for="plant_id">Plant</label>
-                <input type="hidden" id="plant_id" name="plant_id">
-            </div>
-            <div class="form-group">
-                <label for="quantity">Quantity Sold</label>
-                <input type="number" class="form-control" id="quantity" name="quantity" min="1" required>
-            </div>
-            <div class="form-group">
-                <label for="sale_date">Sale Date</label>
-                <input type="date" class="form-control" id="sale_date" name="sale_date" required>
-            </div>
-            <button type="submit" class="btn btn-primary">Register Sale</button>
-        </form>
+        </nav>
     </div>
+</header>
+
+<aside class="side-nav" id="sideNav">
+    <ul>
+        <br>
+        <br>
+        <li><a href="database.php"><b>Home</b></a></li>
+        <li><a href="sidenav/home.php"><b>Search</b></a></li>
+        <li class="has-submenu">
+            <a href="#"><b>Plants</b></a>
+            <ul class="submenu">
+                <li><a href="sidenav/tress.php">Trees</a></li>
+                <li><a href="sidenav/shrubs.php">Shrubs</a></li>
+                <li><a href="sidenav/ferns.php">Ferns</a></li>
+                <li><a href="sidenav/climbers.php">Climbers</a></li>
+                <li><a href="sidenav/waterplants.php">Water Plants</a></li>
+                <li><a href="sidenav/palms.php">Palms</a></li>
+                <li><a href="sidenav/cactus.php">Cactus</a></li>
+                <li><a href="sidenav/succulent.php">Succulent</a></li>
+                <li><a href="sidenav/annuals.php">Annuals</a></li>
+                <li><a href="sidenav/perinnals.php">Perennials</a></li>
+                <li><a href="sidenav/indoorplants.php">Indoor Plants</a></li>
+                <li><a href="sidenav/herbs.php">Herbs</a></li>
+            </ul>
+        </li>
+        <li><a href="sidenav/cuttings.php"><b>Cuttings</b></a></li>
+        <li><a href="plan/plan.php"><b>Plan</b></a></li>
+        <li><a href="cost/cost.php"><b>Cost and Analytics</b></a></li>
+        <li><a href="sold.php"><b>Sold Units</b></a></li>
+    </ul>
+</aside>
+
+<div class="container">
+    <h1 class="mt-4">Register Plant Sale</h1>
+    <form method="post" action="">
+        <div class="form-group">
+            <label for="searchPlant">Search Plant:</label>
+            <input type="text" id="searchPlant" onkeyup="onInput()" placeholder="Search for plants..." autocomplete="off">
+            <div id="suggestions" class="suggestions"></div>
+            <div id="available_quantity" style="margin-top: 10px; color: #555;"></div>
+        </div>
+        <div class="form-group">
+            <input type="hidden" id="plant_id" name="plant_id">
+            <label for="quantity">Quantity Sold:</label>
+            <input type="number" id="quantity" name="quantity" required>
+        </div>
+        <div class="form-group">
+            <label for="sale_date">Sale Date:</label>
+            <input type="date" id="sale_date" name="sale_date" required>
+        </div>
+        <div class="form-group">
+            <label for="selling_price">Selling Price:</label>
+            <input type="number" id="selling_price" name="selling_price" required>
+        </div>
+        <button type="submit">Register Sale</button>
+    </form>
+</div>
 </body>
 </html>
-
-<?php
-// Close connection
-$conn->close();
-?>
