@@ -172,105 +172,108 @@
     <div class="container">
     <div class="page-header">
         <h1 class="mt-4">Sold Plants</h1>
-        <a href="register_sale.php" class="register-sale-link">Register Sale </a>
+        <a href="register_sale.php" class="register-sale-link">Register Sale</a>
+    </div>
+    <!-- Search Form -->
+    <form method="GET" action="sold.php" class="mb-4">
+        <div class="form-group">
+            <label for="search">Search by Plant Name:</label>
+            <input type="text" id="search" name="search" class="form-control" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
         </div>
-        <!-- Search Form -->
-        <form method="GET" action="sold.php" class="mb-4">
-            <div class="form-group">
-                <label for="search">Search by Plant Name:</label>
-                <input type="text" id="search" name="search" class="form-control" value="<?php echo isset($_GET['search']) ? htmlspecialchars($_GET['search']) : ''; ?>">
-            </div>
-            <button type="submit" class="btn btn-primary">Search</button>
-        </form>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
 
-        <table class="table-custom">
-            <thead class="thead-dark">
-                <tr>
-                    
-                    <th>Plant Name</th>
-                    <th>Quantity Sold</th>
-                    <th>Sale Date</th>
-                    <th>Selling Price</th>
-                    <th>Total Amount</th>   
-                </tr>
-            </thead>
-            <tbody>
-            <?php
-// Database connection parameters
-include("config.php");
+    <table class="table-custom">
+        <thead class="thead-dark">
+            <tr>
+                <th>Plant Name</th>
+                <th>Quantity Sold</th>
+                <th>Sale Date</th>
+                <th>Selling Price</th>
+                <th>Total Amount</th>   
+                <th>Actions</th>   
+            </tr>
+        </thead>
+        <tbody>
+        <?php
+        // Database connection parameters
+        include("config.php");
 
-// Get the search term from the query string
-$search = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']) : '';
+        // Get the search term from the query string
+        $search = isset($_GET['search']) ? $conn->real_escape_string($_GET['search']) : '';
 
-// Construct the SQL query with search functionality
-$sql = "SELECT * FROM sold";
-if ($search) {
-    $sql .= " WHERE plant_name LIKE '%$search%'";
-}
-
-$result = $conn->query($sql);
-
-// Variables to store total quantity sold and total selling price
-$total_quantity_sold = 0;
-$total_sales_amount = 0.0; // Initialize the variable
-
-if ($result->num_rows > 0) {
-    // Output data of each row
-    while ($row = $result->fetch_assoc()) {
-        $total_amount = $row["selling_price"] * $row["quantity_sold"];
-        echo "<tr>";
-        
-        echo "<td>" . $row["plant_name"] . "</td>";
-        echo "<td>" . $row["quantity_sold"] . "</td>";
-        echo "<td>" . $row["sale_date"] . "</td>";
-        
-        echo "<td>" . $row["selling_price"] . "</td>";
-        echo "<td>" . number_format($total_amount, 2) .  " Birr</td>"; // Display total amount
-        echo "</tr>";
-
-        // Update total quantity sold and total sales amount
-        $total_quantity_sold += $row["quantity_sold"];
-        $total_sales_amount += $total_amount;
-    }
-} else {
-    echo "<tr><td colspan='7'>No results found</td></tr>";
-}
-
-// Close database connection
-$conn->close();
-?>
-
-            </tbody>
-        </table>
-
-        <div class="summary-container mt-4">
-    <h3 class="total-label">Total Quantity Sold:</h3>
-    <p class="total-value"><?php echo $total_quantity_sold; ?></p>
-    <h3 class="total-label">Total Selling Price:</h3>
-    <p class="total-value"><?php echo number_format($total_sales_amount, 2); ?> Birr</p>
-</div>
-
-
-    </div>
-    </div>
-    <script src="path/to/bootstrap.min.js"></script> <!-- Update the path as needed -->
-    <script>
-        function toggleFormVisibility() {
-            var form = document.getElementById('plantForm');
-            if (form.style.display === 'none' || form.style.display === '') {
-                form.style.display = 'block';
-            } else {
-                form.style.display = 'none';
-            }
+        // Construct the SQL query with search functionality
+        $sql = "SELECT * FROM sold";
+        if ($search) {
+            $sql .= " WHERE plant_name LIKE '%$search%'";
         }
 
-        document.querySelectorAll('.has-submenu > a').forEach(function (menuLink) {
-            menuLink.addEventListener('click', function (event) {
-                event.preventDefault();
-                var submenu = menuLink.nextElementSibling;
-                submenu.style.display = (submenu.style.display === 'block') ? 'none' : 'block';
-            });
+        $result = $conn->query($sql);
+
+        // Variables to store total quantity sold and total selling price
+        $total_quantity_sold = 0;
+        $total_sales_amount = 0.0; // Initialize the variable
+
+        if ($result->num_rows > 0) {
+            // Output data of each row
+            while($row = $result->fetch_assoc()) {
+                $total_amount = $row['quantity_sold'] * $row['selling_price'];
+                $total_quantity_sold += $row['quantity_sold'];
+                $total_sales_amount += $total_amount;
+
+                echo "<tr>";
+                echo "<td>" . htmlspecialchars($row['plant_name']) . "</td>";
+                echo "<td>" . htmlspecialchars($row['quantity_sold']) . "</td>";
+                echo "<td>" . htmlspecialchars($row['sale_date']) . "</td>";
+                echo "<td>
+                        <form method='POST' action='update_price.php'>
+                            <input type='hidden' name='id' value='" . htmlspecialchars($row['id']) . "'>
+                            <input type='number' name='selling_price' value='" . htmlspecialchars($row['selling_price']) . "' step='0.01' required>
+                            <button type='submit' class='btn btn-primary'>Update</button>
+                        </form>
+                      </td>";
+                echo "<td>" . htmlspecialchars(number_format($total_amount, 2)) . "</td>";
+                echo "<td><form method='POST' action='delete_sold.php'>
+                        <input type='hidden' name='id' value='" . htmlspecialchars($row['id']) . "'>
+                        <button type='submit' class='btn btn-danger' onclick='return confirm(\"Are you sure you want to delete this record?\")'>Delete</button>
+                      </form></td>";
+                echo "</tr>";
+            }
+        } else {
+            echo "<tr><td colspan='6'>No records found</td></tr>";
+        }
+
+        $conn->close();
+        ?>
+        </tbody>
+        <tfoot>
+            <tr class="total-row">
+                <td>Total</td>
+                <td><?php echo htmlspecialchars($total_quantity_sold); ?></td>
+                <td colspan="2"></td>
+                <td><?php echo htmlspecialchars(number_format($total_sales_amount, 2)); ?></td>
+                <td></td>
+            </tr>
+        </tfoot>
+    </table>
+    <div class="summary-container">
+        <h3>Summary</h3>
+        <p><span class="total-label">Total Quantity Sold:</span> <span class="total-value"><?php echo htmlspecialchars($total_quantity_sold); ?></span></p>
+        <p><span class="total-label">Total Sales Amount:</span> <span class="total-value"><?php echo htmlspecialchars(number_format($total_sales_amount, 2)); ?></span></p>
+    </div>
+</div>
+<script>
+    function toggleSubmenu(element) {
+        const submenu = element.nextElementSibling;
+        submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+    }
+
+    document.querySelectorAll('.has-submenu > a').forEach(item => {
+        item.addEventListener('click', event => {
+            event.preventDefault();
+            toggleSubmenu(event.target);
         });
-    </script>
+    });
+</script>
 </body>
 </html>
