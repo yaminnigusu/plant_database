@@ -17,7 +17,7 @@ $totalQuantity = $result_total_quantity->fetch_assoc()['totalQuantity'] ?? 0; //
 $additionalCostPerPlant = ($totalCosts > 0 && $totalQuantity > 0) ? ($totalCosts / $totalQuantity) : 0;
 
 // Desired profit margin (adjust as needed)
-$profitMargin = 0.4; // 20% profit margin
+$profitMargin = 2.5; // 20% profit margin
 
 // Retrieve search term, selected plant types, and price range from URL parameters or session
 $searchTerm = $_GET['search'] ?? '';
@@ -77,8 +77,13 @@ $totalRecords = $countResult->fetch_assoc()['total'];
 // Calculate total number of pages
 $totalPages = ceil($totalRecords / $itemsPerPage);
 
-// Construct SQL query to fetch plants with pagination
-$sql = "SELECT * FROM plants WHERE 1=1";
+// Construct SQL query to fetch plants with pagination and average value
+$sql = "
+    SELECT plant_name, photo_path, SUM(quantity) AS total_quantity, 
+           GROUP_CONCAT(DISTINCT plant_type) AS plant_types, 
+           AVG(value) AS value  -- Get the average value for each plant
+    FROM plants 
+    WHERE 1=1";
 
 // Add search conditions based on the search term
 if (!empty($searchTerm)) {
@@ -96,8 +101,8 @@ if (!empty($selectedPriceRange)) {
     $sql .= " AND (value / quantity) BETWEEN $minPrice AND $maxPrice";
 }
 
-// Add pagination to SQL query
-$sql .= " LIMIT $itemsPerPage OFFSET $offset";
+// Group by plant_name and add pagination
+$sql .= " GROUP BY plant_name, photo_path LIMIT $itemsPerPage OFFSET $offset";
 
 // Execute SQL query to fetch plants
 $result = $conn->query($sql);
@@ -108,8 +113,8 @@ $plants = [];
 if ($result && $result->num_rows > 0) {
     // Populate $plants array with fetched plant data
     while ($row = $result->fetch_assoc()) {
-        $plantTypes = explode(', ', $row['plant_type']);
-        $costPerPlant = $row['value'] / $row['quantity'];
+        $plantTypes = explode(',', $row['plant_types']);
+        $costPerPlant = $row['value'] / $row['total_quantity'];
 
         // Calculate selling price including additional cost and profit
         $sellingPrice = $costPerPlant + $additionalCostPerPlant + ($costPerPlant * $profitMargin);
@@ -118,7 +123,7 @@ if ($result && $result->num_rows > 0) {
         $plants[] = [
             'plant_name' => htmlspecialchars($row['plant_name']),
             'photo_path' => htmlspecialchars($row['photo_path']),
-            'quantity' => $row['quantity'],
+            'quantity' => $row['total_quantity'], // Total quantity
             'plant_type' => $plantTypes,
             'sellingPrice' => $sellingPrice, // Adjusted selling price
         ];
@@ -128,6 +133,7 @@ if ($result && $result->num_rows > 0) {
 // Close database connection
 $conn->close();
 ?>
+
 
 
 <!DOCTYPE html>
@@ -142,7 +148,7 @@ $conn->close();
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link rel="icon" href="../images/logo.png" type="image/jpg">
     <link rel="stylesheet" href="../database/styles.css">
-    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="styles.css">
 
     <style>
         /* Custom styles */
@@ -177,34 +183,31 @@ $conn->close();
 </head>
 
 <body class="w3-light-gray">
-    <header class="sticky-top">
-        <div class="container">
-            <div class="row justify-content-between align-items-center">
-                <div class="col">
-                    <h1>Le Jardin de Kakoo</h1>
-                </div>
-                <div class="col-auto">
-                    <!-- You can add login/logout functionality here -->
-                </div>
-            </div>
-            <nav>
-                <a href="../pages/home.php">Home</a>
-                <a href="../pages/shop.php">Shop</a>
-                <a href="../pages/about.php">About Us</a>
-                <a href="../pages/contactus.php">Contact Us</a>
-                <a href="../database/database.php">Database</a>
-                
-                <div class="col-auto">
-                    <!-- Add login/logout button or user profile links here -->
-                    <button id="login-icon" onclick="toggleLoginForm()" aria-label="Login" class="btn btn-success">Login</button>
-                </div>
-            </nav>
-
-            <!-- Search Form -->
+<header class="header sticky-top p-3 shadow-sm">
+    <div class="container d-flex justify-content-between align-items-center">
+        <h1 class="logo">Le Jardin de Kakoo</h1>
+        <!-- Mobile Menu Toggle Button -->
+        <button id="navToggleButton" onclick="toggleSidebar()" class="btn btn-light d-lg-none">
+            <i class="fas fa-bars"></i> Menu
+        </button>
+        <!-- Desktop Navigation -->
+        <nav class="d-none d-lg-flex">
+            <a href="../pages/home.php" class="nav-link">Home</a>
+            <a href="../pages/shop.php" class="nav-link">Shop</a>
+            <a href="../pages/about.php" class="nav-link">About Us</a>
+            <a href="../pages/contactus.php" class="nav-link">Contact Us</a>
             
-        </div>
-    </header>
-    
+        </nav>
+    </div>
+    <!-- Mobile Sidebar Navigation -->
+    <nav id="sidebar" class="mobile-sidebar d-lg-none">
+        <a href="../pages/home.php" class="nav-link">Home</a>
+        <a href="../pages/shop.php" class="nav-link">Shop</a>
+        <a href="../pages/about.php" class="nav-link">About Us</a>
+        <a href="../pages/contactus.php" class="nav-link">Contact Us</a>
+        
+    </nav>
+</header>
     
 
     <div class="container mt-4">
@@ -317,6 +320,14 @@ $conn->close();
     <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        
+        
+        function toggleSidebar() {
+    document.querySelector('header').classList.toggle('sidebar-open');
+}
+
+    </script>
 
 </body>
 

@@ -265,6 +265,8 @@ if (!isset($_SESSION['username'])) {
             <input type="checkbox" id="herb" name="plantType[]" value="herb">
             <label for="herb">Herb</label>
         </div>
+        <label for="is_featured">Mark as Featured:</label>
+        <input type="checkbox" name="is_featured" id="is_featured" value="1">
     </div>
 
     <div class="form-group">

@@ -56,75 +56,79 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <title>Login</title>
     <link rel="stylesheet" href="styles.css"> <!-- Link to external CSS file -->
     <style>
-        /* styles.css */
-        body, h2, form, p {
+        body, h2, form, p, footer {
             margin: 0;
             padding: 0;
             font-family: Arial, sans-serif;
+            color: #333;
+        }
+
+        body {
+            background-color: #f5f5f5; /* Light background */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
         }
 
         .login-container {
-            width: 300px;
-            margin: 100px auto;
-            padding: 30px;
-            background-color: #f4f4f4;
-            border-radius: 10px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 400px;
+            padding: 40px;
+            background-color: #ffffff;
+            border-radius: 12px;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
             text-align: center;
         }
 
         h2 {
-            margin-bottom: 20px;
-            color: #333;
+            margin-bottom: 30px;
+            font-size: 24px;
+            color: #2d572c;
         }
 
         .form-group {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             text-align: left;
         }
 
         label {
             display: block;
             font-weight: bold;
-            margin-bottom: 5px;
+            margin-bottom: 10px;
+            color: #333;
         }
 
         input[type="text"], input[type="password"] {
             width: 100%;
-            padding: 10px;
+            padding: 12px;
             border: 1px solid #ddd;
             border-radius: 5px;
             box-sizing: border-box;
             font-size: 16px;
+            background-color: #fff;
+        }
+
+        input[type="text"]:focus, input[type="password"]:focus {
+            border-color: #34a853; /* Focus state with green border */
+            outline: none;
         }
 
         button {
             width: 100%;
-            padding: 10px;
-            background-color: #007bff;
+            padding: 12px;
+            background-color: #34a853;
             color: white;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
+            transition: background-color 0.3s ease;
         }
 
         button:hover {
-            background-color: #0056b3;
-        }
-
-        p {
-            margin-top: 15px;
-            font-size: 14px;
-        }
-
-        p a {
-            color: #007bff;
-            text-decoration: none;
-        }
-
-        p a:hover {
-            text-decoration: underline;
+            background-color: #2d572c; /* Darker green on hover */
         }
 
         /* Error message styling */
@@ -132,11 +136,26 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             color: red;
             margin-bottom: 15px;
         }
+
+        /* Footer Styling */
+        footer {
+            margin-top: 20px;
+            font-size: 14px;
+        }
+
+        footer a {
+            color: #2d572c;
+            text-decoration: underline;
+        }
+
+        footer a:hover {
+            color: #34a853;
+        }
     </style>
 </head>
 <body>
     <div class="login-container">
-        <h2>Login</h2>
+        <h2>Welcome to Le Jardin de Kakoo Database</h2>
 
         <!-- Display error message if any -->
         <?php if (isset($error)): ?>
@@ -154,8 +173,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             </div>
             <button type="submit" class="btn btn-primary">Login</button>
         </form>
-        
-        
+
+        <!-- Footer for contact information and home page link -->
+        <footer>
+            <p>For support, contact us at <a href="mailto:contact@lejardin.com">contact@lejardin.com</a></p>
+            <p><a href="http://localhost/lejardin/pages/home.php">Go back to Home Page</a></p>
+        </footer>
     </div>
 </body>
 </html>

@@ -128,6 +128,8 @@ function fetchCuttingsData($conn, $search = '', $plasticSizeFilter = '', $startD
 
     <aside class="side-nav" id="sideNav">
         <ul>
+            <br>
+            <br>
             <li><a href="../database.php"><b>Home</b></a></li>
             <li><a href="home.php"><b>Search</b></a></li>
             <li class="has-submenu">
@@ -151,6 +153,7 @@ function fetchCuttingsData($conn, $search = '', $plasticSizeFilter = '', $startD
             <li><a href="../plan/plan.php"><b>Plan</a></li>
             <li><a href="../cost/cost.php"><b>Cost and Analytics</b></a></li>
             <li><a href="../sold.php"><b>sold units</b></a></li>
+            <li><a href="../manage_users.php"><b>users</b></a></li>
         </ul>
     </aside>
 

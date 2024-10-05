@@ -15,6 +15,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Check if plantType is set and convert to string
     $plantTypeStr = isset($_POST['plantType']) ? implode(', ', $_POST['plantType']) : '';
 
+    // Determine if the plant is featured
+    $isFeatured = isset($_POST['is_featured']) ? 1 : 0;
+
     // Handle optional data separately
     if ($optionalData) {
         // Insert into the optional_plants table
@@ -41,10 +44,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $sellingPrice = $costPerPlant * (1 + $profitMargin);
 
             // Insert data into database with selling price
-            $sql_insert = "INSERT INTO plants (plant_name, scientific_name, quantity, plastic_size, plantation_date, cost_per_plant, selling_price, plant_type, photo_path)
-                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            $sql_insert = "INSERT INTO plants (plant_name, scientific_name, quantity, plastic_size, plantation_date, cost_per_plant, selling_price, plant_type, photo_path, is_featured)
+                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
             $stmt = $conn->prepare($sql_insert);
-            $stmt->bind_param("ssissssss", $plantName, $scientificName, $quantity, $plasticSize, $plantationDate, $costPerPlant, $sellingPrice, $plantTypeStr, $photoPath);
+            $stmt->bind_param("ssissssssi", $plantName, $scientificName, $quantity, $plasticSize, $plantationDate, $costPerPlant, $sellingPrice, $plantTypeStr, $photoPath, $isFeatured);
         } else {
             // File upload error
             die("Sorry, there was an error uploading your file.");

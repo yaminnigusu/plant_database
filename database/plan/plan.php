@@ -71,6 +71,8 @@ include("../config.php");
             <li><a href="../sidenav/cuttings.php"><b>Cuttings</b></a></li>
            <li> <a href="plan.php"><b>Plan</b></a></li>
            <li> <a href="../cost/cost.php"><b>Cost and Analytics</b></a></li>
+           <li><a href="../sold.php"><b>sold units</b></a></li>
+            <li><a href="../manage_users.php"><b>users</b></a></li>
         </ul>
     </aside>
     <div class="main-content">

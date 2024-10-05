@@ -18,10 +18,13 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $plantType = ''; // Default value if no plant types are selected
     }
 
+    // Handle featured product
+    $isFeatured = isset($_POST['plantFeatured']) ? 1 : 0; // Set to 1 if checked, otherwise 0
+
     // Update the plant record in the database
-    $sql_update = "UPDATE plants SET plant_name = ?, scientific_name = ?, quantity = ?, plastic_size = ?, plantation_date = ?, value = ?, plant_type = ? WHERE id = ?";
+    $sql_update = "UPDATE plants SET plant_name = ?, scientific_name = ?, quantity = ?, plastic_size = ?, plantation_date = ?, value = ?, plant_type = ?, is_featured = ? WHERE id = ?";
     $stmt = $conn->prepare($sql_update);
-    $stmt->bind_param("ssissssi", $plantName, $scientificName, $quantity, $plasticSize, $plantationDate, $value, $plantType, $id);
+    $stmt->bind_param("ssissssii", $plantName, $scientificName, $quantity, $plasticSize, $plantationDate, $value, $plantType, $isFeatured, $id);
     
     if ($stmt->execute()) {
         // Check if a new photo is uploaded
