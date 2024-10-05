@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+// Store the current page in session if not already logged in
+if (!isset($_SESSION['username'])) {
+    $_SESSION['redirect_to'] = $_SERVER['REQUEST_URI']; // Store the requested URL
+    header("Location: login.php"); // Redirect to login page if not logged in
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 
@@ -101,6 +111,7 @@
 }
 
 
+
     </style>
 </head>
 
@@ -121,11 +132,13 @@
                 <a href="../pages/contactus.php">Contact Us</a>
                 <a href="database.php">Database</a>
                 <div class="col-auto">
-                    <button id="login-icon" onclick="toggleLoginForm()" aria-label="Login" class="btn btn-success">Login</button>
+                <button id="login-icon" onclick="window.location.href='logout.php';" aria-label="Login" class="btn btn-success">Logout</button>
+
                 </div>
             </nav>
         </div>
     </header>
+   
 
     <aside class="side-nav" id="sideNav">
         <ul>
@@ -154,6 +167,7 @@
             <li><a href="plan/plan.php"><b>Plan</b></a></li>
             <li><a href="cost/cost.php"><b>Cost and Analytics</b></a></li>
             <li><a href="sold.php"><b>sold units</b></a></li>
+            <li><a href="manage_users.php"><b>users</b></a></li>
         </ul>
     </aside>
 
@@ -409,6 +423,9 @@ function fetchPlantData() {
             toggleSubmenu(event.target);
         });
     });
+
+    
 </script>
       <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+     
 </html>

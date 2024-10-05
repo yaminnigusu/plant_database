@@ -1,3 +1,13 @@
+<?php
+session_start();
+
+// Store the current page in session if not already logged in
+if (!isset($_SESSION['username'])) {
+    $_SESSION['redirect_to'] = $_SERVER['REQUEST_URI']; // Store the requested URL
+    header("Location: ../login.php"); // Redirect to login page if not logged in
+    exit();
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -55,7 +65,7 @@
                 <a href="../../pages/contactus.php">Contact Us</a>
                 <a href="../database.php">Database</a>
                 <div class="col-auto">
-                    <button id="login-icon" onclick="toggleLoginForm()" aria-label="Login" class="btn btn-success">Login</button>
+                <button id="login-icon" onclick="window.location.href='../logout.php';" aria-label="Login" class="btn btn-success">Logout</button>
                 </div>
             </nav>
         </div>
