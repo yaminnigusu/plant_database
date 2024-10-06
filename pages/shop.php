@@ -78,12 +78,12 @@ $totalRecords = $countResult->fetch_assoc()['total'];
 $totalPages = ceil($totalRecords / $itemsPerPage);
 
 // Construct SQL query to fetch plants with pagination and average value
-$sql = "
-    SELECT plant_name, photo_path, SUM(quantity) AS total_quantity, 
-           GROUP_CONCAT(DISTINCT plant_type) AS plant_types, 
-           AVG(value) AS value  -- Get the average value for each plant
-    FROM plants 
-    WHERE 1=1";
+$sql =" SELECT id, plant_name, photo_path, SUM(quantity) AS total_quantity, 
+GROUP_CONCAT(DISTINCT plant_type) AS plant_types, 
+AVG(value) AS value  -- Get the average value for each plant
+FROM plants 
+WHERE 1=1"
+;
 
 // Add search conditions based on the search term
 if (!empty($searchTerm)) {
@@ -119,8 +119,9 @@ if ($result && $result->num_rows > 0) {
         // Calculate selling price including additional cost and profit
         $sellingPrice = $costPerPlant + $additionalCostPerPlant + ($costPerPlant * $profitMargin);
 
-        // Create plant array with required data
+        // Create plant array with required data, including ID
         $plants[] = [
+            'id' => $row['id'], // Include the ID
             'plant_name' => htmlspecialchars($row['plant_name']),
             'photo_path' => htmlspecialchars($row['photo_path']),
             'quantity' => $row['total_quantity'], // Total quantity
@@ -130,10 +131,10 @@ if ($result && $result->num_rows > 0) {
     }
 }
 
+
 // Close database connection
 $conn->close();
 ?>
-
 
 
 <!DOCTYPE html>
@@ -142,16 +143,35 @@ $conn->close();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Le Jardin-shop</title>
+    <title>Le Jardin Shop</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
-    <link rel="icon" href="../images/logo.png" type="image/jpg">
-    <link rel="stylesheet" href="../database/styles.css">
-    <link rel="stylesheet" href="styles.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
 
+    <link rel="icon" href="../images/logo.png" type="image/jpg">
+    <link rel="stylesheet" href="styles.css">
     <style>
-        /* Custom styles */
+        .container {
+    flex: 1; /* Allows the container to grow and fill the available space */
+}
+        /* Custom styles for card hover effects */
+        .card {
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+        }
+        .card img {
+            height: 200px;
+            object-fit: cover;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .price-text {
+            color: #28a745;
+            font-size: 1.2rem;
+            font-weight: bold;
+        }
         .sidebar {
             background-color: #f8f9fa;
             padding: 20px;
@@ -160,29 +180,127 @@ $conn->close();
         .sidebar a {
             display: block;
             margin-bottom: 10px;
+            color: #000;
         }
         .sidebar a:hover {
-            color: #007bff;
+            color: #28a745;
         }
-        .sidebar {
-            position: sticky;
-            top: 60px; /* Adjust top position as needed */
-            background-color: #f8f9fa;
-            padding: 20px;
-            border-radius: 5px;
-            overflow-y: auto;
-            height: calc(100vh - 100px);
+        .pagination {
+            margin-top: 20px;
         }
-        @media (max-width: 992px) {
-            .sidebar {
-                position: relative; /* Remove sticky behavior on smaller screens */
-                top: auto;
+        @media (max-width: 768px) {
+            .card {
+                margin-bottom: 20px;
             }
         }
+        @media (max-width: 768px) {
+    .form-inline {
+        width: 100%; /* Make the form full width on small screens */
+    }
+
+    .form-control {
+        flex: 1; /* Allow the input field to grow */
+        min-width: 0; /* Prevent overflow */
+    }
+
+    .btn {
+        width: 30%; /* Make buttons full width on small screens */
+    }
+}
+
+/* Footer Styling */
+.footer {
+    background-color: #2f6132;
+    color: #fff;
+    padding: 50px 0;
+    font-family: 'Arial', sans-serif;
+}
+
+.footer .footer-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+.footer p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #ddd;
+}
+
+.footer-links {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 10px;
+}
+
+.footer-links a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #c5e1a5; /* Light green hover effect */
+}
+
+.footer-social a {
+    color: #fff;
+    font-size: 1.5rem;
+    margin-right: 15px;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.footer-social a:hover {
+    color: #c5e1a5;
+    transform: scale(1.2); /* Slight scale effect on hover */
+}
+
+.footer-bottom {
+    margin-top: 30px;
+    border-top: 1px solid #c5e1a5;
+    padding-top: 15px;
+}
+
+.footer-bottom p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+.footer-bottom a {
+    color: #c5e1a5;
+    text-decoration: none;
+}
+
+.footer-bottom a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .footer-title {
+        font-size: 1.3rem;
+    }
+
+    .footer-social a {
+        font-size: 1.3rem;
+    }
+}
+.modal-backdrop {
+    display: none !important; /* Force the backdrop to be hidden */
+}
+
     </style>
 </head>
 
-<body class="w3-light-gray">
+<body>
 <header class="header sticky-top p-3 shadow-sm">
     <div class="container d-flex justify-content-between align-items-center">
         <h1 class="logo">Le Jardin de Kakoo</h1>
@@ -208,119 +326,216 @@ $conn->close();
         
     </nav>
 </header>
-    
 
-    <div class="container mt-4">
-        <div class="row">
-            <!-- Sidebar with plant types and price range options -->
-            <div class="col-md-3">
-                <div class="sidebar">
-                    <h4>Category</h4>
-                    <hr>
-                    <!-- Display available plant types -->
-                    <?php foreach ($availablePlantTypes as $plantType) : ?>
-                        <a href="shop.php?plantType=<?= urlencode($plantType) ?>"><?= htmlspecialchars($plantType) ?></a>
-                    <?php endforeach; ?>
-                    <hr>
-                    <!-- Price range filter based on value per quantity -->
-                    <h4>Price Range</h4>
-                    <form action="shop.php" method="get">
-                        <input type="hidden" name="search" value="<?= htmlspecialchars($searchTerm) ?>">
-                        <input type="hidden" name="plantType" value="<?= htmlspecialchars($selectedPlantType) ?>">
-                        <select name="priceRange" class="form-control">
-                            <option value="" selected>Select Price Range</option>
-                            <option value="0-50" <?= $selectedPriceRange === '0-50' ? 'selected' : '' ?>>Birr 0 - Birr 50</option>
-                            <option value="51-100" <?= $selectedPriceRange === '51-100' ? 'selected' : '' ?>>Birr 51 - Birr 100</option>
-                            <option value="101-200" <?= $selectedPriceRange === '101-200' ? 'selected' : '' ?>>Birr 101 - Birr 200</option>
-                            <option value="201-500" <?= $selectedPriceRange === '201-500' ? 'selected' : '' ?>>Birr 201 - Birr 500</option>
-                        </select>
-                        <button type="submit" class="btn btn-primary mt-3">Apply</button>
-                    </form>
-                </div>
+<div class="container mt-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="container">
+    <!-- Toggle Button for Sidebar -->
+   
+
+    <div class="row mt-3">
+        <!-- Sidebar -->
+        <div class="col-md-3 mb-4 collapse d-md-block" id="sidebar">
+            <div class="sidebar border rounded p-3">
+                <h4 class="text-center">Categories</h4>
+                <hr>
+               <!-- Available Plant Types -->
+<div class="list-group">
+    <!-- Link to return to the default shop page -->
+    <a href="shop.php" class="list-group-item list-group-item-action text-primary">
+    <i class="fas fa-th-list"></i> View All Plants
+</a>
+
+    <?php foreach ($availablePlantTypes as $plantType) : ?>
+        <a href="shop.php?plantType=<?= urlencode($plantType); ?>" class="list-group-item list-group-item-action">
+            <?= htmlspecialchars($plantType); ?>
+        </a>
+    <?php endforeach; ?>
+</div>
+
+
+                <h4 class="mt-4 text-center">Price Range</h4>
+                <hr>
+                <form method="GET" action="shop.php" class="mb-3">
+                    <label for="priceRange" class="form-label">Select a price range:</label>
+                    <select id="priceRange" name="priceRange" class="form-select" onchange="this.form.submit()">
+                        <option value="">All</option>
+                        <option value="0-10" <?= $selectedPriceRange == '0-10' ? 'selected' : ''; ?>>0 - 10</option>
+                        <option value="10-50" <?= $selectedPriceRange == '10-50' ? 'selected' : ''; ?>>10 - 50</option>
+                        <option value="50-100" <?= $selectedPriceRange == '50-100' ? 'selected' : ''; ?>>50 - 100</option>
+                        <option value="100-500" <?= $selectedPriceRange == '100-500' ? 'selected' : ''; ?>>100 - 500</option>
+                    </select>
+                </form>
+            </div>
+        </div>
+
+       
+
+
+
+        <!-- Main Content -->
+        <div class="col-md-9">
+        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+        <h2 class="mb-4">Shop Plants</h2>
+                <form method="GET" class="form-inline">
+                    <input type="text" name="search" class="form-control mr-sm-2" placeholder="Search..." value="<?= htmlspecialchars($searchTerm); ?>">
+                    <button type="submit" class="btn btn-outline-success" aria-label="Search">
+                <i class="bi bi-search"></i> <!-- Bootstrap Icon -->
+            </button>
+                </form>
+                <button class="btn btn-primary d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar" aria-expanded="false" aria-controls="sidebar">
+       +
+    </button>
             </div>
 
-            <!-- Product Listing Section -->
-            <div class="col-md-9">
-            <form class="mt-3 mb-4" action="shop.php" method="GET">
-                <div class="input-group">
-                    <input type="text" class="form-control" placeholder="Search..." name="search" value="<?= htmlspecialchars($searchTerm) ?>">
-                    <div class="input-group-append">
-                        <button class="btn btn-primary" type="submit">Search</button>
-                    </div>
-                </div>
-            </form>
-                <div class="row">
-                    <?php if (!empty($plants)) : ?>
-                        <?php foreach ($plants as $plant) : ?>
-                            <div class="col-md-4 mb-4">
-                                <div class="card">
-                                    <img src="../database/uploads/<?= htmlspecialchars($plant['photo_path']) ?>" width="100px" height="200px" alt="<?= htmlspecialchars($plant['plant_name']) ?>" class="card-img-top">
-                                    <div class="card-body">
-                                        <h5 class="card-title"><?= htmlspecialchars($plant['plant_name']) ?></h5>
-                                        <p class="card-text">Price: Birr <b><?= number_format($plant['sellingPrice'], 2) ?></b></p>
-                                        <p class="card-text">Available Quantity: <?= round($plant['quantity'] * 0.85) ?></p>
-                                        <p class="card-text">Plant Type: <?= implode(', ', $plant['plant_type']) ?></p>
-                                    </div>
-                                </div>
-                            </div>
-                        <?php endforeach; ?>
-                    <?php else : ?>
-                        <div class="col-md-12">
-                            <p>No plants found matching the criteria.</p>
-                        </div>
-                    <?php endif; ?>
-                </div>
+            <!-- Display Plants -->
+            <div class="row">
+    <?php if (count($plants) > 0) : ?>
+        <?php foreach ($plants as $plant) : ?>
+            <div class="col-md-4 col-sm-6">
+    <div class="card mb-4">
+        <img src="<?= '../database/uploads/' . htmlspecialchars($plant['photo_path']); ?>" alt="<?= htmlspecialchars($plant['plant_name']); ?>" class="card-img-top">
+        <div class="card-body text-center"> <!-- Center the content -->
+            <h5 class="card-title"><?= htmlspecialchars($plant['plant_name']); ?></h5>
+            <p class="card-text">Quantity: <?= $plant['quantity']; ?></p>
+            <p class="price-text">Price: <?= number_format($plant['sellingPrice'], 2); ?> Birr</p>
+            <div class="text-center"> <!-- Center the button -->
+            <a href="order_form.php?plant_id=<?= $plant['id']; ?>&plant_name=<?= urlencode($plant['plant_name']); ?>" class="btn btn-outline-success">
+    Order now
+</a>
 
-                <!-- Pagination Links -->
-                <?php if ($totalPages > 1) : ?>
-                    <div class="mt-4">
-                        <ul class="pagination justify-content-center">
-                            <?php if ($currentPage > 1) : ?>
-                                <li class="page-item"><a class="page-link" href="shop.php?page=<?= $currentPage - 1 ?>">Previous</a></li>
-                            <?php endif; ?>
-                            <?php for ($i = 1; $i <= $totalPages; $i++) : ?>
-                                <li class="page-item <?= $i === $currentPage ? 'active' : '' ?>"><a class="page-link" href="shop.php?page=<?= $i ?>"><?= $i ?></a></li>
-                            <?php endfor; ?>
-                            <?php if ($currentPage < $totalPages) : ?>
-                                <li class="page-item"><a class="page-link" href="shop.php?page=<?= $currentPage + 1 ?>">Next</a></li>
-                            <?php endif; ?>
-                        </ul>
-                    </div>
-                <?php endif; ?>
             </div>
         </div>
     </div>
+</div>
 
-    <section id="contact" class="mt-4">
+        <?php endforeach; ?>
+    <?php else : ?>
+        <p class="alert alert-warning">No plants found.</p>
+    <?php endif; ?>
+</div>
+
+
+
+           <!-- Pagination -->
+<nav aria-label="Page navigation">
+    <ul class="pagination justify-content-center">
+        <!-- First Page Link -->
+        <?php if ($currentPage > 1) : ?>
+            <li class="page-item">
+                <a class="page-link" href="shop.php?page=1" aria-label="First">
+                    <span aria-hidden="true">&laquo;&laquo;</span>
+                </a>
+            </li>
+        <?php endif; ?>
+
+        <!-- Previous Page Link -->
+        <?php if ($currentPage > 1) : ?>
+            <li class="page-item">
+                <a class="page-link" href="shop.php?page=<?= $currentPage - 1; ?>" aria-label="Previous">
+                    <span aria-hidden="true">&laquo;</span>
+                </a>
+            </li>
+        <?php endif; ?>
+
+        <!-- Page Numbers -->
+        <?php 
+        $range = 2; // Number of page links to show on either side of the current page
+
+        for ($page = 1; $page <= $totalPages; $page++) : 
+            if ($page == 1 || $page == $totalPages || ($page >= $currentPage - $range && $page <= $currentPage + $range)) : ?>
+                <li class="page-item <?= $page == $currentPage ? 'active' : ''; ?>">
+                    <a class="page-link" href="shop.php?page=<?= $page; ?>"><?= $page; ?></a>
+                </li>
+            <?php elseif ($page == $currentPage - $range - 1 || $page == $currentPage + $range + 1) : ?>
+                <li class="page-item">
+                    <span class="page-link">...</span>
+                </li>
+            <?php endif; ?>
+        <?php endfor; ?>
+
+        <!-- Next Page Link -->
+        <?php if ($currentPage < $totalPages) : ?>
+            <li class="page-item">
+                <a class="page-link" href="shop.php?page=<?= $currentPage + 1; ?>" aria-label="Next">
+                    <span aria-hidden="true">&raquo;</span>
+                </a>
+            </li>
+        <?php endif; ?>
+
+        <!-- Last Page Link -->
+        <?php if ($currentPage < $totalPages) : ?>
+            <li class="page-item">
+                <a class="page-link" href="shop.php?page=<?= $totalPages; ?>" aria-label="Last">
+                    <span aria-hidden="true">&raquo;&raquo;</span>
+                </a>
+            </li>
+        <?php endif; ?>
+    </ul>
+</nav>
+
+
+ <!-- Footer Section -->
+ 
+
+<!-- Quick View Modal -->
+
+<footer class="footer text-center">
         <div class="container">
-            <h3>Contact Us</h3>
             <div class="row">
-                <div class="col-md-6">
-                    <p><a href="tel:0940384999">+251940384999</a></p>
-                    <p><a href="mailto:nigusuyamin@gmail.com">nigusuyamin@gmail.com</a></p>
-                    <p>Address: Addis Ababa, Bole Japan</p>
+                <!-- Company Info -->
+                <div class="col-md-4 mb-4">
+                    <h5 class="footer-title">LE JARDIN DE KAKOO</h5>
+                    <p>Your trusted plant nursery for premium quality plants and gardening supplies.</p>
                 </div>
-                <div class="col-md-6 text-center">
-                    <a href="https://www.facebook.com/lejardindekakoo?mibextid=ZbWKwL"><i class="fab fa-facebook fa-2x mr-3"></i></a>
-                    <a href="https://www.instagram.com/lejardindekakoo?igsh=MWNzdWhwb3EwNDYwMw=="><i class="fab fa-instagram fa-2x mr-3"></i></a>
-                    <a href="https://t.me/LeGiardinDeKakoo"><i class="fab fa-telegram fa-2x mr-3"></i></a>
-                    <a href="https://wa.me/message/47J4IQW4KT3SL1"><i class="fab fa-whatsapp fa-2x mr-3"></i></a>
-                    <a href="https://www.tiktok.com/@plantparadise25?_t=8imWxp8efJd&_r=1"><i class="fab fa-tiktok fa-2x mr-3"></i></a>
+                <!-- Quick Links -->
+                <div class="col-md-4 mb-4">
+                    <h5 class="footer-title">Quick Links</h5>
+                    <ul class="footer-links">
+                        <li><a href="about.php">About Us</a></li>
+                        <li><a href="shop.php">Shop</a></li>
+                        <li><a href="contact.php">Contact Us</a></li>
+                        <li><a href="order_page.php">Place an Order</a></li>
+                    </ul>
+                </div>
+                <!-- Social Media -->
+                <div class="col-md-4 mb-4">
+                    <h5 class="footer-title">Follow Us</h5>
+                    <div class="footer-social">
+                        <a href="https://www.facebook.com/lejardindekakoo"><i class="fab fa-facebook-f"></i></a>
+                        <a href="https://www.instagram.com/lejardindekakoo"><i class="fab fa-instagram"></i></a>
+                        <a href="https://t.me/LeGiardinDeKakoo"><i class="fab fa-telegram-plane"></i></a>
+                        <a href="https://wa.me/message/47J4IQW4KT3SL1"><i class="fab fa-whatsapp"></i></a>
+                    </div>
                 </div>
             </div>
-        </div>
-    </section>
 
-    <footer class="mt-4">
-        <div class="container">
-            <p>&copy; 2024 Le Jardin de kakoo</p>
+            <!-- Copyright & Legal -->
+            <div class="footer-bottom mt-4">
+                <p>&copy; 2024 LE JARDIN DE KAKOO. All Rights Reserved.</p>
+                <p><a href="#" class="text-white">Privacy Policy</a> | <a href="#" class="text-white">Terms of Service</a></p>
+            </div>
         </div>
     </footer>
 
-    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.4/dist/umd/popper.min.js"></script>
-    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
-    <script>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<!-- Include Bootstrap JS -->
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    function toggleSidebar() {
+        const sidebar = document.getElementById("sidebar");
+        if (sidebar.classList.contains("d-none")) {
+            sidebar.classList.remove("d-none");
+        } else {
+            sidebar.classList.add("d-none");
+        }
+    }
+</script>
+<script>
         
         
         function toggleSidebar() {
@@ -328,7 +543,8 @@ $conn->close();
 }
 
     </script>
-
+    <!-- Include jQuery -->
+   
 </body>
 
 </html>

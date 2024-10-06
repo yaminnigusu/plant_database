@@ -1,7 +1,7 @@
 /* styles.css */
 
 body {
-    background-color: #f9f9f9; /* Light grey background */
+    background-color: hsl(0, 0%, 98%); /* Light grey background */
     margin: 0; /* Remove default margin */
 }
 
@@ -131,9 +131,7 @@ body {
     padding: 20px;
 }
 
-.footer {
-    padding: 10px;
-}
+
 
 .statistics::before,
 .statistics::after {
@@ -301,4 +299,5 @@ body {
 .about .btn:hover {
     background-color: #45a049; /* Darker shade on hover */
 }
+
 

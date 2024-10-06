@@ -10,7 +10,7 @@
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
     <link rel="icon" href="../images/logo.png" type="image/jpg">
     <link rel="stylesheet" href="../database\styles.css">
-    <link rel="stylesheet" href="../css/styles.css">
+    <link rel="stylesheet" href="styles.css">
 
     <style>
         
@@ -18,29 +18,32 @@
 </head>
 
 <body  class="w3-light-gray">
-    <header class="sticky-top">
-        <div class="container">
-            <div class="row justify-content-between align-items-center">
-                <div class="col">
-                    <h1>Le Jardin de Kakoo</h1>
-                </div>
-                <div class="col-auto">
-                <button id="navToggleButton" onclick="toggleNavVisibility()" class="btn btn-dark d-block d-lg-none">Menu</button>
-            </div>
-                
-            </div>
-            <nav>
-                <a href="../pages/home.php">Home</a>
-                <a href="../pages/shop.php">Shop</a>
-                <a href="../pages/about.php">About Us</a>
-                <a href="../pages/contactus.php">Contact Us</a>
-                <a href="../database/database.php">Database</a>
-                <div class="col-auto">
-                    <button id="login-icon" onclick="toggleLoginForm()" aria-label="Login" class="btn btn-success">Login</button>
-                </div>
-            </nav>
-        </div>
-    </header>
+<header class="header sticky-top p-3 shadow-sm">
+    <div class="container d-flex justify-content-between align-items-center">
+        <h1 class="logo">Le Jardin de Kakoo</h1>
+        <!-- Mobile Menu Toggle Button -->
+        <button id="navToggleButton" onclick="toggleSidebar()" class="btn btn-light d-lg-none">
+            <i class="fas fa-bars"></i> Menu
+        </button>
+        <!-- Desktop Navigation -->
+        <nav class="d-none d-lg-flex">
+            <a href="../pages/home.php" class="nav-link">Home</a>
+            <a href="../pages/shop.php" class="nav-link">Shop</a>
+            <a href="../pages/about.php" class="nav-link">About Us</a>
+            <a href="../pages/contactus.php" class="nav-link">Contact Us</a>
+            
+        </nav>
+    </div>
+    <!-- Mobile Sidebar Navigation -->
+    <nav id="sidebar" class="mobile-sidebar d-lg-none">
+        <a href="../pages/home.php" class="nav-link">Home</a>
+        <a href="../pages/shop.php" class="nav-link">Shop</a>
+        <a href="../pages/about.php" class="nav-link">About Us</a>
+        <a href="../pages/contactus.php" class="nav-link">Contact Us</a>
+        
+    </nav>
+</header>
+
 
     
         

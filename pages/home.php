@@ -467,7 +467,7 @@ $conn->close();
 
         <!-- Order Link -->
         <div class="order-cta text-center mt-5">
-            <a href="order_page.php" class="btn btn-primary btn-lg">Place an Order</a>
+            <a href="shop.php" class="btn btn-primary btn-lg">Place an Order</a>
         </div>
     </div>
 </section>
