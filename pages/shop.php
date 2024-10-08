@@ -108,6 +108,7 @@ $sql .= " GROUP BY plant_name, photo_path LIMIT $itemsPerPage OFFSET $offset";
 $result = $conn->query($sql);
 
 // Initialize $plants array
+
 $plants = [];
 
 if ($result && $result->num_rows > 0) {
@@ -119,17 +120,21 @@ if ($result && $result->num_rows > 0) {
         // Calculate selling price including additional cost and profit
         $sellingPrice = $costPerPlant + $additionalCostPerPlant + ($costPerPlant * $profitMargin);
 
-        // Create plant array with required data, including ID
+        // Calculate 65% of the total quantity
+        $reducedQuantity = (int)($row['total_quantity'] * 0.65); // Get 65% of the total quantity
+
+        // Create plant array with required data, including ID and reduced quantity
         $plants[] = [
             'id' => $row['id'], // Include the ID
             'plant_name' => htmlspecialchars($row['plant_name']),
             'photo_path' => htmlspecialchars($row['photo_path']),
-            'quantity' => $row['total_quantity'], // Total quantity
+            'quantity' => $reducedQuantity, // Use reduced quantity here
             'plant_type' => $plantTypes,
             'sellingPrice' => $sellingPrice, // Adjusted selling price
         ];
     }
 }
+
 
 
 // Close database connection
@@ -204,7 +209,7 @@ $conn->close();
     }
 
     .btn {
-        width: 30%; /* Make buttons full width on small screens */
+        width: 25%; /* Make buttons full width on small screens */
     }
 }
 
@@ -296,6 +301,9 @@ $conn->close();
 .modal-backdrop {
     display: none !important; /* Force the backdrop to be hidden */
 }
+#abc {
+    width: 100%;
+}
 
     </style>
 </head>
@@ -384,9 +392,11 @@ $conn->close();
                 <i class="bi bi-search"></i> <!-- Bootstrap Icon -->
             </button>
                 </form>
-                <button class="btn btn-primary d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar" aria-expanded="false" aria-controls="sidebar">
+                <br>
+                <button id="abc" class="btn btn-primary d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar" aria-expanded="false" aria-controls="sidebar">
        +
     </button>
+    <br>
             </div>
 
             <!-- Display Plants -->
@@ -421,17 +431,12 @@ $conn->close();
            <!-- Pagination -->
 <nav aria-label="Page navigation">
     <ul class="pagination justify-content-center">
-        <!-- First Page Link -->
-        <?php if ($currentPage > 1) : ?>
+        <?php if ($currentPage > 1): ?>
             <li class="page-item">
                 <a class="page-link" href="shop.php?page=1" aria-label="First">
                     <span aria-hidden="true">&laquo;&laquo;</span>
                 </a>
             </li>
-        <?php endif; ?>
-
-        <!-- Previous Page Link -->
-        <?php if ($currentPage > 1) : ?>
             <li class="page-item">
                 <a class="page-link" href="shop.php?page=<?= $currentPage - 1; ?>" aria-label="Previous">
                     <span aria-hidden="true">&laquo;</span>
@@ -439,33 +444,19 @@ $conn->close();
             </li>
         <?php endif; ?>
 
-        <!-- Page Numbers -->
-        <?php 
-        $range = 2; // Number of page links to show on either side of the current page
-
-        for ($page = 1; $page <= $totalPages; $page++) : 
-            if ($page == 1 || $page == $totalPages || ($page >= $currentPage - $range && $page <= $currentPage + $range)) : ?>
-                <li class="page-item <?= $page == $currentPage ? 'active' : ''; ?>">
-                    <a class="page-link" href="shop.php?page=<?= $page; ?>"><?= $page; ?></a>
-                </li>
-            <?php elseif ($page == $currentPage - $range - 1 || $page == $currentPage + $range + 1) : ?>
-                <li class="page-item">
-                    <span class="page-link">...</span>
-                </li>
-            <?php endif; ?>
+        <!-- Page number links -->
+        <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+            <li class="page-item <?= $i === $currentPage ? 'active' : ''; ?>">
+                <a class="page-link" href="shop.php?page=<?= $i; ?>"><?= $i; ?></a>
+            </li>
         <?php endfor; ?>
 
-        <!-- Next Page Link -->
-        <?php if ($currentPage < $totalPages) : ?>
+        <?php if ($currentPage < $totalPages): ?>
             <li class="page-item">
                 <a class="page-link" href="shop.php?page=<?= $currentPage + 1; ?>" aria-label="Next">
                     <span aria-hidden="true">&raquo;</span>
                 </a>
             </li>
-        <?php endif; ?>
-
-        <!-- Last Page Link -->
-        <?php if ($currentPage < $totalPages) : ?>
             <li class="page-item">
                 <a class="page-link" href="shop.php?page=<?= $totalPages; ?>" aria-label="Last">
                     <span aria-hidden="true">&raquo;&raquo;</span>
@@ -474,7 +465,6 @@ $conn->close();
         <?php endif; ?>
     </ul>
 </nav>
-
 
  <!-- Footer Section -->
  

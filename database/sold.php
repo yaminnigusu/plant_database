@@ -1,13 +1,40 @@
 <?php
 session_start();
 
-// Store the current page in session if not already logged in
-if (!isset($_SESSION['username'])) {
+// Set session timeout duration (30 minutes)
+$timeoutDuration = 1800; // 30 minutes in seconds
+
+// Check if the user is logged in and if the session is set
+if (isset($_SESSION['username'])) {
+    // Check if the last activity timestamp is set
+    if (isset($_SESSION['last_activity'])) {
+        // Calculate the time since the last activity
+        $elapsedTime = time() - $_SESSION['last_activity'];
+
+        // If the time elapsed is greater than the timeout duration, log the user out
+        if ($elapsedTime >= $timeoutDuration) {
+            session_unset(); // Remove session variables
+            session_destroy(); // Destroy the session
+            header("Location: login.php?message=Session expired. Please log in again."); // Redirect to login page
+            exit();
+        }
+    }
+    
+    // Update last activity timestamp
+    $_SESSION['last_activity'] = time();
+} else {
     $_SESSION['redirect_to'] = $_SERVER['REQUEST_URI']; // Store the requested URL
     header("Location: login.php"); // Redirect to login page if not logged in
     exit();
 }
+
+// Include your database connection file
+include("../database/config.php"); 
+
+// Fetch orders from the database
+$result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -177,6 +204,7 @@ if (!isset($_SESSION['username'])) {
             <li><a href="cost/cost.php"><b>Cost and Analytics</b></a></li>
             <li><a href="sold.php"><b>sold units</b></a></li>
             <li><a href="manage_users.php"><b>users</b></a></li>
+            <li><a href="receive_orders.php"><b>orders</b></a></li>
         </ul>
     </aside>
     <div class="main-content">

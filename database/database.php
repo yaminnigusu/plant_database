@@ -17,6 +17,7 @@ if (!isset($_SESSION['username'])) {
     <title>Le Jardin-Plant Database</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="../images/logo.png" type="image/jpg">
     <style>
         .submenu {
             display: none; /* Hide submenu by default */
@@ -168,6 +169,7 @@ if (!isset($_SESSION['username'])) {
             <li><a href="cost/cost.php"><b>Cost and Analytics</b></a></li>
             <li><a href="sold.php"><b>sold units</b></a></li>
             <li><a href="manage_users.php"><b>users</b></a></li>
+            <li><a href="receive_orders.php"><b>orders</b></a></li>
         </ul>
     </aside>
 

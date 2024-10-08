@@ -4,22 +4,40 @@ include("../database/config.php");
 
 // Get plant information from the query parameters
 $plantId = $_GET['plant_id'] ?? '';
-$plantName = $_GET['plant_name'] ?? '';
+$plantName = $_GET['plant_name'] ?? ''; 
 
-// Fetch available plastic sizes and quantity for the selected plant
-$plasticSizes = [];
+// Initialize $plants array
+$plants = [];
 $availableQuantity = 0; // Initialize available quantity
 
 if ($plantId) {
-    $stmt = $conn->prepare("SELECT plastic_size, quantity FROM plants WHERE id = ?");
+    // Fetch plant data including total quantity
+    $stmt = $conn->prepare("SELECT id, plant_name, photo_path, value, quantity, plant_type FROM plants WHERE id = ?");
     $stmt->bind_param("i", $plantId);
     $stmt->execute();
     $result = $stmt->get_result();
-    if ($result->num_rows > 0) {
-        $plantData = $result->fetch_assoc();
-        // Assume 'plastic_size' is a comma-separated string
-        $plasticSizes = explode(',', $plantData['plastic_size']);
-        $availableQuantity = $plantData['quantity']; // Get the available quantity
+
+    if ($result && $result->num_rows > 0) {
+        // Populate $plants array with fetched plant data
+        while ($row = $result->fetch_assoc()) {
+            $plantTypes = explode(',', $row['plant_type']);
+            $costPerPlant = $row['value'] / $row['quantity'];
+
+            // Calculate selling price including additional cost and profit
+          
+            // Create plant array with required data, including ID and quantity
+            $plants[] = [
+                'id' => $row['id'], // Include the ID
+                'plant_name' => htmlspecialchars($row['plant_name']),
+                'photo_path' => htmlspecialchars($row['photo_path']),
+                'quantity' => $row['quantity'], // Use total quantity directly
+                'plant_type' => $plantTypes,
+               // Adjusted selling price
+            ];
+
+            // Set available quantity to the total quantity for the order form
+            $availableQuantity = $row['quantity']; // Get the available quantity
+        }
     }
     $stmt->close();
 }
@@ -90,9 +108,6 @@ if ($plantId) {
             const plantName = document.getElementById('plant_name').value;
             const quantity = document.getElementById('quantity').value;
             const deliveryDate = document.getElementById('delivery_date').value;
-            const selectedSizes = Array.from(document.querySelectorAll('input[name="plastic_size"]:checked'))
-                .map(checkbox => checkbox.value)
-                .join(', ');
 
             const summary = `Plant: ${plantName}, Quantity: ${quantity}, Delivery Date: ${deliveryDate}`;
             document.getElementById('order-summary').innerText = summary;
@@ -115,7 +130,6 @@ if ($plantId) {
                 <input type="number" class="form-control" id="quantity" name="quantity" min="1" max="<?= htmlspecialchars($availableQuantity); ?>" required>
             </div>
             
-           
             <div class="mb-3">
                 <label for="delivery_date" class="form-label">Preferred Delivery Date</label>
                 <input type="date" class="form-control" id="delivery_date" name="delivery_date" required>
