@@ -117,8 +117,9 @@ if ($result && $result->num_rows > 0) {
         $plantTypes = explode(',', $row['plant_types']);
         $costPerPlant = $row['value'] / $row['total_quantity'];
 
-        // Calculate selling price including additional cost and profit
-        $sellingPrice = $costPerPlant + $additionalCostPerPlant + ($costPerPlant * $profitMargin);
+        // Calculate selling price including additional cost and profit 
+        $costWithAdditional = $costPerPlant + $additionalCostPerPlant;
+        $sellingPrice = $costWithAdditional + ($costWithAdditional * 1.5);
 
         // Calculate 65% of the total quantity
         $reducedQuantity = (int)($row['total_quantity'] * 0.65); // Get 65% of the total quantity
@@ -411,7 +412,7 @@ $conn->close();
             <p class="card-text">Quantity: <?= $plant['quantity']; ?></p>
             <p class="price-text">Price: <?= number_format($plant['sellingPrice'], 2); ?> Birr</p>
             <div class="text-center"> <!-- Center the button -->
-            <a href="order_form.php?plant_id=<?= $plant['id']; ?>&plant_name=<?= urlencode($plant['plant_name']); ?>" class="btn btn-outline-success">
+            <a href="order_form.php?plant_id=<?= $plant['id']; ?>&plant_name=<?= urlencode($plant['plant_name']); ?>&selling_price=<?= $plant['sellingPrice']; ?>" class="btn btn-outline-success">
     Order now
 </a>
 

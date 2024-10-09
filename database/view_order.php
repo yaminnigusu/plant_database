@@ -19,7 +19,7 @@ if (isset($_SESSION['username'])) {
             exit();
         }
     }
-    
+
     // Update last activity timestamp
     $_SESSION['last_activity'] = time();
 } else {
@@ -65,6 +65,26 @@ if (!$order) {
             background-color: #ffffff;
             box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
         }
+        h1 {
+            color: #4CAF50;
+        }
+        .btn-custom {
+            background-color: #4CAF50;
+            color: white;
+        }
+        .btn-custom:hover {
+            background-color: #45a049;
+        }
+        .image-preview {
+            max-width: 100px;
+            max-height: 100px;
+            object-fit: cover;
+            cursor: pointer;
+        }
+        .modal-body img {
+            max-width: 100%;
+            height: auto;
+        }
     </style>
 </head>
 <body>
@@ -103,9 +123,46 @@ if (!$order) {
             <th>Comments</th>
             <td><?= htmlspecialchars($order['comments']); ?></td>
         </tr>
+        <tr>
+            <th>Transaction Number</th>
+            <td><?= htmlspecialchars($order['transaction_number']); ?></td>
+        </tr>
+        <tr>
+            <th>Payment Confirmation Image</th>
+            <td>
+                <?php if (!empty($order['payment_confirmation'])): ?>
+                    <?php $imagePath = "../images/" . htmlspecialchars($order['payment_confirmation']); ?>
+                    <?php if (file_exists($imagePath)): ?>
+                        <img src="<?= $imagePath; ?>" alt="Payment Confirmation" class="image-preview" data-toggle="modal" data-target="#imageModal">
+                    <?php else: ?>
+                        <p>Image not found at <?= $imagePath; ?></p>
+                    <?php endif; ?>
+                <?php else: ?>
+                    No image uploaded.
+                <?php endif; ?>
+            </td>
+        </tr>
     </table>
-    <a href="receive_orders.php" class="btn btn-primary">Back to Orders</a>
+    <a href="receive_orders.php" class="btn btn-custom">Back to Orders</a>
 </div>
+
+<!-- Modal for enlarged image view -->
+<div class="modal fade" id="imageModal" tabindex="-1" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Payment Confirmation Image</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <img src="<?= $imagePath; ?>" alt="Payment Confirmation Image">
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
 <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>

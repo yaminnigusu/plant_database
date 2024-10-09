@@ -35,7 +35,6 @@ include("../database/config.php");
 $result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
 ?>
 
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -49,27 +48,8 @@ $result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
          .submenu {
             display: none; /* Hide submenu by default */
         }
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Arial', sans-serif;
-        }
-        header {
-            background-color: #28a745;
-            color: white;
-            padding: 10px 0;
-        }
-        h1 {
-            color: #28a745;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-        .container {
-            margin-top: 50px;
-            padding: 30px;
-            border-radius: 10px;
-            background-color: #ffffff;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-        }
+        
+       
         table {
             margin-top: 20px;
             border-collapse: collapse;
@@ -97,33 +77,32 @@ $result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
 </head>
 <body>
 <header class="sticky-top">
-    <div class="container">
-        <div class="row justify-content-between align-items-center">
-            <div class="col">
-                <img src="../images/logo.png" alt="Logo" width="50">
+        <div class="container">
+            <div class="row justify-content-between align-items-center">
+                <div class="col"></div>
+                <div class="col-left">
+                    <img src="../images/logo.png" alt="Logo" width="50">
+                </div>
                 <h1>Le Jardin de Kakoo</h1>
             </div>
-            <div class="col-auto">
-                
-            </div>
+            <nav>
+                <a href="../pages/home.php">Home</a>
+                <a href="../pages/shop.php">Shop</a>
+                <a href="../pages/about.php">About Us</a>
+                <a href="../pages/contactus.php">Contact Us</a>
+                <a href="database.php">Database</a>
+                <div class="col-auto">
+                <button id="login-icon" onclick="window.location.href='logout.php';" aria-label="Login" class="btn btn-success">Logout</button>
+
+                </div>
+            </nav>
         </div>
-        <nav>
-            <a href="../pages/home.php">Home</a>
-            <a href="../pages/shop.php">Shop</a>
-            <a href="../pages/about.php">About Us</a>
-            <a href="../pages/contactus.php">Contact Us</a>
-            <a href="database.php">Database</a>
-            <button id="login-icon" onclick="window.location.href='logout.php';" aria-label="Logout" class="btn btn-light">Logout</button>
-        </nav>
-    </div>
-</header>
+    </header>
 <aside class="side-nav" id="sideNav">
     <ul>
         <br>
         <br>
-        <br>
-        <br>
-        <br>
+       
         <li><a href="database.php"><b>Home</b></a></li>
         <li><a href="sidenav/home.php"><b>Search</b></a></li>
         <li class="has-submenu">
@@ -148,7 +127,7 @@ $result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
         <li><a href="cost/cost.php"><b>Cost and Analytics</b></a></li>
         <li><a href="sold.php"><b>Sold Units</b></a></li>
         <li><a href="manage_users.php"><b>Users</b></a></li>
-        <li><a href="receive_orders.php"><b>orders</b></a></li>
+        <li><a href="receive_orders.php"><b>Orders</b></a></li>
     </ul>
 </aside>
 <div class="main-content">
@@ -167,6 +146,10 @@ $result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
                     <th>Email</th>
                     <th>Phone</th>
                     <th>Comments</th>
+                    <th>Delivery location</th>
+                    <th>Transaction Number</th>
+                    <th>Payment Confirmation Image</th>
+                    
                     <th>Actions</th> <!-- New Actions Column -->
                 </tr>
             </thead>
@@ -176,11 +159,30 @@ $result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
             <td><?= htmlspecialchars($row['id']); ?></td>
             <td><?= htmlspecialchars($row['plant_name']); ?></td>
             <td><?= htmlspecialchars($row['quantity']); ?></td>
-            <td><?= date('l, F j', strtotime($row['delivery_date'])); ?></td> <!-- Format the delivery date -->
+            <td><?= date('l, F j', strtotime($row['delivery_date'])); ?></td>
             <td><?= htmlspecialchars($row['customer_name']); ?></td>
             <td><?= htmlspecialchars($row['customer_email']); ?></td>
             <td><?= htmlspecialchars($row['customer_phone']); ?></td>
             <td><?= htmlspecialchars($row['comments']); ?></td>
+            <td><?= htmlspecialchars($row['delivery_location']); ?></td>
+            
+            <!-- Transaction Number Column -->
+            <td><?= htmlspecialchars($row['transaction_number']); ?></td>
+            
+            <!-- Payment Confirmation Image Column -->
+            <td>
+                <?php if (!empty($row['payment_confirmation'])): ?>
+                    <?php $imagePath = "../images/" . htmlspecialchars($row['payment_confirmation']); ?>
+                    <?php if (file_exists($imagePath)): ?>
+                        <img src="<?= $imagePath; ?>" alt="Payment Confirmation" class="image-preview" style="max-width: 100px; max-height: 100px; object-fit: cover;">
+                    <?php else: ?>
+                        <p>Image not found at <?= htmlspecialchars($imagePath); ?></p>
+                    <?php endif; ?>
+                <?php else: ?>
+                    No image uploaded.
+                <?php endif; ?>
+            </td>
+
             <td>
                 <a href="view_order.php?id=<?= htmlspecialchars($row['id']); ?>" class="btn btn-info btn-sm">View</a>
                 <a href="edit_order.php?id=<?= htmlspecialchars($row['id']); ?>" class="btn btn-warning btn-sm">Edit</a>
@@ -196,27 +198,12 @@ $result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
 </div>
 </div>
 <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script> 
-<script>
-    function toggleSubmenu(element) {
-        const submenu = element.nextElementSibling;
-        submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
-    }
-
-    document.querySelectorAll('.has-submenu > a').forEach(item => {
-        item.addEventListener('click', event => {
-            event.preventDefault();
-            toggleSubmenu(event.target);
-        });
-    });
-
-    
-</script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </body>
 </html>
 
 <?php
-// Close the connection
+// Close database connection
 $conn->close();
 ?>
