@@ -81,8 +81,10 @@ if (!isset($_SESSION['username'])) {
         </li>
         <li> <a href="../plan/plan.php"><b>Plan</b></a></li>
            <li> <a href="../cost/cost.php"><b>Cost and Analytics</b></a></li>
-           <li><a href="../sold.php"><b>sold units</b></a></li>
-           <li><a href="manage_users.php"><b>users</b></a></li>
+           <li><a href="../sold.php"><b>Sold Units</b></a></li>
+        <li><a href="../manage_users.php"><b>Users</b></a></li>
+        <li><a href="../receive_orders.php"><b>Orders</b></a></li>
+        <li><a href="../message/view_messages.php"><b>View Messages</b></a></li>
     </ul>
 </aside>
 

@@ -122,6 +122,7 @@ $result = $conn->query($sql);
             <li><a href="sold.php"><b>sold units</b></a></li>
             <li><a href="manage_users.php"><b>users</b></a></li>
             <li><a href="receive_orders.php"><b>orders</b></a></li>
+            <li><a href="message/view_messages.php"><b>view messages</b></a></li>
         </ul>
     </aside>
 

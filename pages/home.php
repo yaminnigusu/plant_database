@@ -489,7 +489,7 @@ $conn->close();
                     <li><a href="about.php">About Us</a></li>
                     <li><a href="shop.php">Shop</a></li>
                     <li><a href="contact.php">Contact Us</a></li>
-                    <li><a href="order_page.php">Place an Order</a></li>
+                   
                 </ul>
             </div>
             <!-- Social Media -->

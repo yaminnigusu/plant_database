@@ -128,6 +128,7 @@ $result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
         <li><a href="sold.php"><b>Sold Units</b></a></li>
         <li><a href="manage_users.php"><b>Users</b></a></li>
         <li><a href="receive_orders.php"><b>Orders</b></a></li>
+        <li><a href="message/view_messages.php"><b>view messages</b></a></li>
     </ul>
 </aside>
 <div class="main-content">
