@@ -240,10 +240,11 @@ session_start();
        
 
         <!-- Google Maps Embed -->
-        <div class="map-container">
+        
+    </div>
+    <div class="map-container">
             <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3940.806200589748!2d38.78011627381029!3d8.989973289601116!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x164b85b929c6b7af%3A0x98d4d7aa2da96f42!2sLe%20jardin%20de%20kakoo!5e0!3m2!1sam!2set!4v1708430226241!5m2!1sam!2set" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade" aria-label="Google map location of Le Jardin de Kakoo"></iframe>
         </div>
-    </div>
 </div>
 <br>
 <footer class="footer text-center">
