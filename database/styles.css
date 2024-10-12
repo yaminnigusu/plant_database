@@ -1,27 +1,7 @@
 /* Reset default styles */
 
 
-.actionButton {
-    display: inline-block;
-    padding: 8px 12px;
-    border-radius: 4px;
-    text-decoration: none;
-    font-weight: bold;
-    text-align: center;
-    cursor: pointer;
-}
 
-.editButton {
-    background-color: #28a745; /* Green */
-    color: #fff;
-    border: none;
-}
-
-.deleteButton {
-    background-color: #dc3545; /* Red */
-    color: #fff;
-    border: none;
-}
 
 body {
     font-family: Arial, sans-serif;
@@ -30,50 +10,11 @@ body {
     background-color: #f4f4f4;
 }
 
-/* Header styles */
-header {
-    position: sticky;
-    top: 0;
-    left: 0;
-    width: 100%;
-    background-color: #f8f9fade;
-    color: #333;
-    padding: 20px 20px 10px 20px; /* Increase top padding for more space */
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    z-index: 1000;
-}
-header .container {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 90%;
-    margin: 0 auto;
+.header {
+    background-color: #fff; /* Change as needed */
+    padding: 10px 0; /* Add some vertical padding */
 }
 
-header h1 {
-    margin: 0;
-    font-size: 28px;
-}
-
-header nav {
-    display: flex;
-    align-items: center;
-}
-
-header nav a {
-    text-decoration: none;
-    color: #666;
-    padding: 8px 12px;
-    margin-right: 10px;
-    transition: color 0.3s ease;
-}
-
-header nav a:nth-child(1),
-header nav a:nth-child(2) {
-    margin-right: 20px; /* Reduce margin for Home and Shop links */
-}
 
 header #login-icon {
     background-color: #4CAF50;
@@ -99,23 +40,88 @@ header #login-icon:hover {
     
 }
 
-/* Plant Database table styles */
-#plantTable {
+/* External CSS for table enhancements */
+
+/* Style for the entire table */
+table {
     width: 100%;
+    margin: 20px 0;
     border-collapse: collapse;
-    margin-top: 20px;
+    font-family: Arial, sans-serif;
 }
 
-#plantTable th,
-#plantTable td {
-    border: 1px solid #ddd;
-    padding: 8px;
+/* Style for the table header */
+thead th {
+    background-color: #f8f9fa;
+    color: #343a40;
+    font-weight: bold;
     text-align: left;
+    padding: 12px;
+    border-bottom: 2px solid #dee2e6;
 }
 
-#plantTable img {
+/* Style for table rows */
+tbody td {
+    padding: 12px;
+    text-align: left;
+    border-bottom: 1px solid #dee2e6;
+}
+
+/* Add hover effect for table rows */
+tbody tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Style for the photo cell */
+.photo-cell img {
     max-width: 100px;
-    max-height: 100px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Style for action buttons */
+.action-buttons a {
+    margin-right: 10px;
+    padding: 6px 12px;
+    text-decoration: none;
+    font-size: 14px;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+}
+
+/* Edit button style */
+.editButton {
+    background-color: #28a745;
+    color: white;
+}
+
+/* Delete button style */
+.deleteButton {
+    background-color: #dc3545;
+    color: white;
+}
+
+/* Hover effect for action buttons */
+.action-buttons a:hover {
+    opacity: 0.8;
+}
+
+/* Total info styling */
+.total-info {
+    margin-top: 20px;
+    background-color: #f0f0f0;
+    text-align: center;
+    padding: 15px;
+    border-radius: 5px;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+
+.total-info p {
+    font-size: 18px;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #343a40;
 }
 
 /* Toggle Form button style */
@@ -136,78 +142,45 @@ header #login-icon:hover {
     background-color: #318635;
 }
 
-/* Side Navigation styles */
 .side-nav {
-    width: 260px;
-    height: 95vh;
-    position: fixed;
-    top: 55px;
-    left: -260px; /* Initially hide the side nav off-screen */
-    background-color: #f2f2f2;
-    padding: 20px;
-    box-sizing: border-box;
-    overflow-y: auto;
-    transition: left 0.3s ease; /* Smooth transition for side nav */
-}
-
-.side-nav ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-.side-nav ul li {
-    margin-bottom: 10px;
+    background-color: #f8f9fa; /* Light background */
+    padding: 15px; /* Spacing around the nav */
+    height: 100vh; /* Full height */
+    position: fixed; /* Fix the sidebar */
+    top: 0; /* Align to top */
+    left: 0; /* Align to left */
+    width: 250px; /* Width of sidebar */
+    box-shadow: 2px 0 5px rgba(0,0,0,0.1); /* Shadow effect */
+    transition: all 0.3s; /* Smooth transition */
 }
 
 .side-nav a {
-    display: block;
-    text-decoration: none;
-    color: #333;
-    padding: 8px;
-    border-radius: 5px;
-    transition: background-color 0.3s ease;
+    display: block; /* Block display for full width */
+    padding: 10px 15px; /* Spacing */
+    color: #333; /* Text color */
+    text-decoration: none; /* Remove underline */
+    border-radius: 4px; /* Rounded corners */
 }
 
 .side-nav a:hover {
-    background-color: #ddd;
+    background-color: #e2e6ea; /* Highlight on hover */
+    color: #007bff; /* Change text color on hover */
 }
 
-/* Responsive styles for smaller screens */
-@media (max-width: 768px) {
-    header .container {
-        width: 100%; /* Adjust header width for smaller screens */
-    }
-
-    .main-content {
-        padding: 10px;
-        margin-left: 0; /* No margin on smaller screens */
-        width: 100%; /* Full width on smaller screens */
-    }
-
-    .side-nav {
-        width: 220px;
-        left: -220px; /* Initially hide the side nav off-screen */
-        
-    }
-
-    .main-content {
-        margin-left: 0; /* No margin on smaller screens */
-    }
-
-    #formToggleButton {
-        width: 95%; /* Adjust button width for smaller screens */
-    }
-
-    /* Show side nav when toggled */
-    .side-nav.open {
-        left: 0;
-    }
+.has-submenu > a {
+    position: relative; /* Position for submenu indicator */
 }
-@media (min-width: 769px) {
-    .side-nav {
-        left: 0; /* Display side nav by setting left to 0 */
-    }
+
+.submenu {
+    padding-left: 15px; /* Indent submenu */
+    display: none; /* Hide submenu by default */
 }
+
+.has-submenu:hover .submenu {
+    display: block; /* Show submenu on hover */
+}
+
+
 
 .total-info {
     margin-top: 20px; /* Add space above the total info section */

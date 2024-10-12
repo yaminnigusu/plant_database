@@ -176,6 +176,7 @@ if (!isset($_SESSION['username'])) {
 
     <div class="main-content">
         <div class="container">
+            
             <div class="header-container">
                 <h1 class="mt-4">Plant Database</h1>
                 <button id="formToggleButton" onclick="toggleFormVisibility()" style="width: 150px; height: auto; padding: 0; font-size: 30px; text-align: center;  background-color: #28a745; color: white;  border: none; cursor: pointer;" aria-label="Add New Data">+</button>
@@ -188,9 +189,10 @@ if (!isset($_SESSION['username'])) {
     </div>
     
     <div class="form-group" id="photoGroup">
-        <label for="photo">Add Photo:</label>
-        <input type="file" id="photo" name="photo" accept="image/*" class="form-control">
-    </div>
+    <label for="photo">Add Photos:</label>
+    <input type="file" id="photo" name="photos[]" accept="image/*" class="form-control" multiple>
+</div>
+
 
     <div class="form-group" id="plantNameGroup">
         <label for="plantName">Common Name:</label>
@@ -285,6 +287,7 @@ if (!isset($_SESSION['username'])) {
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
 
+
         </div>
 
         <div class="stat-container">
@@ -310,6 +313,7 @@ if (!isset($_SESSION['username'])) {
 </div>
 <br>
 <br>
+
 <!-- Plant list container -->
 <div class="plant-list" id="plantListContainer" style="display: none;">
     <h3>Plant Types:</h3>

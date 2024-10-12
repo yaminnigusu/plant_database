@@ -26,32 +26,43 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $stmt = $conn->prepare($sql_insert);
         $stmt->bind_param("sisssi", $plantName, $quantity, $plasticSize, $plantTypeStr, $plantationDate, $value);
     } else {
-        // Retrieve uploaded file information
-        $photoPath = basename($_FILES["photo"]["name"]); // Use only the filename for database storage
+        // Retrieve uploaded file information for multiple images
+        $uploadedFilePaths = []; // Array to hold uploaded file paths
         $targetDir = __DIR__ . '/uploads/';
-        $targetFile = $targetDir . $photoPath;
-
+        
         // Check if the uploads directory exists and is writable
         if (!file_exists($targetDir) || !is_writable($targetDir)) {
             die("Error: The uploads directory is missing or not writable.");
         }
 
-        // Move uploaded file to target directory
-        if (move_uploaded_file($_FILES["photo"]["tmp_name"], $targetFile)) {
-            // Calculate selling price with a 40% profit margin
-            $costPerPlant = $value; // Use 'value' as the cost per plant
-            $profitMargin = 0.4; // 40% profit margin
-            $sellingPrice = $costPerPlant * (1 + $profitMargin);
+        // Loop through each uploaded file
+        foreach ($_FILES['photos']['tmp_name'] as $key => $tmpName) {
+            $photoPath = basename($_FILES['photos']['name'][$key]); // Get only the filename
+            $targetFile = $targetDir . $photoPath;
 
-            // Insert data into database with selling price
-            $sql_insert = "INSERT INTO plants (plant_name, scientific_name, quantity, plastic_size, plantation_date, cost_per_plant, selling_price, plant_type, photo_path, is_featured)
-                           VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
-            $stmt = $conn->prepare($sql_insert);
-            $stmt->bind_param("ssissssssi", $plantName, $scientificName, $quantity, $plasticSize, $plantationDate, $costPerPlant, $sellingPrice, $plantTypeStr, $photoPath, $isFeatured);
-        } else {
-            // File upload error
-            die("Sorry, there was an error uploading your file.");
+            // Move uploaded file to target directory
+            if (move_uploaded_file($tmpName, $targetFile)) {
+                // Append to the array of uploaded file paths
+                $uploadedFilePaths[] = $photoPath;
+            } else {
+                // Handle file upload error
+                die("Sorry, there was an error uploading file: " . $_FILES['photos']['name'][$key]);
+            }
         }
+
+        // Convert the array of file paths into a comma-separated string
+        $photoPathsString = implode(',', $uploadedFilePaths);
+
+        // Calculate selling price with a 40% profit margin
+        $costPerPlant = $value; // Use 'value' as the cost per plant
+        $profitMargin = 0.4; // 40% profit margin
+        $sellingPrice = $costPerPlant * (1 + $profitMargin);
+
+        // Insert data into the database with selling price and photo paths
+        $sql_insert = "INSERT INTO plants (plant_name, scientific_name, quantity, plastic_size, plantation_date, cost_per_plant, selling_price, plant_type, photo_path, is_featured)
+                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        $stmt = $conn->prepare($sql_insert);
+        $stmt->bind_param("ssissssssi", $plantName, $scientificName, $quantity, $plasticSize, $plantationDate, $costPerPlant, $sellingPrice, $plantTypeStr, $photoPathsString, $isFeatured);
     }
 
     // Execute SQL statement

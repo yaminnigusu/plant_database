@@ -305,6 +305,89 @@ $conn->close();
 #abc {
     width: 100%;
 }
+/* General Card Styles */
+.card {
+    transition: transform 0.2s;
+    border-radius: 10px;
+    overflow: hidden; /* Prevent overflow of images */
+}
+
+.card:hover {
+    transform: scale(1.05); /* Scale up on hover */
+}
+
+.slider {
+    position: relative;
+    overflow: hidden;
+}
+
+.slides {
+    display: flex;
+    transition: transform 0.5s ease;
+    width: 100%;
+}
+
+.slide {
+    min-width: 100%; /* Each slide takes full width */
+}
+
+.prev, .next {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(255, 255, 255, 0.7);
+    border: none;
+    padding: 10px;
+    cursor: pointer;
+    z-index: 1;
+    border-radius: 50%;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.3);
+}
+
+.prev {
+    left: 10px;
+}
+
+.next {
+    right: 10px;
+}
+
+/* Button Styles */
+.btn-outline-success {
+    border-color: #28a745; /* Customize the border color */
+}
+
+.btn-outline-success:hover {
+    background-color: #28a745; /* Background color on hover */
+    color: #fff; /* Text color on hover */
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 20px;
+    }
+
+    .card-title {
+        font-size: 1.25rem; /* Adjust title size for mobile */
+    }
+
+    .price-text {
+        font-weight: bold; /* Bold price text for emphasis */
+    }
+
+    .prev, .next {
+        padding: 8px;
+    }
+}
+
+@media (min-width: 769px) {
+    .card-title {
+        font-size: 1.5rem; /* Adjust title size for desktop */
+    }
+}
+
+
 
     </style>
 </head>
@@ -400,30 +483,48 @@ $conn->close();
     <br>
             </div>
 
-            <!-- Display Plants -->
             <div class="row">
     <?php if (count($plants) > 0) : ?>
         <?php foreach ($plants as $plant) : ?>
-            <div class="col-md-4 col-sm-6">
-    <div class="card mb-4">
-        <img src="<?= '../database/uploads/' . htmlspecialchars($plant['photo_path']); ?>" alt="<?= htmlspecialchars($plant['plant_name']); ?>" class="card-img-top">
-        <div class="card-body text-center"> <!-- Center the content -->
-            <h5 class="card-title"><?= htmlspecialchars($plant['plant_name']); ?></h5>
-            <p class="card-text">Quantity: <?= $plant['quantity']; ?></p>
-            <p class="price-text">Price: <?= number_format($plant['sellingPrice'], 2); ?> Birr</p>
-            <div class="text-center"> <!-- Center the button -->
-            <a href="order_form.php?plant_id=<?= $plant['id']; ?>&plant_name=<?= urlencode($plant['plant_name']); ?>&selling_price=<?= $plant['sellingPrice']; ?>" class="btn btn-outline-success">
-    Order now
-</a>
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                <div class="card shadow border-0 rounded">
+                    <div class="slider" id="slider-<?= $plant['id']; ?>">
+                        <div class="slides">
+                            <?php 
+                            // Split the photo_path into an array of image paths
+                            $photos = explode(',', $plant['photo_path']);
+                            foreach ($photos as $photo): 
+                            ?>
+                                <div class="slide">
+                                    <img src="<?= '../database/uploads/' . htmlspecialchars($photo); ?>" 
+                                         alt="<?= htmlspecialchars($plant['plant_name']); ?>" 
+                                         class="card-img-top img-fluid" 
+                                         style="max-height: 300px;  object-fit: contain;">
+                                </div>
+                            <?php endforeach; ?>
+                        </div>
+                        <button class="prev" onclick="changeSlide(<?= $plant['id']; ?>, -1)">&#10094;</button>
+                        <button class="next" onclick="changeSlide(<?= $plant['id']; ?>, 1)">&#10095;</button>
+                    </div>
 
+                    <div class="card-body text-center">
+                        <h5 class="card-title"><?= htmlspecialchars($plant['plant_name']); ?></h5>
+                        <p class="card-text">Quantity: <?= $plant['quantity']; ?></p>
+                        <p class="price-text">Price: <?= number_format($plant['sellingPrice'], 2); ?> Birr</p>
+                        <div class="text-center">
+                            <a href="order_form.php?plant_id=<?= $plant['id']; ?>&plant_name=<?= urlencode($plant['plant_name']); ?>&selling_price=<?= $plant['sellingPrice']; ?>" 
+                               class="btn btn-outline-success">
+                                Order Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
             </div>
-        </div>
-    </div>
-</div>
-
         <?php endforeach; ?>
-    <?php else : ?>
-        <p class="alert alert-warning">No plants found.</p>
+    <?php else: ?>
+        <div class="col-12 text-center">
+            <p>No plants available at the moment.</p>
+        </div>
     <?php endif; ?>
 </div>
 
@@ -534,6 +635,36 @@ $conn->close();
 }
 
     </script>
+<script>
+    // Track current slide index for each slider
+    const slideIndex = {};
+
+    function changeSlide(sliderId, direction) {
+        const slider = document.getElementById('slider-' + sliderId);
+        const slides = slider.querySelector('.slides');
+        const totalSlides = slides.children.length;
+
+        // Initialize slideIndex for this slider if not already set
+        if (!slideIndex[sliderId]) {
+            slideIndex[sliderId] = 0;
+        }
+
+        // Update the slide index
+        slideIndex[sliderId] += direction;
+
+        // Ensure the slide index wraps around correctly
+        if (slideIndex[sliderId] >= totalSlides) {
+            slideIndex[sliderId] = 0; // Go to the first slide
+        } else if (slideIndex[sliderId] < 0) {
+            slideIndex[sliderId] = totalSlides - 1; // Go to the last slide
+        }
+
+        // Move the slides container to show the current slide
+        const slideWidth = slider.querySelector('.slide').offsetWidth;
+        slides.style.transform = `translateX(${-slideIndex[sliderId] * slideWidth}px)`;
+    }
+</script>
+
     <!-- Include jQuery -->
    
 </body>

@@ -1,59 +1,68 @@
 <?php
+session_start();
+
+// Check if user is logged in
+if (!isset($_SESSION['username'])) {
+    header("Location: login.php"); // Redirect to login if not logged in
+    exit();
+}
+
 include("config.php");
 
-// Check if form is submitted
+// Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Sanitize user inputs
     $id = $_POST['id'];
-    $plantName = $_POST['plantName'];
-    $scientificName = $_POST['scientificName'];
+    $plantName = htmlspecialchars($_POST['plantName']);
+    $scientificName = htmlspecialchars($_POST['scientificName']);
     $quantity = $_POST['quantity'];
     $plasticSize = $_POST['plasticSize'];
+    $plantType = isset($_POST['plantType']) ? implode(', ', $_POST['plantType']) : '';
     $plantationDate = $_POST['plantationDate'];
     $value = $_POST['value'];
-    
-    // Handle plantType as an array
-    if (isset($_POST['plantType']) && is_array($_POST['plantType'])) {
-        $plantType = implode(', ', $_POST['plantType']);
+
+    // Prepare the SQL update query
+    $sql_update = "UPDATE plants SET 
+        plant_name = '$plantName', 
+        scientific_name = '$scientificName', 
+        quantity = '$quantity', 
+        plastic_size = '$plasticSize', 
+        plant_type = '$plantType', 
+        plantation_date = '$plantationDate', 
+        value = '$value' 
+        WHERE id = '$id'";
+
+    // Execute the query
+    if ($conn->query($sql_update) === TRUE) {
+        // Redirect to the page from which the user came or to a default page
+        $redirect_url = isset($_POST['redirect_url']) ? $_POST['redirect_url'] : 'database.php';
+        header("Location: $redirect_url");
+        exit();
     } else {
-        $plantType = ''; // Default value if no plant types are selected
+        echo "Error updating record: " . $conn->error;
     }
 
-    // Handle featured product
-    $isFeatured = isset($_POST['plantFeatured']) ? 1 : 0; // Set to 1 if checked, otherwise 0
+    // Handle file upload if a new photo is uploaded
+    if (!empty($_FILES['photo']['name'])) {
+        $target_dir = "../database/uploads/";
+        $target_file = $target_dir . basename($_FILES["photo"]["name"]);
+        $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-    // Update the plant record in the database
-    $sql_update = "UPDATE plants SET plant_name = ?, scientific_name = ?, quantity = ?, plastic_size = ?, plantation_date = ?, value = ?, plant_type = ?, is_featured = ? WHERE id = ?";
-    $stmt = $conn->prepare($sql_update);
-    $stmt->bind_param("ssissssii", $plantName, $scientificName, $quantity, $plasticSize, $plantationDate, $value, $plantType, $isFeatured, $id);
-    
-    if ($stmt->execute()) {
-        // Check if a new photo is uploaded
-        if ($_FILES['photo']['error'] === UPLOAD_ERR_OK) {
-            $uploadDir = "uploads/";
-            $uploadFile = $uploadDir . basename($_FILES['photo']['name']);
-
-            // Move uploaded file to the upload directory
-            if (move_uploaded_file($_FILES['photo']['tmp_name'], $uploadFile)) {
-                // Update the photo_path field in the database
-                $photoPath = $_FILES['photo']['name'];
-                $sql_update_photo = "UPDATE plants SET photo_path = ? WHERE id = ?";
-                $stmt_photo = $conn->prepare($sql_update_photo);
-                $stmt_photo->bind_param("si", $photoPath, $id);
-                $stmt_photo->execute();
-                $stmt_photo->close();
+        // Check if the file is a valid image
+        $check = getimagesize($_FILES["photo"]["tmp_name"]);
+        if ($check !== false) {
+            // Attempt to upload the file
+            if (move_uploaded_file($_FILES["photo"]["tmp_name"], $target_file)) {
+                // Update photo path in the database
+                $sql_photo_update = "UPDATE plants SET photo_path = '$target_file' WHERE id = '$id'";
+                $conn->query($sql_photo_update);
             } else {
-                echo "Failed to upload photo.";
+                echo "Sorry, there was an error uploading your file.";
             }
+        } else {
+            echo "File is not an image.";
         }
-
-        // Redirect to database.php after successful update
-        header("Location: database.php");
-        exit;
-    } else {
-        echo "Error updating plant record: " . $stmt->error;
     }
-
-    $stmt->close();
 }
 
 $conn->close();

@@ -79,6 +79,8 @@ if (isset($_GET['id'])) {
                 <h1>Edit Plant Record</h1>
                 <form method="post" action="update.php" enctype="multipart/form-data">
                     <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
+                    <input type="hidden" name="redirect_url" value="<?php echo isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : ''; ?>">
+
                     <div class="form-group">
                         <label for="photo">Update Photo:</label>
                         <input type="file" id="photo" name="photo">
@@ -148,8 +150,8 @@ if (isset($_GET['id'])) {
                             <label for="perennial">Perennial</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" id="indoorPlant" name="plantType[]" value="indoorplant" <?php if (in_array('indoorplant', explode(', ', $row['plant_type']))) echo 'checked'; ?>>
-                            <label for="indoorPlant">Indoor Plant</label>
+                            <input type="checkbox" id="indoor" name="plantType[]" value="indoor" <?php if (in_array('indoor', explode(', ', $row['plant_type']))) echo 'checked'; ?>>
+                            <label for="indoor">Indoor</label>
                         </div>
                         <div class="checkbox-item">
                             <input type="checkbox" id="herb" name="plantType[]" value="herb" <?php if (in_array('herb', explode(', ', $row['plant_type']))) echo 'checked'; ?>>
@@ -157,26 +159,26 @@ if (isset($_GET['id'])) {
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="plantationDate">Plantation Date:</label>
+                        <input type="date" id="plantationDate" name="plantationDate" value="<?php echo htmlspecialchars($row['plantation_date']); ?>" required>
+                    </div>
+                    <div class="form-group">
                         <label for="value">Value:</label>
                         <input type="number" id="value" name="value" value="<?php echo $row['value']; ?>" required>
                     </div>
-                    
-                    
                     <div class="form-group">
-                        <label for="plantFeatured">Mark as Featured:</label>
-                        <input type="checkbox" id="plantFeatured" name="plantFeatured" value="1" <?php if ($row['is_featured']) echo 'checked'; ?>>
+                        <input type="submit" value="Update Plant">
                     </div>
-                    <button type="submit" class="btn btn-primary">Update Plant</button>
                 </form>
             </div>
         </body>
         </html>
 <?php
     } else {
-        echo "No plant found with the specified ID.";
+        echo "No record found.";
     }
 } else {
-    echo "Invalid ID.";
+    echo "No ID provided.";
 }
 
 $conn->close();

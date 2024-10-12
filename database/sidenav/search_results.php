@@ -194,36 +194,86 @@ if (isset($_GET['report']) && isset($_GET['format']) && $_GET['format'] === 'pdf
 
 .result-table {
     width: 100%;
-    border-collapse: collapse;
+    border-collapse: separate;
+    border-spacing: 0;
     margin-top: 20px;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1); /* Add shadow for a modern look */
+    border-radius: 10px; /* Rounded corners */
+    overflow: hidden; /* To ensure the rounded corners work with table */
 }
 
 .result-table th,
 .result-table td {
-    padding: 12px;
-    border: 1px solid #ddd;
-    text-align: center;
+    padding: 15px; /* Consistent padding */
+    border-bottom: 1px solid #ddd; /* Subtle bottom border */
+    text-align: center; /* Center align the text */
 }
 
 .result-table th {
-    background-color: #f0f0f0;
+    background-color: #28a745; /* Green header background */
+    color: #fff; /* White text */
     font-weight: bold;
+    font-size: 16px;
+    text-transform: uppercase; /* Uppercase headers for a modern touch */
+    letter-spacing: 1px; /* Slight letter spacing */
 }
 
 .result-table tbody tr:nth-child(odd) {
-    background-color: #d9f4d2; /* Light green background for odd rows */
+    background-color: #f2f2f2; /* Light grey background for odd rows */
 }
 
 .result-table tbody tr:nth-child(even) {
-    background-color: #ffffff; /* White background for even rows */
+    background-color: #fff; /* White background for even rows */
 }
 
+.result-table tbody tr:hover {
+    background-color: #d9f4d2; /* Light green background on hover */
+}
 
 .result-table img {
-    max-width: 200px;
-    max-height: 150px;
-    
+    max-width: 150px; /* Resize images */
+    max-height: 100px;
+    border-radius: 5px; /* Rounded image corners */
 }
+
+/* Adding specific hover effects to the cells */
+.result-table td {
+    transition: background-color 0.3s ease; /* Smooth hover transition */
+}
+
+.result-table th:first-child,
+.result-table td:first-child {
+    text-align: left; /* Align first column (plant name) to the left */
+    padding-left: 20px;
+}
+
+.result-table th:last-child,
+.result-table td:last-child {
+    padding-right: 20px; /* Ensure spacing for the last column */
+}
+
+/* Style total row */
+.result-table tfoot tr {
+    background-color: #28a745; /* Green background for total row */
+    color: #fff; /* White text */
+    font-weight: bold;
+}
+
+.result-table tfoot td {
+    padding: 15px;
+    font-size: 16px;
+    text-align: right; /* Right-align text in total row */
+}
+
+/* Optional: Adding animation when the row is hovered */
+.result-table tbody tr {
+    transition: all 0.2s ease-in-out;
+}
+
+.result-table tbody tr:hover {
+    transform: scale(1.02); /* Slight scale up on hover */
+}
+
 /* Styling for total info section */
 .total-info {
     margin-top: 20px; /* Add space above the total info section */
@@ -308,6 +358,26 @@ if (isset($_GET['report']) && isset($_GET['format']) && $_GET['format'] === 'pdf
     <?php
 // Include database connection config
 include("../config.php");
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['delete_plant_id'])) {
+    $plantIdToDelete = $_POST['delete_plant_id'];
+
+    // Prepare the delete query
+    $deleteSql = "DELETE FROM plants WHERE id = ?";
+    $stmtDelete = $conn->prepare($deleteSql);
+
+    if ($stmtDelete) {
+        $stmtDelete->bind_param('i', $plantIdToDelete); // Bind plant ID as an integer
+        if ($stmtDelete->execute()) {
+            echo '<p class="success-message">Plant deleted successfully.</p>';
+        } else {
+            echo '<p class="error-message">Error deleting plant: ' . $stmtDelete->error . '</p>';
+        }
+        $stmtDelete->close();
+    } else {
+        echo '<p class="error-message">Error preparing statement: ' . $conn->error . '</p>';
+    }
+}
+
 
 // Get search parameters from the form
 $plantName = $_GET['plantName'] ?? '';
@@ -378,12 +448,13 @@ if ($stmt->execute()) {
     if ($result->num_rows > 0) {
         // Display search results...
         echo '<table class="result-table">';
-        echo '<thead style=""><tr><th>Photo</th><th>Plant Name</th><th>Scientific Name</th><th>Plant Type</th><th>Plastic Size</th><th>Quantity</th><th>Value</th></tr></thead>';
+        echo '<thead style=""><tr><th>Photo</th><th>Plant Name</th><th>Scientific Name</th><th>Plant Type</th><th>Plastic Size</th><th>Quantity</th><th>plantation date</th><th>Value</th><th>action</th></tr></thead>';
         echo '<tbody>';
         $totalQuantity = 0;
         $totalValue = 0;
 
         while ($row = $result->fetch_assoc()) {
+            $plantId = $row['id'];
             echo '<tr>';
             echo '<td class="photo-cell"><img src="../uploads/' . htmlspecialchars($row['photo_path']) . '" width="200px" height="150px" alt="' . htmlspecialchars($row['plant_name']) . '"></td>'; // Display ID column
             htmlspecialchars($row['plant_name']) . '"></td>';
@@ -392,7 +463,14 @@ if ($stmt->execute()) {
             echo '<td>' . htmlspecialchars($row['plant_type']) . '</td>';
             echo '<td>' . htmlspecialchars($row['plastic_size']) . '</td>';
             echo '<td>' . htmlspecialchars($row['quantity']) . '</td>';
+            echo '<td>' . htmlspecialchars($row['plantation_date']) . '</td>';
             echo '<td>' . htmlspecialchars($row['value']) . '</td>';
+            echo '<td>';
+            echo '<a href="../edit.php?id=' . $plantId . '" class="btn btn-primary">Edit</a> ';
+            echo '<form method="POST" onsubmit="return confirm(\'Are you sure you want to delete this plant?\');">';
+            echo '<input type="hidden" name="delete_plant_id" value="' . $plantId . '">';
+            echo '<button type="submit" class="btn btn-danger">Delete</button>';    
+            echo '</td>';
             echo '</tr>';
 
             // Accumulate total quantity and total value
