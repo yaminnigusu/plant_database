@@ -150,7 +150,7 @@ if (isset($_GET['id'])) {
                             <label for="perennial">Perennial</label>
                         </div>
                         <div class="checkbox-item">
-                            <input type="checkbox" id="indoor" name="plantType[]" value="indoor" <?php if (in_array('indoor', explode(', ', $row['plant_type']))) echo 'checked'; ?>>
+                            <input type="checkbox" id="indoor" name="plantType[]" value="indoorplant" <?php if (in_array('indoor', explode(', ', $row['plant_type']))) echo 'checked'; ?>>
                             <label for="indoor">Indoor</label>
                         </div>
                         <div class="checkbox-item">

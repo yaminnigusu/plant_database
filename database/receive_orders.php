@@ -44,7 +44,9 @@ $result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="../images/logo.png" type="image/jpg">
+    
     <style>
+        
          .submenu {
             display: none; /* Hide submenu by default */
         }

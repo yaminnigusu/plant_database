@@ -1,33 +1,187 @@
 /* Reset default styles */
-
-
-
-
-body {
-    font-family: Arial, sans-serif;
+* {
     margin: 0;
     padding: 0;
-    background-color: #f4f4f4;
+    box-sizing: border-box;
 }
 
-.header {
-    background-color: #fff; /* Change as needed */
-    padding: 10px 0; /* Add some vertical padding */
+/* Global styles */
+body {
+    font-family: 'Arial', sans-serif;
+    background-color: #fff;
+    margin: 0;
+    padding: 0;
+    line-height: 1.6;
 }
 
+/* Header styles */
+header {
+    background-color: #f8f9fa; /* Light background for the header */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+    padding: 15px 0;
+}
 
-header #login-icon {
-    background-color: #4CAF50;
-    color: #fff;
-    border: none;
-    padding: 10px 20px;
+header .container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+header img {
+    margin-right: 20px;
+}
+
+header h1 {
+    font-size: 24px;
+    font-weight: bold;
+    color: #28a745; /* Primary green color */
+    margin: 0;
+    padding-left: 10px;
+}
+
+header nav {
+    display: flex;
+    gap: 15px; /* Space between nav items */
+}
+
+header nav a {
+    text-decoration: none;
+    color: #333;
+    font-weight: 600;
+    padding: 10px 15px;
+    transition: background-color 0.3s ease;
+}
+
+header nav a:hover {
+    background-color: #e2e6ea; /* Light hover background */
     border-radius: 5px;
+}
+
+header .btn-success {
+    background-color: #28a745; /* Green button */
+    border: none;
+    color: white;
+    padding: 8px 16px;
+    font-size: 14px;
+    border-radius: 4px;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
 
-header #login-icon:hover {
-    background-color: #45a049;
+header .btn-success:hover {
+    background-color: #218838; /* Darker green on hover */
+}
+
+header .col-auto {
+    display: flex;
+    align-items: center;
+}
+
+/* Side navigation styles */
+.side-nav {
+    background-color: #fff; /* White background for sidebar */
+    color: #343a40;
+    width: 250px;
+    height: 100vh;
+    position: fixed;
+    left: 0;
+    top: 0;
+    padding: 20px;
+    box-shadow: 2px 0 5px rgba(0, 0, 0, 0.2); /* Shadow to separate it from the page */
+    overflow-y: auto; /* Makes side nav scrollable */
+}
+
+.side-nav ul {
+    list-style: none;
+    padding: 0;
+}
+
+.side-nav ul li {
+    margin-bottom: 15px;
+}
+
+.side-nav ul li a {
+    color: #343a40;
+    text-decoration: none;
+    font-weight: bold;
+    padding: 10px 15px;
+    display: block;
+    border-radius: 4px;
+    transition: background-color 0.3s ease;
+}
+
+.side-nav ul li a:hover {
+    background-color: #f8f9fa; /* Slightly lighter background on hover */
+}
+
+.side-nav ul li.has_submenu > a {
+    position: relative;
+    cursor: pointer;
+}
+
+.side-nav ul li.has_submenu > a:after {
+    content: '\25BC'; /* Down arrow for submenu */
+    position: absolute;
+    right: 10px;
+    font-size: 12px;
+    transition: transform 0.3s ease; /* Smooth rotation */
+}
+
+.side-nav ul li.has_submenu.active > a:after {
+    transform: rotate(180deg); /* Rotate arrow when submenu is open */
+}
+
+.side-nav ul li.has_submenu ul.submenu {
+    display: none;
+    margin-top: 10px;
+    margin-left: 15px; /* Indent submenu */
+    border-left: 2px solid #dee2e6; /* Add a subtle line to the left */
+    padding-left: 10px;
+}
+
+.side-nav ul li.has_submenu.active ul.submenu {
+    display: block; /* Show submenu when parent is active */
+    animation: fadeIn 0.3s ease;
+}
+
+.side-nav ul li.has_submenu ul.submenu li {
+    margin-bottom: 10px;
+}
+
+.side-nav ul li.has_submenu ul.submenu li a {
+    background-color: #f8f9fa; /* Light background for submenu items */
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Responsive sidebar */
+@media (max-width: 768px) {
+    .side-nav {
+        width: 100%;
+        height: auto;
+        position: relative;
+    }
+
+    .side-nav ul {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+
+    .side-nav ul li {
+        margin-bottom: 0;
+        margin-right: 10px;
+    }
 }
 
 /* Main Content styles */
@@ -36,13 +190,11 @@ header #login-icon:hover {
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     margin-left: 260px; /* Adjusted margin to account for side nav width */
-    width: calc(100% - 280px); /* Calculate the width to fill available space (280px for side nav and margin) */
-    
+    width: calc(100% - 280px); /* Calculate the width to fill available space */
+    min-height: 100vh;
 }
 
-/* External CSS for table enhancements */
-
-/* Style for the entire table */
+/* Table enhancements */
 table {
     width: 100%;
     margin: 20px 0;
@@ -50,7 +202,6 @@ table {
     font-family: Arial, sans-serif;
 }
 
-/* Style for the table header */
 thead th {
     background-color: #f8f9fa;
     color: #343a40;
@@ -60,19 +211,16 @@ thead th {
     border-bottom: 2px solid #dee2e6;
 }
 
-/* Style for table rows */
 tbody td {
     padding: 12px;
     text-align: left;
     border-bottom: 1px solid #dee2e6;
 }
 
-/* Add hover effect for table rows */
 tbody tr:hover {
     background-color: #f1f1f1;
 }
 
-/* Style for the photo cell */
 .photo-cell img {
     max-width: 100px;
     height: auto;
@@ -80,7 +228,7 @@ tbody tr:hover {
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
-/* Style for action buttons */
+/* Action buttons */
 .action-buttons a {
     margin-right: 10px;
     padding: 6px 12px;
@@ -90,24 +238,21 @@ tbody tr:hover {
     transition: background-color 0.3s ease;
 }
 
-/* Edit button style */
 .editButton {
     background-color: #28a745;
     color: white;
 }
 
-/* Delete button style */
 .deleteButton {
     background-color: #dc3545;
     color: white;
 }
 
-/* Hover effect for action buttons */
 .action-buttons a:hover {
     opacity: 0.8;
 }
 
-/* Total info styling */
+/* Total info */
 .total-info {
     margin-top: 20px;
     background-color: #f0f0f0;
@@ -124,7 +269,7 @@ tbody tr:hover {
     color: #343a40;
 }
 
-/* Toggle Form button style */
+/* Toggle Form button */
 #formToggleButton {
     margin: 20px auto;
     display: block;
@@ -142,69 +287,7 @@ tbody tr:hover {
     background-color: #318635;
 }
 
-.side-nav {
-    background-color: #f8f9fa; /* Light background */
-    padding: 15px; /* Spacing around the nav */
-    height: 100vh; /* Full height */
-    position: fixed; /* Fix the sidebar */
-    top: 0; /* Align to top */
-    left: 0; /* Align to left */
-    width: 250px; /* Width of sidebar */
-    box-shadow: 2px 0 5px rgba(0,0,0,0.1); /* Shadow effect */
-    transition: all 0.3s; /* Smooth transition */
-}
-
-.side-nav a {
-    display: block; /* Block display for full width */
-    padding: 10px 15px; /* Spacing */
-    color: #333; /* Text color */
-    text-decoration: none; /* Remove underline */
-    border-radius: 4px; /* Rounded corners */
-}
-
-.side-nav a:hover {
-    background-color: #e2e6ea; /* Highlight on hover */
-    color: #007bff; /* Change text color on hover */
-}
-
-.has-submenu > a {
-    position: relative; /* Position for submenu indicator */
-}
-
-.submenu {
-    padding-left: 15px; /* Indent submenu */
-    display: none; /* Hide submenu by default */
-}
-
-.has-submenu:hover .submenu {
-    display: block; /* Show submenu on hover */
-}
-
-
-
-.total-info {
-    margin-top: 20px; /* Add space above the total info section */
-    text-align: center; /* Center-align the content */
-    background-color: #f0f0f0; /* Background color for the total info section */
-    padding: 15px; /* Add padding around the content */
-}
-
-.total-info p {
-    font-size: 18px; /* Increase font size for total quantity and total value */
-    margin-bottom: 10px; /* Add space below each paragraph */
-}
-
-
-
-h1 {
-    text-align: center;
-    color: #333;
-}
-
-label {
-    font-weight: bold;
-}
-
+/* Form input styling */
 input[type="text"],
 input[type="number"],
 textarea {
@@ -215,6 +298,10 @@ textarea {
     border-radius: 5px;
 }
 
+label {
+    font-weight: bold;
+}
+
 button {
     background-color: #007bff;
     color: #fff;
@@ -222,8 +309,24 @@ button {
     border: none;
     border-radius: 5px;
     cursor: pointer;
+    transition: background-color 0.3s ease;
 }
 
 button:hover {
     background-color: #0056b3;
+}
+
+/* Success message styling */
+.alert-success {
+    background-color: #d4edda;
+    color: #155724;
+    padding: 15px;
+    border-radius: 5px;
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+h1 {
+    text-align: center;
+    color: #333;
 }

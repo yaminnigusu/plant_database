@@ -145,6 +145,7 @@ if (!isset($_SESSION['username'])) {
         <ul>
             <br>
             <br>
+            <br>
             <li><a href="database.php"><b>Home</b></a></li>
             <li><a href="sidenav/home.php"><b>Search</b></a></li>
             <li class="has-submenu">
@@ -421,20 +422,27 @@ function fetchPlantData() {
         }
     </script>
     <script>
-    function toggleSubmenu(element) {
-        const submenu = element.nextElementSibling;
-        submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
-    }
+    // Wait until the DOM is fully loaded
+    document.addEventListener('DOMContentLoaded', function () {
+        // Get all elements with the class 'has-submenu'
+        var submenuItems = document.querySelectorAll('.has-submenu');
 
-    document.querySelectorAll('.has-submenu > a').forEach(item => {
-        item.addEventListener('click', event => {
-            event.preventDefault();
-            toggleSubmenu(event.target);
+        submenuItems.forEach(function (item) {
+            item.addEventListener('click', function (event) {
+                event.preventDefault(); // Prevent the default action
+                
+                // Toggle the 'display' style of the submenu
+                var submenu = item.querySelector('.submenu');
+                if (submenu.style.display === 'none' || submenu.style.display === '') {
+                    submenu.style.display = 'block';
+                } else {
+                    submenu.style.display = 'none';
+                }
+            });
         });
     });
-
-    
 </script>
+
       <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
      
 </html>

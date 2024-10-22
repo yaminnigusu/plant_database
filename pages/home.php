@@ -513,7 +513,7 @@ $conn->close();
 </footer>
 
 
-    <script src="../js/script.js"></script>
+    
     <script>
         
         

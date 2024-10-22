@@ -160,7 +160,9 @@ $result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
         <div class="container">
             <div class="row justify-content-between align-items-center">
                 <div class="col"></div>
-                
+                <div class="col-left">
+                    <img src="../images/logo.png" alt="Logo" width="50">
+                </div>
                 <h1>Le Jardin de Kakoo</h1>
             </div>
             <nav>
@@ -171,15 +173,16 @@ $result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
                 <a href="database.php">Database</a>
                 <div class="col-auto">
                 <button id="login-icon" onclick="window.location.href='logout.php';" aria-label="Login" class="btn btn-success">Logout</button>
+
                 </div>
             </nav>
         </div>
     </header>
+   
 
     <aside class="side-nav" id="sideNav">
         <ul>
-            <br>
-            <br>
+            
             <li><a href="database.php"><b>Home</b></a></li>
             <li><a href="sidenav/home.php"><b>Search</b></a></li>
             <li class="has-submenu">

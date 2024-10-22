@@ -4,7 +4,7 @@ session_start();
 // Store the current page in session if not already logged in
 if (!isset($_SESSION['username'])) {
     $_SESSION['redirect_to'] = $_SERVER['REQUEST_URI']; // Store the requested URL
-    header("Location: login.php"); // Redirect to login page if not logged in
+    header("Location: ../login.php"); // Redirect to login page if not logged in
     exit();
 }
 

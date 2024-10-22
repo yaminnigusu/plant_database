@@ -140,6 +140,9 @@ if (!isset($_SESSION['username'])) {
     </header>
     <aside class="side-nav" id="sideNav">
         <ul>
+            <br>
+            <br>
+            <br>
             <li><a href="../database.php"><b>Home</b></a></li>
             <li><a href="home.php"><b>Search</b></a></li>
             <li class="has-submenu">
