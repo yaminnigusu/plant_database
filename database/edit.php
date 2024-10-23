@@ -31,21 +31,32 @@ if (isset($_GET['id'])) {
             <link rel="stylesheet" href="editstyle.css">
             <link rel="stylesheet" href="styles.css">
             <style>
-                /* CSS to style the checkbox container */
                 .checkbox-container {
                     display: flex;
-                    flex-wrap: wrap; /* Allow wrapping of checkboxes */
+                    flex-wrap: wrap;
                 }
 
-                /* Style for individual checkbox items */
                 .checkbox-item {
-                    margin-right: 20px; /* Adjust margin between checkbox items */
+                    margin-right: 20px;
+                }
+
+                .image-preview {
+                    width: 100px; /* Adjust as needed */
+                    height: auto;
+                    margin-bottom: 10px;
                 }
             </style>
         </head>
         <body>
-        <header>
-            <h1>Le Jardin de Kakoo</h1>
+        <header class="sticky-top">
+        <div class="container">
+            <div class="row justify-content-between align-items-center">
+                <div class="col"></div>
+                <div class="col-left">
+                    <img src="../images/logo.png" alt="Logo" width="50">
+                </div>
+                <h1>Le Jardin de Kakoo</h1>
+            </div>
             <nav>
                 <a href="../pages/home.php">Home</a>
                 <a href="../pages/shop.php">Shop</a>
@@ -56,9 +67,16 @@ if (isset($_GET['id'])) {
                     <button id="login-icon" onclick="window.location.href='logout.php';" aria-label="Login" class="btn btn-success">Logout</button>
                 </div>
             </nav>
-            <aside class="side-nav">
-                <ul>
-                    <li><a href="sidenav/home.php">Home</a></li>
+        </div>
+    </header>
+   <aside class="side-nav" id="sideNav">
+        <ul>
+            <br><br><br>
+            <li><a href="database.php"><b>Home</b></a></li>
+            <li><a href="sidenav/home.php"><b>Search</b></a></li>
+            <li class="has-submenu">
+                <a href="#"><b>Plants</b></a>
+                <ul class="submenu">
                     <li><a href="sidenav/tress.php">Trees</a></li>
                     <li><a href="sidenav/shrubs.php">Shrubs</a></li>
                     <li><a href="sidenav/ferns.php">Ferns</a></li>
@@ -71,20 +89,47 @@ if (isset($_GET['id'])) {
                     <li><a href="sidenav/perinnals.php">Perennials</a></li>
                     <li><a href="sidenav/indoorplants.php">Indoor Plants</a></li>
                     <li><a href="sidenav/herbs.php">Herbs</a></li>
-                    <br><br>
                 </ul>
-            </aside>
-        </header>
-            <div class="container">
+            </li>
+            <li><a href="sidenav/cuttings.php"><b>Cuttings</b></a></li>
+            <li><a href="plan/plan.php"><b>Plan</b></a></li>
+            <li><a href="cost/cost.php"><b>Cost and Analytics</b></a></li>
+            <li><a href="sold.php"><b>Sold Units</b></a></li>
+            <li><a href="manage_users.php"><b>Users</b></a></li>
+            <li><a href="receive_orders.php"><b>Orders</b></a></li>
+            <li><a href="message/view_messages.php"><b>View Messages</b></a></li>
+        </ul>
+    </aside>
+    
+            <div class="main-content">
                 <h1>Edit Plant Record</h1>
                 <form method="post" action="update.php" enctype="multipart/form-data">
                     <input type="hidden" name="id" value="<?php echo $row['id']; ?>">
                     <input type="hidden" name="redirect_url" value="<?php echo isset($_SERVER['HTTP_REFERER']) ? $_SERVER['HTTP_REFERER'] : ''; ?>">
 
                     <div class="form-group">
-                        <label for="photo">Update Photo:</label>
-                        <input type="file" id="photo" name="photo">
+        <label>Current Photos:</label><br>
+        <?php 
+        $existingPhotos = explode(', ', $row['photo_path']); // Assuming photos are stored as comma-separated values
+        if (!empty($row['photo_path'])):
+            foreach ($existingPhotos as $photo): ?>
+                <div>
+                    <img src="../database/uploads/<?php echo htmlspecialchars($photo); ?>" alt="Current Photo" class="image-preview">
+                    <div>
+                        <input type="checkbox" id="deletePhoto_<?php echo htmlspecialchars($photo); ?>" name="deletePhotos[]" value="<?php echo htmlspecialchars($photo); ?>">
+                        <label for="deletePhoto_<?php echo htmlspecialchars($photo); ?>">Delete <?php echo htmlspecialchars($photo); ?></label>
                     </div>
+                </div>
+            <?php endforeach; 
+        else: ?>
+            <p>No current photos.</p>
+        <?php endif; ?>
+    </div>
+
+    <div class="form-group">
+        <label for="photos">Update Photos:</label>
+        <input type="file" id="photos" name="photos[]" multiple>
+    </div>
                     <div class="form-group">
                         <label for="plantName">Common Name:</label>
                         <input type="text" id="plantName" name="plantName" value="<?php echo htmlspecialchars($row['plant_name']); ?>" required>
@@ -107,70 +152,41 @@ if (isset($_GET['id'])) {
                             <option value="xlarge" <?php if ($row['plastic_size'] === 'xlarge') echo 'selected'; ?>>X-Large</option>
                         </select>
                     </div>
-                    <label>Plant Type:</label><br>
-                    <div class="form-group checkbox-container">
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="tree" name="plantType[]" value="tree" <?php if (in_array('tree', explode(', ', $row['plant_type']))) echo 'checked'; ?>>
-                            <label for="tree">Tree</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="shrub" name="plantType[]" value="shrub" <?php if (in_array('shrub', explode(', ', $row['plant_type']))) echo 'checked'; ?>>
-                            <label for="shrub">Shrub</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="fern" name="plantType[]" value="fern" <?php if (in_array('fern', explode(', ', $row['plant_type']))) echo 'checked'; ?>>
-                            <label for="fern">Fern</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="climber" name="plantType[]" value="climber" <?php if (in_array('climber', explode(', ', $row['plant_type']))) echo 'checked'; ?>>
-                            <label for="climber">Climber</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="waterPlant" name="plantType[]" value="water_plant" <?php if (in_array('water_plant', explode(', ', $row['plant_type']))) echo 'checked'; ?>>
-                            <label for="waterPlant">Water Plant</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="palm" name="plantType[]" value="palm" <?php if (in_array('palm', explode(', ', $row['plant_type']))) echo 'checked'; ?>>
-                            <label for="palm">Palm</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="cactus" name="plantType[]" value="cactus" <?php if (in_array('cactus', explode(', ', $row['plant_type']))) echo 'checked'; ?>>
-                            <label for="cactus">Cactus</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="succulent" name="plantType[]" value="succulent" <?php if (in_array('succulent', explode(', ', $row['plant_type']))) echo 'checked'; ?>>
-                            <label for="succulent">Succulent</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="annual" name="plantType[]" value="annual" <?php if (in_array('annual', explode(', ', $row['plant_type']))) echo 'checked'; ?>>
-                            <label for="annual">Annual</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="perennial" name="plantType[]" value="perennial" <?php if (in_array('perennial', explode(', ', $row['plant_type']))) echo 'checked'; ?>>
-                            <label for="perennial">Perennial</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="indoor" name="plantType[]" value="indoorplant" <?php if (in_array('indoor', explode(', ', $row['plant_type']))) echo 'checked'; ?>>
-                            <label for="indoor">Indoor</label>
-                        </div>
-                        <div class="checkbox-item">
-                            <input type="checkbox" id="herb" name="plantType[]" value="herb" <?php if (in_array('herb', explode(', ', $row['plant_type']))) echo 'checked'; ?>>
-                            <label for="herb">Herb</label>
-                        </div>
-                    </div>
+                    <label>Plant Type:</label>
+        <div class="form-group checkbox-container">
+            <?php
+            $plantTypes = ['tree', 'shrub', 'fern', 'climber', 'water_plant', 'palm', 'cactus', 'succulent', 'annual', 'perennial', 'indoor_plant', 'herb'];
+            $existingPlantTypes = explode(', ', $row['plant_type']);
+            foreach ($plantTypes as $type) {
+                $checked = in_array($type, $existingPlantTypes) ? 'checked' : '';
+                echo '<div class="checkbox-item">';
+                echo '<input type="checkbox" id="' . $type . '" name="plantType[]" value="' . $type . '" ' . $checked . '>';
+                echo '<label for="' . $type . '">' . ucfirst(str_replace('_', ' ', $type)) . '</label>';
+                echo '</div>';
+            }
+            ?>
+            <label for="is_featured">Mark as Featured:</label>
+            <input type="checkbox" name="is_featured" id="is_featured" value="1" <?php if ($row['is_featured'] == 1) echo 'checked'; ?>></div>
                     <div class="form-group">
                         <label for="plantationDate">Plantation Date:</label>
-                        <input type="date" id="plantationDate" name="plantationDate" value="<?php echo htmlspecialchars($row['plantation_date']); ?>" required>
+                        <input type="date" id="plantationDate" name="plantationDate" value="<?php echo $row['plantation_date']; ?>" required>
                     </div>
                     <div class="form-group">
                         <label for="value">Value:</label>
                         <input type="number" id="value" name="value" value="<?php echo $row['value']; ?>" required>
                     </div>
-                    <div class="form-group">
-                        <input type="submit" value="Update Plant">
-                    </div>
+                    <button type="submit" class="btn btn-primary">Update Record</button>
                 </form>
             </div>
+            <script>
+                // Sidebar toggle functionality
+                const toggleSidebar = () => {
+                    const sideNav = document.getElementById('sideNav');
+                    sideNav.style.display = sideNav.style.display === 'block' ? 'none' : 'block';
+                };
+
+                document.getElementById('toggleButton').addEventListener('click', toggleSidebar);
+            </script>
         </body>
         </html>
 <?php
@@ -178,8 +194,7 @@ if (isset($_GET['id'])) {
         echo "No record found.";
     }
 } else {
-    echo "No ID provided.";
+    echo "Invalid request.";
 }
-
 $conn->close();
 ?>

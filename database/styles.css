@@ -330,3 +330,46 @@ h1 {
     text-align: center;
     color: #333;
 }
+.slider-container {
+    position: relative;
+    max-width: 100%; /* Adjust this width as necessary */
+    margin: auto; /* Center the slider */
+    overflow: hidden; /* Hide overflowing images */
+}
+
+.slides {
+    display: flex;
+}
+
+.plant-image {
+    width: 100%; /* Make the image responsive */
+    height: auto; /* Maintain aspect ratio */
+    display: none; /* Hide images by default */
+}
+
+.plant-image:first-child {
+    display: block; /* Show first image initially */
+}
+
+.nav-buttons {
+    text-align: center; /* Center the buttons */
+    margin-top: 10px; /* Space above the buttons */
+}
+
+.nav-button {
+    background-color: rgba(88, 73, 73, 0.8); /* Slightly transparent background */
+    border: none;
+    cursor: pointer;
+    padding: 5px 10px; /* Smaller button size */
+    font-size: 14px; /* Smaller font size */
+    border-radius: 4px; /* Slightly rounded corners */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Subtle shadow */
+    transition: background-color 0.3s; /* Smooth background change on hover */
+    margin: 0 5px; /* Space between buttons */
+}
+
+.nav-button:hover {
+    background-color: rgba(200, 200, 200, 0.8); /* Darker background on hover */
+}
+
+

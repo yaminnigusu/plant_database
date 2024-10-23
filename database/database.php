@@ -190,10 +190,9 @@ if (!isset($_SESSION['username'])) {
     </div>
     
     <div class="form-group" id="photoGroup">
-    <label for="photo">Add Photos:</label>
-    <input type="file" id="photo" name="photos[]" accept="image/*" class="form-control" multiple>
-</div>
-
+        <label for="photo">Add Photos (up to 4):</label>
+        <input type="file" id="photo" name="photos[]" accept="image/*" class="form-control" multiple onchange="checkFileCount()">
+    </div>
 
     <div class="form-group" id="plantNameGroup">
         <label for="plantName">Common Name:</label>
@@ -287,7 +286,6 @@ if (!isset($_SESSION['username'])) {
 
     <button type="submit" class="btn btn-primary">Submit</button>
 </form>
-
 
         </div>
 
@@ -422,23 +420,15 @@ function fetchPlantData() {
         }
     </script>
     <script>
-    // Wait until the DOM is fully loaded
-    document.addEventListener('DOMContentLoaded', function () {
-        // Get all elements with the class 'has-submenu'
-        var submenuItems = document.querySelectorAll('.has-submenu');
+    function toggleSubmenu(element) {
+        const submenu = element.nextElementSibling;
+        submenu.style.display = submenu.style.display === 'block' ? 'none' : 'block';
+    }
 
-        submenuItems.forEach(function (item) {
-            item.addEventListener('click', function (event) {
-                event.preventDefault(); // Prevent the default action
-                
-                // Toggle the 'display' style of the submenu
-                var submenu = item.querySelector('.submenu');
-                if (submenu.style.display === 'none' || submenu.style.display === '') {
-                    submenu.style.display = 'block';
-                } else {
-                    submenu.style.display = 'none';
-                }
-            });
+    document.querySelectorAll('.has-submenu > a').forEach(item => {
+        item.addEventListener('click', event => {
+            event.preventDefault();
+            toggleSubmenu(event.target);
         });
     });
 </script>
