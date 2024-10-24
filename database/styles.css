@@ -372,4 +372,88 @@ h1 {
     background-color: rgba(200, 200, 200, 0.8); /* Darker background on hover */
 }
 
+/* Footer Styling */
+.footer {
+    background-color: #2f6132;
+    color: #fff;
+    padding: 50px 0;
+    font-family: 'Arial', sans-serif;
+}
 
+.footer .footer-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #fff;
+    margin-bottom: 15px;
+}
+
+.footer p {
+    font-size: 1rem;
+    line-height: 1.6;
+    color: #ddd;
+}
+
+.footer-links {
+    list-style-type: none;
+    padding: 0;
+    margin: 0;
+}
+
+.footer-links li {
+    margin-bottom: 10px;
+}
+
+.footer-links a {
+    color: #fff;
+    text-decoration: none;
+    font-size: 1rem;
+    transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+    color: #c5e1a5; /* Light green hover effect */
+}
+
+.footer-social a {
+    color: #fff;
+    font-size: 1.5rem;
+    margin-right: 15px;
+    transition: color 0.3s ease, transform 0.3s ease;
+}
+
+.footer-social a:hover {
+    color: #c5e1a5;
+    transform: scale(1.2); /* Slight scale effect on hover */
+}
+
+.footer-bottom {
+    margin-top: 30px;
+    border-top: 1px solid #c5e1a5;
+    padding-top: 15px;
+}
+
+.footer-bottom p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #ccc;
+}
+
+.footer-bottom a {
+    color: #c5e1a5;
+    text-decoration: none;
+}
+
+.footer-bottom a:hover {
+    text-decoration: underline;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .footer-title {
+        font-size: 1.3rem;
+    }
+
+    .footer-social a {
+        font-size: 1.3rem;
+    }
+}

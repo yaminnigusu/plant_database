@@ -153,7 +153,6 @@ $conn->close();
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css">
-
     <link rel="icon" href="../images/logo.png" type="image/jpg">
     <link rel="stylesheet" href="styles.css">
     <style>
@@ -387,6 +386,26 @@ $conn->close();
     }
 }
 
+.suggestions-list {
+            background: white; /* White background for suggestions */
+            border: 1px solid #ccc; /* Border for suggestions */
+            border-radius: 0 0 4px 4px; /* Rounded corners at the bottom */
+            max-height: 200px; /* Max height for scrolling */
+            overflow-y: auto; /* Scroll for overflow */
+            z-index: 1000; /* Above other elements */
+        }
+
+        /* Individual suggestion item styles */
+        .suggestion-item {
+            padding: 10px; /* Padding for suggestion items */
+            cursor: pointer; /* Pointer on hover */
+            transition: background-color 0.3s ease; /* Smooth transition */
+        }
+
+        /* Hover effect for suggestion items */
+        .suggestion-item:hover {
+            background-color: #f0f8ff; /* Light blue background on hover */
+        }
 
 
     </style>
@@ -462,75 +481,79 @@ $conn->close();
             </div>
         </div>
 
-       
-
-
-
-        <!-- Main Content -->
-        <div class="col-md-9">
-        <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
+      <!-- Main Content -->
+<div class="col-md-9">
+    <div class="d-flex flex-column flex-md-row justify-content-between align-items-start align-items-md-center">
         <h2 class="mb-4">Shop Plants</h2>
-                <form method="GET" class="form-inline">
-                    <input type="text" name="search" class="form-control mr-sm-2" placeholder="Search..." value="<?= htmlspecialchars($searchTerm); ?>">
-                    <button type="submit" class="btn btn-outline-success" aria-label="Search">
+        <div class="container mt-4 position-relative"> <!-- Added position-relative to the container -->
+    <form method="GET" class="form-inline" id="searchForm">
+        <div class="input-group w-100">
+            <input type="text" name="search" id="searchInput" class="form-control" placeholder="Search..." value="<?= htmlspecialchars($searchTerm); ?>">
+            <button type="submit" class="btn btn-outline-success" aria-label="Search">
                 <i class="bi bi-search"></i> <!-- Bootstrap Icon -->
             </button>
-                </form>
-                <br>
-                <button id="abc" class="btn btn-primary d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar" aria-expanded="false" aria-controls="sidebar">
-       +
-    </button>
-    <br>
-            </div>
-
-            <div class="row">
-    <?php if (count($plants) > 0) : ?>
-        <?php foreach ($plants as $plant) : ?>
-            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                <div class="card shadow border-0 rounded">
-                    <div class="slider" id="slider-<?= $plant['id']; ?>">
-                        <div class="slides">
-                            <?php 
-                            // Split the photo_path into an array of image paths
-                            $photos = explode(',', $plant['photo_path']);
-                            foreach ($photos as $photo): 
-                            ?>
-                                <div class="slide">
-                                    <img src="<?= '../database/uploads/' . htmlspecialchars($photo); ?>" 
-                                         alt="<?= htmlspecialchars($plant['plant_name']); ?>" 
-                                         class="card-img-top img-fluid" 
-                                         style="max-height: 300px;  object-fit: contain;">
-                                </div>
-                            <?php endforeach; ?>
-                        </div>
-                        <button class="prev" onclick="changeSlide(<?= $plant['id']; ?>, -1)">&#10094;</button>
-                        <button class="next" onclick="changeSlide(<?= $plant['id']; ?>, 1)">&#10095;</button>
-                    </div>
-
-                    <div class="card-body text-center">
-                        <h5 class="card-title"><?= htmlspecialchars($plant['plant_name']); ?></h5>
-                        <p class="card-text">Quantity: <?= $plant['quantity']; ?></p>
-                        <p class="price-text">Price: <?= number_format($plant['sellingPrice'], 2); ?> Birr</p>
-                        <div class="text-center">
-                            <a href="order_form.php?plant_id=<?= $plant['id']; ?>&plant_name=<?= urlencode($plant['plant_name']); ?>&selling_price=<?= $plant['sellingPrice']; ?>" 
-                               class="btn btn-outline-success">
-                                Order Now
-                            </a>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        <?php endforeach; ?>
-    <?php else: ?>
-        <div class="col-12 text-center">
-            <p>No plants available at the moment.</p>
         </div>
-    <?php endif; ?>
+        <div id="suggestions" class="suggestions-list mt-2"></div> <!-- Suggestions below the form -->
+    </form>
 </div>
 
 
+        <br>
+        <button id="abc" class="btn btn-primary d-md-none" type="button" data-bs-toggle="collapse" data-bs-target="#sidebar" aria-expanded="false" aria-controls="sidebar">
+            +
+        </button>
+        <br>
+    </div>
 
-           <!-- Pagination -->
+    <div class="row">
+        <?php if (count($plants) > 0) : ?>
+            <?php foreach ($plants as $plant) : ?>
+                <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                    <div class="card shadow border-0 rounded">
+                        <div class="slider" id="slider-<?= $plant['id']; ?>">
+                            <div class="slides">
+                                <?php 
+                                // Split the photo_path into an array of image paths
+                                $photos = explode(',', $plant['photo_path']);
+                                foreach ($photos as $photo): 
+                                    $photo = trim($photo); // Remove leading/trailing spaces
+                                ?>
+                                    <div class="slide">
+                                        <img src="<?= '../database/uploads/' . htmlspecialchars($photo); ?>"
+                                             alt="<?= htmlspecialchars($plant['plant_name']); ?>"
+                                             class="card-img-top img-fluid"
+                                             style="max-height: 300px; object-fit: contain;"
+                                             onclick="openModal(<?= json_encode($photos); ?>)">
+                                    </div>
+                                <?php endforeach; ?>
+                            </div>
+                            <button class="prev" onclick="changeSlide(<?= $plant['id']; ?>, -1)">&#10094;</button>
+                            <button class="next" onclick="changeSlide(<?= $plant['id']; ?>, 1)">&#10095;</button>
+                        </div>
+
+                        <div class="card-body text-center">
+                            <h5 class="card-title"><?= htmlspecialchars($plant['plant_name']); ?></h5>
+                            <p class="card-text">Quantity: <?= $plant['quantity']; ?></p>
+                            <p class="price-text">Price: <?= number_format($plant['sellingPrice'], 2); ?> Birr</p>
+                            <div class="text-center">
+                                <a href="order_form.php?plant_id=<?= $plant['id']; ?>&plant_name=<?= urlencode($plant['plant_name']); ?>&selling_price=<?= $plant['sellingPrice']; ?>" 
+                                   class="btn btn-outline-success">
+                                    Order Now
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <div class="col-12 text-center">
+                <p>No plants available at the moment.</p>
+            </div>
+        <?php endif; ?>
+    </div>
+</div>
+
+ <!-- Pagination -->
 <nav aria-label="Page navigation">
     <ul class="pagination justify-content-center">
         <?php if ($currentPage > 1): ?>
@@ -610,13 +633,38 @@ $conn->close();
             </div>
         </div>
     </footer>
+<!-- Modal -->
 
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<!-- Include Bootstrap JS -->
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+    <!-- jQuery -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script>
+    $(document).ready(function() {
+        $('#searchInput').on('input', function() {
+            let searchTerm = $(this).val();
+            if (searchTerm.length > 0) {
+                $.ajax({
+                    url: 'get_suggestions.php', // Your PHP file to get suggestions
+                    type: 'GET',
+                    data: { search: searchTerm },
+                    success: function(data) {
+                        $('#suggestions').html(data);
+                    }
+                });
+            } else {
+                $('#suggestions').empty();
+            }
+        });
+
+        // Handle click on suggestion item
+        $(document).on('click', '.suggestion-item', function() {
+            $('#searchInput').val($(this).text());
+            $('#suggestions').empty();
+        });
+    });
+</script>
+
+
 <script>
     function toggleSidebar() {
         const sidebar = document.getElementById("sidebar");
