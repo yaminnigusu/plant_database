@@ -45,6 +45,36 @@ if (!$order) {
     echo "<script>alert('Order not found.'); window.location.href='receive_orders.php';</script>";
     exit();
 }
+
+// Check for form submission to accept or deny the order
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['accept'])) {
+        // Update the database to accept the order and reduce the quantity of the plant
+        $plantName = $order['plant_name'];
+        $quantityOrdered = $order['quantity'];
+
+        // Reduce the quantity of the plant in the database
+        $updateStmt = $conn->prepare("UPDATE plants SET quantity = quantity - ? WHERE plant_name = ?");
+        $updateStmt->bind_param("is", $quantityOrdered, $plantName);
+        if ($updateStmt->execute()) {
+            // Optionally, update order status to accepted (if you have a status field)
+            $stmt = $conn->prepare("UPDATE orders SET status = 'Accepted' WHERE id = ?");
+            $stmt->bind_param("i", $orderId);
+            $stmt->execute();
+
+            echo "<script>alert('Order accepted successfully.'); window.location.href='receive_orders.php';</script>";
+        } else {
+            echo "<script>alert('Failed to update plant quantity.');</script>";
+        }
+    } elseif (isset($_POST['deny'])) {
+        // Optionally, update order status to denied (if you have a status field)
+        $stmt = $conn->prepare("UPDATE orders SET status = 'Denied' WHERE id = ?");
+        $stmt->bind_param("i", $orderId);
+        $stmt->execute();
+
+        echo "<script>alert('Order denied.'); window.location.href='receive_orders.php';</script>";
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -143,6 +173,15 @@ if (!$order) {
             </td>
         </tr>
     </table>
+
+    <!-- Accept and Deny buttons -->
+    <form method="post">
+        <button type="submit" name="accept" class="btn btn-success">Accept Order</button>
+        <button type="submit" name="deny" class="btn btn-danger">Deny Order</button>
+    </form>
+<br>
+<br>
+
     <a href="receive_orders.php" class="btn btn-custom">Back to Orders</a>
 </div>
 

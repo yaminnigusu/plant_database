@@ -104,7 +104,8 @@ $result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
     <ul>
         <br>
         <br>
-       
+       <br>
+       <br>
         <li><a href="database.php"><b>Home</b></a></li>
         <li><a href="sidenav/home.php"><b>Search</b></a></li>
         <li class="has-submenu">

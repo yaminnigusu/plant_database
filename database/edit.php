@@ -30,6 +30,7 @@ if (isset($_GET['id'])) {
             <title>Edit Plant Record</title>
             <link rel="stylesheet" href="editstyle.css">
             <link rel="stylesheet" href="styles.css">
+            <link rel="icon" href="../images/logo.png" type="image/jpg">
             <style>
                 .checkbox-container {
                     display: flex;
@@ -155,7 +156,7 @@ if (isset($_GET['id'])) {
                     <label>Plant Type:</label>
         <div class="form-group checkbox-container">
             <?php
-            $plantTypes = ['tree', 'shrub', 'fern', 'climber', 'water_plant', 'palm', 'cactus', 'succulent', 'annual', 'perennial', 'indoor_plant', 'herb'];
+            $plantTypes = ['tree', 'shrub', 'fern', 'climber', 'water_plant', 'palm', 'cactus', 'succulent', 'annual', 'perennial', 'indoorplant', 'herb'];
             $existingPlantTypes = explode(', ', $row['plant_type']);
             foreach ($plantTypes as $type) {
                 $checked = in_array($type, $existingPlantTypes) ? 'checked' : '';

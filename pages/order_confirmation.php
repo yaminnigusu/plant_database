@@ -2,13 +2,17 @@
 session_start();
 include("../database/config.php");
 
+// Enable error reporting for debugging
+error_reporting(E_ALL);
+ini_set('display_errors', 1);
+
 // Get order details from query parameters
 $status = $_GET['status'] ?? '';
 $plantName = $_GET['plant_name'] ?? '';
 $quantity = $_GET['quantity'] ?? '';
 $deliveryDate = $_GET['delivery_date'] ?? '';
 $transactionNumber = $_GET['transaction_number'] ?? '';
-$totalCost = $_POST['total_cost'] ?? 0; // Get total cost from the query
+$totalCost = $_GET['total_cost'] ?? 0; // Get total cost from the query
 
 // Clear the order session data to prevent double orders
 if ($status === 'success') {
@@ -137,8 +141,6 @@ if ($status === 'success') {
     </style>
     <script>
         function goToHomePage() {
-            // Clear any order data in session storage or redirect directly
-            // Optional: you can also implement logic to clear specific session data if needed
             window.location.href = '../pages/home.php'; // Redirect to home page
         }
     </script>
@@ -154,7 +156,7 @@ if ($status === 'success') {
         <?php if ($status === 'success'): ?>
             <div class="alert alert-success">
                 <h2>Thank You for Your Order!</h2>
-                <p>Your order has been successfully placed.</p>
+                <p>Your order is currently pending payment verification.</p>
             </div>
 
             <h3>Order Details:</h3>
@@ -163,7 +165,7 @@ if ($status === 'success') {
                 <li><strong>Quantity:</strong> <?php echo htmlspecialchars($quantity); ?></li>
                 <li><strong>Delivery Date:</strong> <?php echo htmlspecialchars($deliveryDate); ?></li>
                 <li><strong>Transaction Number:</strong> <?php echo htmlspecialchars($transactionNumber); ?></li>
-                <!-- Correctly format total cost -->
+               <!-- Added total cost -->
             </ul>
 
             <p>We will contact you shortly with further details regarding your order and delivery.</p>

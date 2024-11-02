@@ -69,7 +69,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         mail($to, $subject, $message, $headers);
 
         // Redirect to a confirmation page with order details
-        header("Location: order_confirmation.php?status=success&plant_name=" . urlencode($plantName) . "&quantity=" . urlencode($quantity) . "&delivery_date=" . urlencode($deliveryDate) . "&total_cost=" . urlencode($totalCost) . "&transaction_number=" . urlencode($transactionNumber));
+        header("Location: order_confirmation.php?status=success&plant_name=" . urlencode($plantName) . "&quantity=" . urlencode($quantity) . "&delivery_date=" . urlencode($deliveryDate) .  "&transaction_number=" . urlencode($transactionNumber));
         exit();
     } else {
         echo "Error: " . $stmt->error;
