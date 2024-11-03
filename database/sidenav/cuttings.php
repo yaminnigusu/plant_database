@@ -51,55 +51,10 @@ function fetchCuttingsData($conn, $search = '', $plasticSizeFilter = '', $startD
         .checkbox-item {
             margin-right: 20px;
         }
-
-        .photo-cell img {
-            max-width: 100px;
-            max-height: 100px;
-        }
-
-        .total-info {
-            margin-top: 20px;
-            text-align: center;
-            background-color: #f0f0f0;
-            padding: 15px;
-        }
-
-        .total-info p {
-            font-size: 18px;
-            margin-bottom: 10px;
-        }
-
         .submenu {
             display: none;
         }
-
-        #searchFilterForm {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-        }
-
-        #searchFilterForm input[type="text"],
-        #searchFilterForm select,
-        #searchFilterForm input[type="date"],
-        #searchFilterForm button {
-            flex: 1;
-            min-width: 150px;
-        }
-
-        #searchFilterForm label {
-            margin-right: 5px;
-        }
-
-        .action-buttons a {
-            margin-right: 10px;
-        }
-
-        .form-group {
-            margin-bottom: 1rem;
-        }
+        
     </style>
 </head>
 
@@ -277,9 +232,9 @@ function fetchCuttingsData($conn, $search = '', $plasticSizeFilter = '', $startD
                 <button type="submit" class="btn btn-primary">Filter</button>
             </form>
 
-            <div class="table-responsive">
+            <div class="plant-table-section">
                 <h1 class="mt-4">Cuttings Data Display</h1>
-                <div class="table-responsive">
+                <div class="plant-table-section">
                     <?php
                     // Handle record deletion
                     if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])) {
@@ -308,7 +263,7 @@ function fetchCuttingsData($conn, $search = '', $plasticSizeFilter = '', $startD
                     $result = fetchCuttingsData($conn, $search, $plasticSizeFilter, $startDate, $endDate);
 
                     if ($result->num_rows > 0) {
-                        echo '<table class="table table-bordered">';
+                        echo '<table id="plantTable">';
                         echo '<thead><tr><th>Common Name</th><th>Quantity</th><th>Plastic Size</th><th>Plantation Date</th><th>Cost</th><th>Actions</th></tr></thead>';
                         echo '<tbody>';
 
@@ -345,7 +300,7 @@ function fetchCuttingsData($conn, $search = '', $plasticSizeFilter = '', $startD
                     $conn->close();
                     ?>
                 </div>
-            </div>
+            </v>
         </div>
     </div>
 

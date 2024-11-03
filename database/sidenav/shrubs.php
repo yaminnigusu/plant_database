@@ -14,33 +14,24 @@ if (!isset($_SESSION['username'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plant Database</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+    <link rel="icon" href="../images/logo.png" type="image/jpg">
     <link rel="stylesheet" href="../styles.css">
-    <style>
-        /* CSS to style the checkbox container */
-        .checkbox-container {
-            display: flex;
-            flex-wrap: wrap; /* Allow wrapping of checkboxes */
-        }
 
-        /* Style for individual checkbox items */
+        <style>
+        /* Custom CSS for specific styling */
         .checkbox-item {
-            margin-right: 20px; /* Adjust margin between checkbox items */
+            margin-right: 20px;
         }
-        .total-info {
-    margin-top: 20px; /* Add space above the total info section */
-    text-align: center; /* Center-align the content */
-    background-color: #f0f0f0; /* Background color for the total info section */
-    padding: 15px; /* Add padding around the content */
-}
 
-.total-info p {
-    font-size: 18px; /* Increase font size for total quantity and total value */
-    margin-bottom: 10px; /* Add space below each paragraph */
+/* Target the checkbox container */
+.checkbox-container {
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap to the next line if needed */
 }
-
+    
     </style>
-    
-    
     
     
     
@@ -73,6 +64,9 @@ if (!isset($_SESSION['username'])) {
 
     <aside class="side-nav" id="sideNav">
     <ul>
+        <br>
+        <br>
+        <br>
     <li><a href="../database.php"><b>Home</b></a></li>
         <li><a href="home.php"><b>Search</b></a></li>
         <li class="has-submenu">
@@ -92,6 +86,7 @@ if (!isset($_SESSION['username'])) {
                 <li><a href="herbs.php">Herbs</a></li>
             </ul>
         </li>
+        <li><a href="cuttings.php"><b>Cuttings</b></a></li>
         <li> <a href="../plan/plan.php"><b>Plan</b></a></li>
            <li> <a href="../cost/cost.php"><b>Cost and Analytics</b></a></li>
            <li><a href="../sold.php"><b>Sold Units</b></a></li>
@@ -101,7 +96,6 @@ if (!isset($_SESSION['username'])) {
     </ul>
 </aside>
 
-
 <div class="main-content">
     <h1>Plant Database</h1>
 
@@ -109,109 +103,109 @@ if (!isset($_SESSION['username'])) {
     <button id="formToggleButton" onclick="toggleFormVisibility()">Add New Data</button>
 
     <!-- Form to add new plant data (initially hidden) -->
-    <form id="plantForm" enctype="multipart/form-data" method="post" action="../process_form.php" style="display: none;">
-        <div class="form-group">
-            <label for="photo">Add Photo:</label>
-            <input type="file" id="photo" name="photo" accept="image/*" not required>
-        </div>
-        <div class="form-group">
-            <label for="plantName">Common Name:</label>
-            <input type="text" id="plantName" name="plantName" required>
-        </div>
-        <div class="form-group">
-            <label for="scientificName">Scientific Name:</label>
-            <input type="text" id="scientificName" name="scientificName" required>
-        </div>
-        <div class="form-group">
-            <label for="quantity">Quantity:</label>
-            <input type="number" id="quantity" name="quantity" required>
-        </div>
-        <div class="form-group">
-            <label for="plasticSize">Plastic Size:</label>
-            <select id="plasticSize" name="plasticSize" required>
-                <option value="xsmall">X-Small</option>
-                <option value="small">Small</option>
-                <option value="medium">Medium</option>
-                <option value="large">Large</option>
-                <option value="xlarge">X-Large</option>
-            </select>
-        </div>
-        <label>Plant Type:</label><br>
+    <form id="plantForm" enctype="multipart/form-data" method="post" action="process_form.php" style="display: none;">
+    <div class="form-group">
+        <input type="checkbox" id="optionalData" name="optionalData" value="1" onchange="toggleOptionalFields()">
+        <label for="optionalData">Add Optional Data</label>
+    </div>
+    
+    <div class="form-group" id="photoGroup">
+        <label for="photo">Add Photos (up to 4):</label>
+        <input type="file" id="photo" name="photos[]" accept="image/*" class="form-control" multiple onchange="checkFileCount()">
+    </div>
+
+    <div class="form-group" id="plantNameGroup">
+        <label for="plantName">Common Name:</label>
+        <input type="text" id="plantName" name="plantName" class="form-control" required>
+    </div>
+
+    <div class="form-group" id="scientificNameGroup">
+        <label for="scientificName">Scientific Name:</label>
+        <input type="text" id="scientificName" name="scientificName" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+        <label for="plasticSize">Plastic Size:</label>
+        <select id="plasticSize" name="plasticSize" class="form-control">
+            <option value="xsmall">X-Small</option>
+            <option value="small">Small</option>
+            <option value="medium">Medium</option>
+            <option value="large">Large</option>
+            <option value="xlarge">X-Large</option>
+        </select>
+    </div>
+
+    <label>Plant Type:</label>
     <div class="form-group checkbox-container">
-    
-    
-    <div class="checkbox-item">
-        <input type="checkbox" id="tree" name="plantType[]" value="tree">
-        <label for="tree">Tree</label>
-    </div>
-    
-    <div class="checkbox-item">
-        <input type="checkbox" id="shrub" name="plantType[]" value="shrub">
-        <label for="shrub">Shrub</label>
-    </div>
-    
-    <div class="checkbox-item">
-        <input type="checkbox" id="fern" name="plantType[]" value="fern">
-        <label for="fern">Fern</label>
-    </div>
-    
-    <div class="checkbox-item">
-        <input type="checkbox" id="climber" name="plantType[]" value="climber">
-        <label for="climber">Climber</label>
-    </div>
-    
-    <div class="checkbox-item">
-        <input type="checkbox" id="waterPlant" name="plantType[]" value="water_plant">
-        <label for="waterPlant">Water Plant</label>
-    </div>
-    
-    <div class="checkbox-item">
-        <input type="checkbox" id="palm" name="plantType[]" value="palm">
-        <label for="palm">Palm</label>
-    </div>
-    
-    <div class="checkbox-item">
-        <input type="checkbox" id="cactus" name="plantType[]" value="cactus">
-        <label for="cactus">Cactus</label>
-    </div>
-    
-    <div class="checkbox-item">
-        <input type="checkbox" id="succulent" name="plantType[]" value="succulent">
-        <label for="succulent">Succulent</label>
-    </div>
-    
-    <div class="checkbox-item">
-        <input type="checkbox" id="annual" name="plantType[]" value="annual">
-        <label for="annual">Annual</label>
-    </div>
-    
-    <div class="checkbox-item">
-        <input type="checkbox" id="perennial" name="plantType[]" value="perennial">
-        <label for="perennial">Perennial</label>
-    </div>
-    
-    <div class="checkbox-item">
-        <input type="checkbox" id="indoorPlant" name="plantType[]" value="indoorplant">
-        <label for="indoorPlant">Indoor Plant</label>
-    </div>
-    
-    <div class="checkbox-item">
-        <input type="checkbox" id="herb" name="plantType[]" value="herb">
-        <label for="herb">Herb</label>
-    </div>
-</div>
-
-
-        <div class="form-group">
-            <label for="plantationDate">Plantation Date:</label>
-            <input type="date" id="plantationDate" name="plantationDate" required>
+        <div class="checkbox-item">
+            <input type="checkbox" id="tree" name="plantType[]" value="tree">
+            <label for="tree">Tree</label>
         </div>
-        <div class="form-group">
-            <label for="value">Value:</label>
-            <input type="number" id="value" name="value" required>
+        <div class="checkbox-item">
+            <input type="checkbox" id="shrub" name="plantType[]" value="shrub">
+            <label for="shrub">Shrub</label>
         </div>
-        <button type="submit">Submit</button>
-    </form>
+        <div class="checkbox-item">
+            <input type="checkbox" id="fern" name="plantType[]" value="fern">
+            <label for="fern">Fern</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="climber" name="plantType[]" value="climber">
+            <label for="climber">Climber</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="waterPlant" name="plantType[]" value="water_plant">
+            <label for="waterPlant">Water Plant</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="palm" name="plantType[]" value="palm">
+            <label for="palm">Palm</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="cactus" name="plantType[]" value="cactus">
+            <label for="cactus">Cactus</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="succulent" name="plantType[]" value="succulent">
+            <label for="succulent">Succulent</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="annual" name="plantType[]" value="annual">
+            <label for="annual">Annual</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="perennial" name="plantType[]" value="perennial">
+            <label for="perennial">Perennial</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="indoorPlant" name="plantType[]" value="indoor_plant">
+            <label for="indoorPlant">Indoor Plant</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="herb" name="plantType[]" value="herb">
+            <label for="herb">Herb</label>
+        </div>
+        <label for="is_featured">Mark as Featured:</label>
+        <input type="checkbox" name="is_featured" id="is_featured" value="1">
+    </div>
+
+    <div class="form-group">
+        <label for="plantationDate">Plantation Date:</label>
+        <input type="date" id="plantationDate" name="plantationDate" required class="form-control">
+    </div>
+
+    <div class="form-group">
+        <label for="value">Value:</label>
+        <input type="number" id="value" name="value" required class="form-control">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
 
     <!-- Display plant database table -->
     <div class="plant-table-section">
@@ -239,22 +233,39 @@ if ($result->num_rows > 0) {
 
     while ($row = $result->fetch_assoc()) {
         echo '<tr>';
-        echo '<td class="photo-cell"><img src="../uploads/' . htmlspecialchars($row['photo_path']) . '" alt="' . htmlspecialchars($row['plant_name']) . '"></td>';
+        echo '<td class="photo-cell">';
+        
+        // Store images as an array
+        $photos = explode(',', $row['photo_path']);
+        if (count($photos) > 0) {
+            echo '<div class="slider-container">';
+            echo '<div class="slides">';
+            foreach ($photos as $index => $photo) {
+                echo '<img src="../uploads/' . htmlspecialchars(trim($photo)) . '" alt="' . htmlspecialchars($row['plant_name']) . '" class="plant-image" style="display: ' . ($index === 0 ? 'block' : 'none') . ';">';
+            }
+            echo '</div>'; // End of slides
+            echo '<div class="d-flex justify-content-center nav-buttons">';
+            echo '    <button class="btn btn-outline-secondary nav-button prev me-2 text-white" onclick="plusSlides(event, -1)">&lt;</button>';
+            echo '    <button class="btn btn-outline-secondary nav-button next text-white" onclick="plusSlides(event, 1)">&gt;</button>';
+            echo '</div>'; // End of nav-buttons
+            // End of nav-buttons
+            // End of slider-container
+        }
+        echo '</td>';
         echo '<td>' . htmlspecialchars($row['plant_name']) . '</td>';
         echo '<td>' . htmlspecialchars($row['scientific_name']) . '</td>';
         echo '<td>' . htmlspecialchars($row['quantity']) . '</td>';
         echo '<td>' . htmlspecialchars($row['plastic_size']) . '</td>';
         echo '<td>' . htmlspecialchars($row['plantation_date']) . '</td>';
-        echo '<td>' . htmlspecialchars($row['plant_type']) . '</td>'; // Display Plant Type
+        echo '<td>' . htmlspecialchars($row['plant_type']) . '</td>';
         echo '<td>' . htmlspecialchars($row['value']) . '</td>';
         echo '<td class="action-buttons">';
         echo '<a class="actionButton editButton" href="../edit.php?id=' . $row['id'] . '">Edit</a>';
-        echo '<a class="actionButton deleteButton" href="database.php?action=delete&id=' . $row['id'] . '" onclick="return confirm(\'Are you sure you want to delete this record?\')">Delete</a>';
-        echo '</td>';
+        echo '<a class="actionButton deleteButton" href="?action=delete&id=' . $row['id'] . '" onclick="return confirm(\'Are you sure you want to delete this record?\')">Delete</a>';  
         echo '</td>';
         echo '</tr>';
 
-        // Accumulate total quantity and total value
+        // Update total quantity and total value
         $totalQuantity += intval($row['quantity']);
         $totalValue += intval($row['value']);
     }
@@ -265,7 +276,7 @@ if ($result->num_rows > 0) {
     echo '<p>Total Value: ' . $totalValue . '</p>';
     echo '</div>';
 } else {
-    echo '<p>No plant records found for shrubs</p>';
+    echo '<p>No plant records found for perennial</p>';
 }
 
 // Close result and database connection
@@ -274,7 +285,29 @@ $conn->close();
 ?>
 
     </div>
+    <script>
+function showSlides(slideContainer, slideIndex) {
+    const slides = slideContainer.querySelectorAll('.plant-image');
+    slides.forEach((slide, index) => {
+        slide.style.display = (index === slideIndex) ? 'block' : 'none';
+    });
+}
 
+function plusSlides(event, n) {
+    const slideContainer = event.target.closest('.slider-container'); // Get the closest slider container
+    const slides = slideContainer.querySelectorAll('.plant-image');
+    let slideIndex = Array.from(slides).findIndex(slide => slide.style.display === 'block'); // Find current slide index
+
+    slideIndex += n; // Change the index by the value of n
+    if (slideIndex >= slides.length) {
+        slideIndex = 0; // Loop to the first slide
+    } else if (slideIndex < 0) {
+        slideIndex = slides.length - 1; // Loop to the last slide
+    }
+
+    showSlides(slideContainer, slideIndex); // Show current slide for this container
+}
+</script>
     <script>
         function toggleFormVisibility() {
             const plantForm = document.getElementById('plantForm');
@@ -285,8 +318,8 @@ $conn->close();
             }
         }
     </script>
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="../../js/script2.js"></script>
-
+     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+   
+     <script src="../../js/script2.js"></script>
     </body>
     </html>

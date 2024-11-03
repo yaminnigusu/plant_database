@@ -31,6 +31,7 @@ if (isset($_GET['id'])) {
             <link rel="stylesheet" href="editstyle.css">
             <link rel="stylesheet" href="styles.css">
             <link rel="icon" href="../images/logo.png" type="image/jpg">
+            <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
             <style>
                 .checkbox-container {
                     display: flex;
@@ -72,7 +73,8 @@ if (isset($_GET['id'])) {
     </header>
    <aside class="side-nav" id="sideNav">
         <ul>
-            <br><br><br>
+            <br><br><br><br>
+            <br>
             <li><a href="database.php"><b>Home</b></a></li>
             <li><a href="sidenav/home.php"><b>Search</b></a></li>
             <li class="has-submenu">
