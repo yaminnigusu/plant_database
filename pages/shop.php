@@ -77,13 +77,18 @@ $totalRecords = $countResult->fetch_assoc()['total'];
 // Calculate total number of pages
 $totalPages = ceil($totalRecords / $itemsPerPage);
 
-// Construct SQL query to fetch plants with pagination and average value
-$sql =" SELECT id, plant_name, photo_path, SUM(quantity) AS total_quantity, 
-GROUP_CONCAT(DISTINCT plant_type) AS plant_types, 
-AVG(value) AS value  -- Get the average value for each plant
+$sql = "
+SELECT 
+    id, 
+    plant_name, 
+    scientific_name,
+    SUM(quantity) AS total_quantity, 
+    GROUP_CONCAT(DISTINCT photo_path) AS photo_paths,  -- Use GROUP_CONCAT to get all photo paths
+    GROUP_CONCAT(DISTINCT plant_type) AS plant_types, 
+    AVG(value) AS value
 FROM plants 
-WHERE 1=1"
-;
+WHERE 1=1
+";
 
 // Add search conditions based on the search term
 if (!empty($searchTerm)) {
@@ -101,14 +106,13 @@ if (!empty($selectedPriceRange)) {
     $sql .= " AND (value / quantity) BETWEEN $minPrice AND $maxPrice";
 }
 
-// Group by plant_name and add pagination
-$sql .= " GROUP BY plant_name, photo_path LIMIT $itemsPerPage OFFSET $offset";
+// Group by plant_name and scientific_name
+$sql .= " GROUP BY plant_name, scientific_name LIMIT $itemsPerPage OFFSET $offset";
 
 // Execute SQL query to fetch plants
 $result = $conn->query($sql);
 
 // Initialize $plants array
-
 $plants = [];
 
 if ($result && $result->num_rows > 0) {
@@ -128,7 +132,7 @@ if ($result && $result->num_rows > 0) {
         $plants[] = [
             'id' => $row['id'], // Include the ID
             'plant_name' => htmlspecialchars($row['plant_name']),
-            'photo_path' => htmlspecialchars($row['photo_path']),
+            'photo_path' => htmlspecialchars($row['photo_paths']), // Updated this line to store concatenated paths
             'quantity' => $reducedQuantity, // Use reduced quantity here
             'plant_type' => $plantTypes,
             'sellingPrice' => $sellingPrice, // Adjusted selling price
@@ -136,9 +140,6 @@ if ($result && $result->num_rows > 0) {
     }
 }
 
-
-
-// Close database connection
 $conn->close();
 ?>
 
@@ -506,51 +507,56 @@ $conn->close();
         </div>
 
         <div class="row">
-            <?php if (count($plants) > 0) : ?>
-                <?php foreach ($plants as $plant) : ?>
-                    <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
-                        <div class="card shadow border-0 rounded">
-                            <div class="slider" id="slider-<?= $plant['id']; ?>">
-                                <div class="slides">
-                                    <?php 
-                                    // Split the photo_path into an array of image paths
-                                    $photos = explode(',', $plant['photo_path']);
-                                    foreach ($photos as $photo): 
-                                        $photo = trim($photo); // Remove leading/trailing spaces
-                                    ?>
-                                        <div class="slide">
-                                            <img src="<?= '../database/uploads/' . htmlspecialchars($photo); ?>"
-                                                alt="<?= htmlspecialchars($plant['plant_name']); ?>"
-                                                class="card-img-top img-fluid"
-                                                style="max-height: 300px; object-fit: contain;"
-                                                onclick="openModal(<?= json_encode($photos); ?>)">
-                                        </div>
-                                    <?php endforeach; ?>
-                                </div>
-                                <button class="prev" onclick="changeSlide(<?= $plant['id']; ?>, -1)">&#10094;</button>
-                                <button class="next" onclick="changeSlide(<?= $plant['id']; ?>, 1)">&#10095;</button>
-                            </div>
+    <?php if (count($plants) > 0) : ?>
+        <?php foreach ($plants as $plant) : ?>
+            <div class="col-lg-4 col-md-6 col-sm-12 mb-4">
+                <div class="card shadow border-0 rounded">
+                    <div class="slider" id="slider-<?= $plant['id']; ?>">
+                        <div class="slides">
+                            <?php 
+                            // Split the photo_paths into an array of unique image paths
+                            $photos = explode(',', $plant['photo_path']); // Now this uses the concatenated photo paths
 
-                            <div class="card-body text-center">
-                                <h5 class="card-title"><?= htmlspecialchars($plant['plant_name']); ?></h5>
-                                <p class="card-text">Quantity: <?= $plant['quantity']; ?></p>
-                                <p class="price-text">Price: <?= number_format($plant['sellingPrice'], 2); ?> Birr</p>
-                                <div class="text-center">
-                                    <a href="order_form.php?plant_id=<?= $plant['id']; ?>&plant_name=<?= urlencode($plant['plant_name']); ?>&selling_price=<?= $plant['sellingPrice']; ?>" 
-                                    class="btn btn-outline-success">
-                                        Order Now
-                                    </a>
-                                </div>
-                            </div>
+$uniquePhotos = array_unique(array_map('trim', $photos)); // Remove duplicates and trim spaces
+
+foreach ($uniquePhotos as $photo): 
+?>
+    <div class="slide">
+        <img src="<?= '../database/uploads/' . htmlspecialchars($photo); ?>"
+             alt="<?= htmlspecialchars($plant['plant_name']); ?>"
+             class="card-img-top img-fluid"
+             style="max-height: 300px; object-fit: contain;"
+             onclick="openModal(<?= json_encode($uniquePhotos); ?>)">
+    </div>
+<?php endforeach; ?>
+                        </div>
+                        <button class="prev" onclick="changeSlide(<?= $plant['id']; ?>, -1)">&#10094;</button>
+                        <button class="next" onclick="changeSlide(<?= $plant['id']; ?>, 1)">&#10095;</button>
+                    </div>
+
+                    <div class="card-body text-center">
+                        <h5 class="card-title"><?= htmlspecialchars($plant['plant_name']); ?></h5>
+                        <p class="card-text">Quantity: <?= $plant['quantity']; ?></p>
+                        <p class="price-text">Price: <?= number_format($plant['sellingPrice'], 2); ?> Birr</p>
+                        <div class="text-center">
+                            <a href="order_form.php?plant_id=<?= $plant['id']; ?>&plant_name=<?= urlencode($plant['plant_name']); ?>&selling_price=<?= $plant['sellingPrice']; ?>" 
+                               class="btn btn-outline-success">
+                                Order Now
+                            </a>
                         </div>
                     </div>
-                <?php endforeach; ?>
-            <?php else: ?>
-                <div class="col-12 text-center">
-                    <p>No plants available at the moment.</p>
                 </div>
-            <?php endif; ?>
+            </div>
+        <?php endforeach; ?>
+    <?php else: ?>
+        <div class="col-12 text-center">
+            <p>No plants available at the moment.</p>
         </div>
+    <?php endif; ?>
+</div>
+
+
+
           <!-- Pagination -->
     <nav aria-label="Page navigation">
         <ul class="pagination justify-content-center">

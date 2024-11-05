@@ -111,7 +111,46 @@ if (!isset($_SESSION['username'])) {
     align-items: center;
 }
 
+.slider {
+    position: relative;
+    max-width: 300px;
+    margin: auto;
+}
 
+.slides {
+    display: flex;
+    overflow: hidden;
+    position: relative;
+}
+
+.slide {
+    display: none;
+    min-width: 100%;
+}
+
+.slide.active {
+    display: block;
+}
+
+.slider button {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    padding: 5px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.slider .prev {
+    left: 5px;
+}
+
+.slider .next {
+    right: 5px;
+}
 
     </style>
 </head>
@@ -318,24 +357,12 @@ if (!isset($_SESSION['username'])) {
     <h3>Plant Types:</h3>
     <br>
     <div id="plantList" class="row">
-        <!-- Plant items will be inserted here -->
+        <!-- Plant items with sliders will be inserted here -->
     </div>
 </div>
 
-
-
-    
-</body>
-<div class="plant-list" id="plantListContainer" style="display: none;">
-            <h3>Plant Types:</h3>
-            <ul id="plantList">
-                <!-- Plant items will be inserted here -->
-            </ul>
-        </div>
-    </div>
-
-    <script>
-       document.addEventListener('DOMContentLoaded', (event) => {
+<script>
+document.addEventListener('DOMContentLoaded', (event) => {
     document.getElementById('totalPlantTypes').addEventListener('click', function () {
         fetchPlantData();
     });
@@ -347,38 +374,57 @@ function fetchPlantData() {
     xhr.onload = function () {
         if (xhr.status === 200) {
             var plants = JSON.parse(xhr.responseText);
-            console.log("Fetched Plant Data:", plants); // Debugging line
             var plantList = document.getElementById('plantList');
             plantList.innerHTML = ''; // Clear existing content
 
-            // Group plants by name
+            // Group plants by both common and scientific names, merging photos for duplicates
             var plantMap = {};
 
             plants.forEach(function (plant) {
-                var key = plant.plant_name;
+                var key = plant.plant_name + '_' + plant.scientific_name;
                 if (!plantMap[key]) {
                     plantMap[key] = {
                         plant_name: plant.plant_name,
                         scientific_name: plant.scientific_name,
-                        photo_path: plant.photo_path,
+                        photos: new Set(), // Use a Set to ensure unique images
                         plastic_sizes: {}
                     };
                 }
+
+                // Add photos to the Set to avoid duplicates
+                plant.photo_path.split(',').forEach(photo => plantMap[key].photos.add(photo.trim()));
+
                 if (!plantMap[key].plastic_sizes[plant.plastic_size]) {
                     plantMap[key].plastic_sizes[plant.plastic_size] = 0;
                 }
                 plantMap[key].plastic_sizes[plant.plastic_size] += parseInt(plant.total_quantity); // Use total_quantity from SQL
             });
 
-            console.log("Grouped Plant Data:", plantMap); // Debugging line
-            
+            // Render each plant with the merged photos
             Object.keys(plantMap).forEach(function (key) {
                 var plant = plantMap[key];
                 var plantBlock = document.createElement('div');
                 plantBlock.classList.add('plant-block');
 
-                var plantHTML = '<img src="uploads/' + plant.photo_path + '" alt="Plant Photo">' +
-                    '<strong>' + plant.plant_name + '</strong> (' + plant.scientific_name + ')<br>';
+                // Convert Set back to Array for easier handling
+                var photos = Array.from(plant.photos);
+
+                // Image slider HTML for each plant
+                var plantHTML = '<div class="slider" id="slider-' + key + '">';
+                plantHTML += '<div class="slides">';
+
+                photos.forEach(function (photo, index) {
+                    plantHTML += '<div class="slide' + (index === 0 ? ' active' : '') + '">';
+                    plantHTML += '<img src="uploads/' + photo + '" alt="Plant Photo">';
+                    plantHTML += '</div>';
+                });
+
+                plantHTML += '</div>';
+                plantHTML += '<button class="prev" onclick="changeSlide(\'' + key + '\', -1)">&#10094;</button>';
+                plantHTML += '<button class="next" onclick="changeSlide(\'' + key + '\', 1)">&#10095;</button>';
+                plantHTML += '</div>';
+
+                plantHTML += '<strong>' + plant.plant_name + '</strong> (' + plant.scientific_name + ')<br>';
 
                 // Initialize total quantity
                 var totalQuantity = 0;
@@ -408,7 +454,17 @@ function fetchPlantData() {
     xhr.send();
 }
 
-    </script>
+// Function to handle slide changes
+function changeSlide(sliderId, direction) {
+    var slider = document.getElementById('slider-' + sliderId);
+    var slides = slider.querySelectorAll('.slide');
+    var activeSlide = slider.querySelector('.slide.active');
+    var newIndex = (Array.from(slides).indexOf(activeSlide) + direction + slides.length) % slides.length;
+
+    activeSlide.classList.remove('active');
+    slides[newIndex].classList.add('active');
+}
+</script>
     <script>
         function toggleFormVisibility() {
             const plantForm = document.getElementById('plantForm');
