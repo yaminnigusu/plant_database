@@ -7,8 +7,7 @@ if (!isset($_SESSION['username'])) {
     header("Location: ../login.php"); // Redirect to login page if not logged in
     exit();
 }
-?>
-<?php
+
 include("../config.php");
 
 // Handle delete action
@@ -24,11 +23,29 @@ if (isset($_GET['action']) && $_GET['action'] === 'delete' && isset($_GET['id'])
     }
 }
 
-// Get total cost sum
+// Get total costs, sales, and profits
 $sql_total_costs = "SELECT SUM(cost_amount) AS totalCosts FROM costs";
 $result_total_costs = $conn->query($sql_total_costs);
 $totalCosts = $result_total_costs->fetch_assoc()['totalCosts'] ?? 0;
+
+$sql_total_sales = "SELECT SUM(selling_price * quantity_sold) AS totalSales FROM sold";
+$result_total_sales = $conn->query($sql_total_sales);
+$totalSales = $result_total_sales->fetch_assoc()['totalSales'] ?? 0;
+
+// Get total plants
+$sql_total_plants = "SELECT COUNT(*) AS totalPlants FROM plants";
+$result_total_plants = $conn->query($sql_total_plants);
+$totalPlants = $result_total_plants->fetch_assoc()['totalPlants'] ?? 0;
+
+// Calculate plants for sale (65% of total plants)
+$plantsForSale = $totalPlants * 0.65;
+
+// Calculate profit
+$totalProfit = $totalSales - $totalCosts; // Assuming profit is total sales minus total costs
+
 $result_total_costs->close();
+$result_total_sales->close();
+$result_total_plants->close();
 ?>
 
 <!DOCTYPE html>
@@ -38,11 +55,8 @@ $result_total_costs->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cost and Analytics</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="icon" href="../../images/logo.png" type="image/jpg">
     <link rel="stylesheet" href="../styles.css">
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <link rel="icon" href="../../images/logo.png" type="image/jpg">
     <style>
         .checkbox-item { margin-right: 20px; }
         .photo-cell img { max-width: 100px; max-height: 100px; }
@@ -77,7 +91,7 @@ $result_total_costs->close();
     </header>
     <aside class="side-nav" id="sideNav">
         <ul>
-            <br><br>
+            <br><br><br>
             <li><a href="../database.php"><b>Home</b></a></li>
             <li><a href="../sidenav/home.php"><b>Search</b></a></li>
             <li class="has-submenu">
@@ -106,8 +120,39 @@ $result_total_costs->close();
         <li><a href="../message/view_messages.php"><b>View Messages</b></a></li>
         </ul>
     </aside>
+
+<body>
     <div class="main-content">
+    <div class="container mt-4">
         <h1>Costs & Analytics</h1>
+        
+        <div class="row mb-4">
+            <div class="col-md-4">
+                <div class="card text-white bg-primary">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Costs</h5>
+                        <p class="card-text"><?php echo number_format($totalCosts, 2); ?> Birr</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-success">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Sales</h5>
+                        <p class="card-text"><?php echo number_format($totalSales, 2); ?> Birr</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card text-white bg-warning">
+                    <div class="card-body">
+                        <h5 class="card-title">Total Profit</h5>
+                        <p class="card-text"><?php echo number_format($totalProfit, 2); ?> Birr</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <h2>Register Costs</h2>
         <form id="costForm" action="process_costs.php" method="POST">
             <div class="form-group">
@@ -131,159 +176,109 @@ $result_total_costs->close();
         </form>
 
         <hr>
+
+        <h2>All Costs</h2>
+        <div class="form-group">
+            <label for="search">Search Costs:</label>
+            <input type="text" id="search" class="form-control" placeholder="Search by description...">
+        </div>
         
-        <?php
-        include("../config.php");
-
-        $sql_costs = "SELECT id, description, cost_amount, created_at, category FROM costs";
-        $result_costs = $conn->query($sql_costs);
-
-        if ($result_costs->num_rows > 0) {
-            echo '<h2>All Costs</h2>';
-            echo '<table class="table">';
-            echo '<thead>';
-            echo '<tr>';
-            echo '<th>Description</th>';
-            echo '<th>Amount</th>';
-            echo '<th>Date</th>';
-            echo '<th>Category</th>';
-            echo '<th>Action</th>';
-            echo '</tr>';
-            echo '</thead>';
-            echo '<tbody>';
-
-            while ($row = $result_costs->fetch_assoc()) {
-                echo '<tr>';
-                echo '<td>' . htmlspecialchars($row['description']) . '</td>';
-                echo '<td>' . number_format($row['cost_amount'], 2) . ' Birr</td>';
-                echo '<td>' . htmlspecialchars($row['created_at']) . '</td>';
-                echo '<td>' . htmlspecialchars($row['category']) . '</td>';
-                echo '<td>';
-                echo '<a href="edit.php?id=' . $row['id'] . '" class="btn btn-primary btn-sm">Edit</a>';
-                echo '<a href="cost.php?action=delete&id=' . $row['id'] . '" class="btn btn-danger btn-sm" onclick="return confirm(\'Are you sure you want to delete this cost?\')">Delete</a>';
-                echo '</td>';
-                echo '</tr>';
-            }
-
-            echo '</tbody>';
-            echo '</table>';
-        } else {
-            echo '<p>No costs found.</p>';
-        }
-
-        $result_costs->close();
-        $conn->close();
-        ?>
-
-        <div class="total-info">
-            <p><strong>Total Costs:</strong> <?php echo number_format($totalCosts, 2); ?> Birr</p>
+        <div class="form-group">
+            <label for="categoryFilter">Filter by Category:</label>
+            <select id="categoryFilter" class="form-control">
+                <option value="">All Categories</option>
+                <option value="asset">Asset</option>
+                <option value="capital">Capital</option>
+                <option value="expense">Expense</option>
+                <option value="liability">Liability</option>
+            </select>
         </div>
 
-        <br><br>
-        <?php
-        include("../config.php");
+        <button id="filterButton" class="btn btn-secondary">Filter</button>
 
-        $search = $_GET['search'] ?? '';
-        $search = $conn->real_escape_string($search);
-        $whereClause = '';
+        <table class="table" id="costTable">
+            <thead>
+                <tr>
+                    <th>Description</th>
+                    <th>Amount</th>
+                    <th>Date</th>
+                    <th>Category</th>
+                    <th>Action</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php
+                $sql_costs = "SELECT id, description, cost_amount, created_at, category FROM costs";
+                $result_costs = $conn->query($sql_costs);
 
-        if (!empty($search)) {
-            $whereClause = "WHERE plant_name LIKE '%$search%'";
-        }
+                if ($result_costs->num_rows > 0) {
+                    while ($row = $result_costs->fetch_assoc()) {
+                        echo '<tr>';
+                        echo '<td>' . htmlspecialchars($row['description']) . '</td>';
+                        echo '<td>' . number_format($row['cost_amount'], 2) . ' Birr</td>';
+                        echo '<td>' . htmlspecialchars($row['created_at']) . '</td>';
+                        echo '<td>' . htmlspecialchars($row['category']) . '</td>';
+                        echo '<td>';
+                        echo '<a href="edit.php?id=' . $row['id'] . '" class="btn btn-primary btn-sm">Edit</a>';
+                        echo '<a href="cost.php?action=delete&id=' . $row['id'] . '" class="btn btn-danger btn-sm" onclick="return confirm(\'Are you sure you want to delete this cost?\')">Delete</a>';
+                        echo '</td>';
+                        echo '</tr>';
+                    }
+                } else {
+                    echo '<tr><td colspan="5">No costs found.</td></tr>';
+                }
 
-        // Determine total number of records with search condition
-        $sql_total_records = "SELECT COUNT(*) AS totalRecords FROM plants $whereClause";
-        $result_total_records = $conn->query($sql_total_records);
-        $totalRecords = $result_total_records->fetch_assoc()['totalRecords'] ?? 0;
+                $result_costs->close();
+                ?>
+            </tbody>
+        </table>
 
-        $limit = 15; // Number of records per page
-        $totalPages = ceil($totalRecords / $limit);
+        <h2>Profit Margins for Each Plant</h2>
+        <form method="GET" action="">
+            <input type="text" name="search" id="plantSearchInput" placeholder="Search plant names..." class="form-control mb-3" value="<?php echo htmlspecialchars($_GET['search'] ?? ''); ?>">
+            <input type="submit" value="Search" class="btn btn-primary">
+        </form>
 
-        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $start = ($page - 1) * $limit;
-
-        $sql_total_costs = "SELECT SUM(cost_amount) AS totalCosts FROM costs";
-        $result_total_costs = $conn->query($sql_total_costs);
-        $totalCosts = $result_total_costs->fetch_assoc()['totalCosts'] ?? 0;
-
-        $sql_total_quantity = "SELECT SUM(quantity) AS totalQuantity FROM plants";
-        $result_total_quantity = $conn->query($sql_total_quantity);
-        $totalQuantity = $result_total_quantity->fetch_assoc()['totalQuantity'] ?? 0;
-
-        $additionalCostPerPlant = ($totalCosts > 0 && $totalQuantity > 0) ? ($totalCosts / $totalQuantity) : 0;
-
-        $sql_plant_info = "SELECT plant_name, SUM(value) AS totalValue, SUM(quantity) AS totalQuantity 
-                           FROM plants $whereClause 
-                           GROUP BY plant_name 
-                           LIMIT $start, $limit";
-        $result_plant_info = $conn->query($sql_plant_info);
-
-        echo '<h2>Profit Margins for Each Plant</h2>';
-        echo '<form method="GET" action="">';
-        echo '<input type="text" name="search" id="plantSearchInput" placeholder="Search plant names..." value="' . htmlspecialchars($_GET['search'] ?? '') . '">';
-        echo '<input type="submit" value="Search">';
-        echo '</form>';
-
-        if ($result_plant_info->num_rows > 0) {
-            echo '<table id="plantTable" class="table">';
-            echo '<thead>';
-            echo '<tr><th>Plant Name</th><th>Cost per Plant</th><th>Additional Cost per Plant</th><th>Selling Price</th><th>Profit</th></tr>';
-            echo '</thead>';
-            echo '<tbody>';
-
-            while ($row = $result_plant_info->fetch_assoc()) {
-                $plantName = $row['plant_name'];
-                $totalValue = $row['totalValue'];
-                $totalQuantity = $row['totalQuantity'];
-
-                $costPerPlant = ($totalValue / $totalQuantity);
-                $costWithAdditional = $costPerPlant + $additionalCostPerPlant;
-
-                $sellingPrice = $costWithAdditional + ($costWithAdditional * 0.4);
-                $profit = $sellingPrice - $costWithAdditional;
-
-                echo '<tr>';
-                echo '<td>' . htmlspecialchars($plantName) . '</td>';
-                echo '<td>' . number_format($costWithAdditional, 2) . ' Birr</td>';
-                echo '<td>' . number_format($additionalCostPerPlant, 2) . ' Birr</td>';
-                echo '<td>' . number_format($sellingPrice, 2) . ' Birr</td>';
-                echo '<td>' . number_format($profit, 2) . ' Birr</td>';
-                echo '</tr>';
-            }
-
-            echo '</tbody>';
-            echo '</table>';
-
-            // Pagination links
-            echo '<nav>';
-            echo '<ul class="pagination">';
-            for ($i = 1; $i <= $totalPages; $i++) {
-                $active = ($i == $page) ? 'active' : '';
-                echo '<li class="page-item ' . $active . '"><a class="page-link" href="?page=' . $i . '&search=' . urlencode($search) . '">' . $i . '</a></li>';
-            }
-            echo '</ul>';
-            echo '</nav>';
-        } else {
-            echo '<p>No plant names found.</p>';
-        }
-
-        $result_total_costs->close();
-        $result_total_quantity->close();
-        $result_plant_info->close();
-        $result_total_records->close();
-
-        $conn->close();
-        ?>
-
-        <h2>Analytics</h2>
-        <canvas id="analyticsChart"></canvas>
-
-        <!-- HTML canvas for the plant types pie chart -->
-       
-
+        <div id="plantTableContainer">
+            <!-- Plant table will be filled via AJAX -->
+        </div>
     </div>
-    <script src="script.js"></script>
-    
-    <script src="../../js/script2.js"></script>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script>
+        $(document).ready(function() {
+            // Load the plant data with profit margins
+            loadPlantData();
+
+            // Filter and search functionality
+            $('#filterButton').click(function() {
+                const searchValue = $('#search').val();
+                const categoryValue = $('#categoryFilter').val();
+                loadCostData(searchValue, categoryValue);
+            });
+
+            function loadCostData(search = '', category = '') {
+                $.ajax({
+                    url: 'fetch_cost_data.php',
+                    method: 'GET',
+                    data: { search: search, category: category },
+                    success: function(data) {
+                        $('#costTable tbody').html(data);
+                    }
+                });
+            }
+
+            function loadPlantData() {
+                $.ajax({
+                    url: 'fetch_plant_data.php',
+                    method: 'GET',
+                    success: function(data) {
+                        $('#plantTableContainer').html(data);
+                    }
+                });
+            }
+        });
+    </script>
+    </div>
 </body>
 </html>
