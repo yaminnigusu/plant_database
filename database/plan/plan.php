@@ -1,4 +1,33 @@
 <?php
+session_start();
+
+// Set session timeout duration (30 minutes)
+$timeoutDuration = 1800; // 30 minutes in seconds
+
+// Check if the user is logged in and if the session is set
+if (isset($_SESSION['username'])) {
+    // Check if the last activity timestamp is set
+    if (isset($_SESSION['last_activity'])) {
+        // Calculate the time since the last activity
+        $elapsedTime = time() - $_SESSION['last_activity'];
+
+        // If the time elapsed is greater than the timeout duration, log the user out
+        if ($elapsedTime >= $timeoutDuration) {
+            session_unset(); // Remove session variables
+            session_destroy(); // Destroy the session
+            header("Location: ../login.php?message=Session expired. Please log in again."); // Redirect to login page
+            exit();
+        }
+    }
+    
+    // Update last activity timestamp
+    $_SESSION['last_activity'] = time();
+} else {
+    $_SESSION['redirect_to'] = $_SERVER['REQUEST_URI']; // Store the requested URL
+    header("Location: ../login.php"); // Redirect to login page if not logged in
+    exit();
+}
+
 // Establish database connection
 include("../config.php");
 ?>

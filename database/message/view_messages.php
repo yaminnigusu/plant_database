@@ -1,4 +1,4 @@
-<d?php
+<?php
 session_start();
 
 // Set session timeout duration (30 minutes)
