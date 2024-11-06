@@ -64,26 +64,6 @@ button[type="submit"]:hover {
 
 
 /* Responsive styles for smaller screens */
-@media (max-width: 768px) {
-   
-
-    .main-content {
-        padding: 10px;
-        margin-left: 0; /* No margin on smaller screens */
-        width: 100%; /* Full width on smaller screens */
-    }
-
-
-    .main-content {
-        margin-left: 0; /* No margin on smaller screens */
-    }
-
-    #formToggleButton {
-        width: 95%; /* Adjust button width for smaller screens */
-    }
-
-    
-}
 
 
 

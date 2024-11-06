@@ -51,6 +51,12 @@ function fetchCuttingsData($conn, $search = '', $plasticSizeFilter = '', $startD
         .checkbox-item {
             margin-right: 20px;
         }
+
+/* Target the checkbox container */
+.checkbox-container {
+    display: flex;
+    flex-wrap: wrap; /* Allow items to wrap to the next line if needed */
+}
         .submenu {
             display: none;
         }
@@ -59,33 +65,83 @@ function fetchCuttingsData($conn, $search = '', $plasticSizeFilter = '', $startD
 </head>
 
 <body class="w3-light-gray">
-    <header class="sticky-top">
-        <div class="container">
-            <div class="row justify-content-between align-items-center">
-                <div class="col"></div>
-                <div class="col-left">
-                    <img src="../../images/logo.png" alt="Logo" width="50">
-                </div>
-                <h1>Le Jardin de Kakoo</h1>
+<header class="sticky-top bg-light py-2">
+    <div class="container-fluid">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
+            <!-- Logo and Title -->
+            <div class="col-auto d-flex align-items-center mb-3 mb-sm-0">
+                <img src="../../images/logo.png" alt="Logo" width="50">
+                <h1 class="h4 mb-0 ms-2">Le Jardin de Kakoo</h1>
             </div>
-            <nav>
-                <a href="../../pages/home.php">Home</a>
-                <a href="../../pages/shop.php">Shop</a>
-                <a href="../../pages/about.php">About Us</a>
-                <a href="../../pages/contactus.php">Contact Us</a>
-                <a href="../database.php">Database</a>
-                <div class="col-auto">
-                <button id="login-icon" onclick="window.location.href='../logout.php';" aria-label="Login" class="btn btn-success">Logout</button>
-                </div>
-            </nav>
-        </div>
-    </header>
 
-    <aside class="side-nav" id="sideNav">
+            <!-- Navigation and Logout Button -->
+            <div class="col-auto d-flex align-items-center">
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <!-- Navbar toggler for smaller screens -->
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <!-- Navbar Links -->
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav me-3">
+                            <li class="nav-item"><a class="nav-link" href="../../pages/home.php">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../pages/shop.php">Shop</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../pages/about.php">About Us</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../pages/contactus.php">Contact Us</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../database.php">Database</a></li>
+                            <button id="login-icon" onclick="window.location.href='../logout.php';" aria-label="Logout" class="btn btn-success ms-3">Logout</button>
+                        </ul>
+                    </div>
+                </nav>
+                <!-- Logout Button -->
+                <div class="d-lg-none text-end">
+    <button class="btn btn-primary mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#mobileSideNav" aria-expanded="false" aria-controls="mobileSideNav">
+        Menu
+    </button>
+</div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<aside class="side-nav d-lg-block d-none" id="sideNav">
+    <ul>
+        <br><br><br>
+        <li><a href="../database.php"><b>Home</b></a></li>
+        <li><a href="home.php"><b>Search</b></a></li>
+        <li class="has-submenu">
+            <a href="#"><b>Plants</b></a>
+            <ul class="submenu">
+                <li><a href="tress.php">Trees</a></li>
+                <li><a href="shrubs.php">Shrubs</a></li>
+                <li><a href="ferns.php">Ferns</a></li>
+                <li><a href="climbers.php">Climbers</a></li>
+                <li><a href="waterplants.php">Water Plants</a></li>
+                <li><a href="palms.php">Palms</a></li>
+                <li><a href="cactus.php">Cactus</a></li>
+                <li><a href="succulent.php">Succulent</a></li>
+                <li><a href="annuals.php">Annuals</a></li>
+                <li><a href="perinnals.php">Perennials</a></li>
+                <li><a href="indoorplants.php">Indoor Plants</a></li>
+                <li><a href="herbs.php">Herbs</a></li>
+            </ul>
+        </li>
+        <li><a href="cuttings.php"><b>Cuttings</b></a></li>
+        <li> <a href="../plan/plan.php"><b>Plan</b></a></li>
+           <li> <a href="../cost/cost.php"><b>Cost and Analytics</b></a></li>
+           <li><a href="../sold.php"><b>Sold Units</b></a></li>
+        <li><a href="../manage_users.php"><b>Users</b></a></li>
+        <li><a href="../receive_orders.php"><b>Orders</b></a></li>
+        <li><a href="../message/view_messages.php"><b>View Messages</b></a></li>
+    </ul>
+</aside>
+
+<!-- Mobile Side Navigation Toggle -->
+
+<div class="collapse" id="mobileSideNav">
+    <aside class="side-nav">
         <ul>
-            <br>
-            <br>
-            <br>
             <li><a href="../database.php"><b>Home</b></a></li>
             <li><a href="home.php"><b>Search</b></a></li>
             <li class="has-submenu">
@@ -106,113 +162,124 @@ function fetchCuttingsData($conn, $search = '', $plasticSizeFilter = '', $startD
                 </ul>
             </li>
             <li><a href="cuttings.php"><b>Cuttings</b></a></li>
-            <li><a href="../plan/plan.php"><b>Plan</a></li>
+            <li><a href="../plan/plan.php"><b>Plan</b></a></li>
             <li><a href="../cost/cost.php"><b>Cost and Analytics</b></a></li>
             <li><a href="../sold.php"><b>Sold Units</b></a></li>
-        <li><a href="../manage_users.php"><b>Users</b></a></li>
-        <li><a href="../receive_orders.php"><b>Orders</b></a></li>
-        <li><a href="../message/view_messages.php"><b>View Messages</b></a></li>
+            <li><a href="../manage_users.php"><b>Users</b></a></li>
+            <li><a href="../receive_orders.php"><b>Orders</b></a></li>
+            <li><a href="../message/view_messages.php"><b>View Messages</b></a></li>
         </ul>
     </aside>
+</div>
 
     <div class="main-content">
         <div class="container">
             <h1 class="mt-4">Plant Database</h1>
             <button id="formToggleButton" onclick="toggleFormVisibility()" class="btn btn-primary mb-4">Add New Data</button>
 
-            <form id="plantForm" enctype="multipart/form-data" method="post" action="../process_form.php" style="display: none;">
-                <div class="form-group">
-                    <input type="checkbox" id="optionalData" name="optionalData" value="1" onchange="toggleOptionalFields()">
-                    <label for="optionalData">Add Optional Data</label>
-                </div>
-                <div class="form-group" id="photoGroup">
-                    <label for="photo">Add Photo:</label>
-                    <input type="file" id="photo" name="photo" accept="image/*" class="form-control">
-                </div>
-                <div class="form-group" id="plantNameGroup">
-                    <label for="plantName">Common Name:</label>
-                    <input type="text" id="plantName" name="plantName" class="form-control">
-                </div>
-                <div class="form-group" id="scientificNameGroup">
-                    <label for="scientificName">Scientific Name:</label>
-                    <input type="text" id="scientificName" name="scientificName" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="quantity">Quantity:</label>
-                    <input type="number" id="quantity" name="quantity" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="plasticSize">Plastic Size:</label>
-                    <select id="plasticSize" name="plasticSize" class="form-control">
-                        <option value="xsmall">X-Small</option>
-                        <option value="small">Small</option>
-                        <option value="medium">Medium</option>
-                        <option value="large">Large</option>
-                        <option value="xlarge">X-Large</option>
-                    </select>
-                </div>
+            <form id="plantForm" enctype="multipart/form-data" method="post" action="process_form.php" style="display: none;">
+    <div class="form-group">
+        <input type="checkbox" id="optionalData" name="optionalData" value="1" onchange="toggleOptionalFields()">
+        <label for="optionalData">Add Optional Data</label>
+    </div>
+    
+    <div class="form-group" id="photoGroup">
+        <label for="photo">Add Photos (up to 4):</label>
+        <input type="file" id="photo" name="photos[]" accept="image/*" class="form-control" multiple onchange="checkFileCount()">
+    </div>
 
-                <label>Plant Type:</label><br>
-                <div class="form-group checkbox-container">
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="tree" name="plantType[]" value="tree">
-                        <label for="tree">Tree</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="shrub" name="plantType[]" value="shrub">
-                        <label for="shrub">Shrub</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="fern" name="plantType[]" value="fern">
-                        <label for="fern">Fern</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="climber" name="plantType[]" value="climber">
-                        <label for="climber">Climber</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="waterPlant" name="plantType[]" value="water_plant">
-                        <label for="waterPlant">Water Plant</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="palm" name="plantType[]" value="palm">
-                        <label for="palm">Palm</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="cactus" name="plantType[]" value="cactus">
-                        <label for="cactus">Cactus</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="succulent" name="plantType[]" value="succulent">
-                        <label for="succulent">Succulent</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="annual" name="plantType[]" value="annual">
-                        <label for="annual">Annual</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="perennial" name="plantType[]" value="perennial">
-                        <label for="perennial">Perennial</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="indoorPlant" name="plantType[]" value="indoorplant">
-                        <label for="indoorPlant">Indoor Plant</label>
-                    </div>
-                    <div class="checkbox-item">
-                        <input type="checkbox" id="herb" name="plantType[]" value="herb">
-                        <label for="herb">Herb</label>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label for="plantationDate">Plantation Date:</label>
-                    <input type="date" id="plantationDate" name="plantationDate" class="form-control">
-                </div>
-                <div class="form-group">
-                    <label for="value">Cost:</label>
-                    <input type="number" id="value" name="value" class="form-control">
-                </div>
-                <button type="submit" class="btn btn-success">Submit</button>
-            </form>
+    <div class="form-group" id="plantNameGroup">
+        <label for="plantName">Common Name:</label>
+        <input type="text" id="plantName" name="plantName" class="form-control" required>
+    </div>
+
+    <div class="form-group" id="scientificNameGroup">
+        <label for="scientificName">Scientific Name:</label>
+        <input type="text" id="scientificName" name="scientificName" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+        <label for="quantity">Quantity:</label>
+        <input type="number" id="quantity" name="quantity" class="form-control" required>
+    </div>
+
+    <div class="form-group">
+        <label for="plasticSize">Plastic Size:</label>
+        <select id="plasticSize" name="plasticSize" class="form-control">
+            <option value="xsmall">X-Small</option>
+            <option value="small">Small</option>
+            <option value="medium">Medium</option>
+            <option value="large">Large</option>
+            <option value="xlarge">X-Large</option>
+        </select>
+    </div>
+
+    <label>Plant Type:</label>
+    <div class="form-group checkbox-container">
+        <div class="checkbox-item">
+            <input type="checkbox" id="tree" name="plantType[]" value="tree">
+            <label for="tree">Tree</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="shrub" name="plantType[]" value="shrub">
+            <label for="shrub">Shrub</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="fern" name="plantType[]" value="fern">
+            <label for="fern">Fern</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="climber" name="plantType[]" value="climber">
+            <label for="climber">Climber</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="waterPlant" name="plantType[]" value="water_plant">
+            <label for="waterPlant">Water Plant</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="palm" name="plantType[]" value="palm">
+            <label for="palm">Palm</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="cactus" name="plantType[]" value="cactus">
+            <label for="cactus">Cactus</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="succulent" name="plantType[]" value="succulent">
+            <label for="succulent">Succulent</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="annual" name="plantType[]" value="annual">
+            <label for="annual">Annual</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="perennial" name="plantType[]" value="perennial">
+            <label for="perennial">Perennial</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="indoorPlant" name="plantType[]" value="indoor_plant">
+            <label for="indoorPlant">Indoor Plant</label>
+        </div>
+        <div class="checkbox-item">
+            <input type="checkbox" id="herb" name="plantType[]" value="herb">
+            <label for="herb">Herb</label>
+        </div>
+        <label for="is_featured">Mark as Featured:</label>
+        <input type="checkbox" name="is_featured" id="is_featured" value="1">
+    </div>
+
+    <div class="form-group">
+        <label for="plantationDate">Plantation Date:</label>
+        <input type="date" id="plantationDate" name="plantationDate" required class="form-control">
+    </div>
+
+    <div class="form-group">
+        <label for="value">Value:</label>
+        <input type="number" id="value" name="value" required class="form-control">
+    </div>
+
+    <button type="submit" class="btn btn-primary">Submit</button>
+</form>
 
             <!-- Search and Filter Form -->
             <form id="searchFilterForm" method="get" action="cuttings.php" class="form-inline my-4">
@@ -263,6 +330,7 @@ function fetchCuttingsData($conn, $search = '', $plasticSizeFilter = '', $startD
                     $result = fetchCuttingsData($conn, $search, $plasticSizeFilter, $startDate, $endDate);
 
                     if ($result->num_rows > 0) {
+                        echo '<div class="table-wrapper">'; 
                         echo '<table id="plantTable">';
                         echo '<thead><tr><th>Common Name</th><th>Quantity</th><th>Plastic Size</th><th>Plantation Date</th><th>Cost</th><th>Actions</th></tr></thead>';
                         echo '<tbody>';
@@ -290,6 +358,7 @@ function fetchCuttingsData($conn, $search = '', $plasticSizeFilter = '', $startD
                         echo '<div class="total-info">';
                         echo '<p>Total Quantity: ' . $totalQuantity .  '/3000</p>';
                         echo '<p>Total Value: ' . $totalValue . '</p>';
+                        echo '</div>';
                         echo '</div>';
                     } else {
                         echo '<p>No cutting records found</p>';
@@ -337,6 +406,7 @@ function fetchCuttingsData($conn, $search = '', $plasticSizeFilter = '', $startD
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="../../js/script2.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 
 </html>

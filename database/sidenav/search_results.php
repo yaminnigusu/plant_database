@@ -166,30 +166,20 @@ if (isset($_GET['report']) && isset($_GET['format']) && $_GET['format'] === 'pdf
     <link rel="icon" href="../../images/logo.png" type="image/jpg">
     <link rel="stylesheet" href="../styles.css">
     <style>
-        /* Custom CSS for specific styling */
-        .checkbox-item {
-            margin-right: 20px;
-        }
+       /* Custom CSS for specific styling */
+.checkbox-item {
+    margin-right: 20px;
+}
 
-        .photo-cell img {
-            max-width: 100px;
-            max-height: 100px;
-        }
-        /* Ensure proper layout for main content and side nav */
+.photo-cell img {
+    max-width: 100px;
+    max-height: 100px;
+}
+
+/* Ensure proper layout for main content and side nav */
 .container-search-result {
     padding: 20px;
     margin-left: 220px; /* Adjust to match side nav width */
-}
-
-.side-nav {
-    width: 200px; /* Adjust width as needed */
-    background-color: #f8f9fa; /* Optional: Set background color for side nav */
-    padding-top: 20px; /* Adjust top padding */
-    position: fixed;
-    top: 80px; /* Adjust to match header height */
-    left: 0;
-    height: calc(100vh - 80px); /* Fill remaining viewport height */
-    overflow-y: auto; /* Enable vertical scrolling for side nav */
 }
 
 .result-table {
@@ -286,40 +276,142 @@ if (isset($_GET['report']) && isset($_GET['format']) && $_GET['format'] === 'pdf
     font-size: 18px; /* Increase font size for total quantity and total value */
     margin-bottom: 10px; /* Add space below each paragraph */
 }
-.submenu {
-    display: none;
+
+/* Styling the action buttons */
+.action-buttons {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }
 
-        
+.action-buttons button {
+    padding: 5px 10px;
+    border-radius: 5px;
+    font-size: 14px;
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+    .result-table {
+        font-size: 14px; /* Adjust font size for smaller screens */
+    }
+
+    .result-table th, .result-table td {
+        padding: 10px; /* Reduce padding for smaller screens */
+    }
+
+    .container-search-result {
+        margin-left: 0; /* Remove left margin on mobile */
+    }
+
+    .photo-cell img {
+        max-width: 80px; /* Reduce image size on mobile */
+        max-height: 80px;
+    }
+
+    /* Ensure action buttons are visible on small screens */
+    .action-buttons {
+        flex-direction: column; /* Stack buttons vertically */
+        align-items: center;
+    }
+
+    .action-buttons button {
+        width: 100%; /* Make buttons take full width on mobile */
+    }
+
+    /* Adjust the table layout for mobile devices */
+    .result-table th, .result-table td {
+        font-size: 12px; /* Smaller text for smaller screens */
+    }
+    .container-search-result {
+        overflow-x: auto; /* Allow horizontal scrolling for the table */
+    }
+
+    .result-table {
+        width: 100%; /* Ensure the table width is 100% */
+    }
+}
+     
     </style>
 </head>
 
 <body  class="w3-light-gray">
-    <header class="sticky-top">
-        <div class="container">
-            <div class="row justify-content-between align-items-center">
-                <div class="col">
-                    <h1>Le Jardin de Kakoo</h1>
-                </div>
-                <div class="col-auto">
-                <button id="navToggleButton" onclick="toggleNavVisibility()" class="btn btn-dark d-block d-lg-none">Menu</button>
+<header class="sticky-top bg-light py-2">
+    <div class="container-fluid">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
+            <!-- Logo and Title -->
+            <div class="col-auto d-flex align-items-center mb-3 mb-sm-0">
+                <img src="../../images/logo.png" alt="Logo" width="50">
+                <h1 class="h4 mb-0 ms-2">Le Jardin de Kakoo</h1>
             </div>
-                
-            </div>
-            <nav>
-                <a href="../../pages/home.php">Home</a>
-                <a href="../../pages/shop.php">Shop</a>
-                <a href="../../pages/about.php">About Us</a>
-                <a href="../../pages/contactus.php">Contact Us</a>
-                <a href="database.php">Database</a>
-                <div class="col-auto">
-                <button id="login-icon" onclick="window.location.href='../logout.php';" aria-label="Login" class="btn btn-success">Logout</button>
-                </div>
-            </nav>
-        </div>
-    </header>
 
-    <aside class="side-nav" id="sideNav">
+            <!-- Navigation and Logout Button -->
+            <div class="col-auto d-flex align-items-center">
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <!-- Navbar toggler for smaller screens -->
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <!-- Navbar Links -->
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav me-3">
+                            <li class="nav-item"><a class="nav-link" href="../../pages/home.php">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../pages/shop.php">Shop</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../pages/about.php">About Us</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../pages/contactus.php">Contact Us</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../database.php">Database</a></li>
+                            <button id="login-icon" onclick="window.location.href='../logout.php';" aria-label="Logout" class="btn btn-success ms-3">Logout</button>
+                        </ul>
+                    </div>
+                </nav>
+                <!-- Logout Button -->
+                <div class="d-lg-none text-end">
+    <button class="btn btn-primary mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#mobileSideNav" aria-expanded="false" aria-controls="mobileSideNav">
+        Menu
+    </button>
+</div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<aside class="side-nav d-lg-block d-none" id="sideNav">
+    <ul>
+        <br><br><br>
+        <li><a href="../database.php"><b>Home</b></a></li>
+        <li><a href="home.php"><b>Search</b></a></li>
+        <li class="has-submenu">
+            <a href="#"><b>Plants</b></a>
+            <ul class="submenu">
+                <li><a href="tress.php">Trees</a></li>
+                <li><a href="shrubs.php">Shrubs</a></li>
+                <li><a href="ferns.php">Ferns</a></li>
+                <li><a href="climbers.php">Climbers</a></li>
+                <li><a href="waterplants.php">Water Plants</a></li>
+                <li><a href="palms.php">Palms</a></li>
+                <li><a href="cactus.php">Cactus</a></li>
+                <li><a href="succulent.php">Succulent</a></li>
+                <li><a href="annuals.php">Annuals</a></li>
+                <li><a href="perinnals.php">Perennials</a></li>
+                <li><a href="indoorplants.php">Indoor Plants</a></li>
+                <li><a href="herbs.php">Herbs</a></li>
+            </ul>
+        </li>
+        <li><a href="cuttings.php"><b>Cuttings</b></a></li>
+        <li><a href="../plan/plan.php"><b>Plan</b></a></li>
+        <li><a href="../cost/cost.php"><b>Cost and Analytics</b></a></li>
+        <li><a href="../sold.php"><b>Sold Units</b></a></li>
+        <li><a href="../manage_users.php"><b>Users</b></a></li>
+        <li><a href="../receive_orders.php"><b>Orders</b></a></li>
+        <li><a href="../message/view_messages.php"><b>View Messages</b></a></li>
+    </ul>
+</aside>
+
+<!-- Mobile Side Navigation Toggle -->
+
+<div class="collapse" id="mobileSideNav">
+    <aside class="side-nav">
         <ul>
             <li><a href="../database.php"><b>Home</b></a></li>
             <li><a href="home.php"><b>Search</b></a></li>
@@ -344,11 +436,12 @@ if (isset($_GET['report']) && isset($_GET['format']) && $_GET['format'] === 'pdf
             <li><a href="../plan/plan.php"><b>Plan</b></a></li>
             <li><a href="../cost/cost.php"><b>Cost and Analytics</b></a></li>
             <li><a href="../sold.php"><b>Sold Units</b></a></li>
-        <li><a href="../manage_users.php"><b>Users</b></a></li>
-        <li><a href="../receive_orders.php"><b>Orders</b></a></li>
-        <li><a href="../message/view_messages.php"><b>View Messages</b></a></li>
+            <li><a href="../manage_users.php"><b>Users</b></a></li>
+            <li><a href="../receive_orders.php"><b>Orders</b></a></li>
+            <li><a href="../message/view_messages.php"><b>View Messages</b></a></li>
         </ul>
     </aside>
+</div>
 
 
 
@@ -541,6 +634,7 @@ function plusSlides(event, n) {
     showSlides(slideContainer, slideIndex); // Show current slide for this container
 }
 </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
 

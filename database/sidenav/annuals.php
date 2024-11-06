@@ -35,35 +35,53 @@ if (!isset($_SESSION['username'])) {
     
 </head>
 <body>
-<header class="sticky-top">
-        <div class="container">
-            <div class="row justify-content-between align-items-center">
-                <div class="col">
-                    <h1>Le Jardin de Kakoo</h1>
-                </div>
-                <div class="col-auto">
-                
+<header class="sticky-top bg-light py-2">
+    <div class="container-fluid">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
+            <!-- Logo and Title -->
+            <div class="col-auto d-flex align-items-center mb-3 mb-sm-0">
+                <img src="../../images/logo.png" alt="Logo" width="50">
+                <h1 class="h4 mb-0 ms-2">Le Jardin de Kakoo</h1>
             </div>
-                
+
+            <!-- Navigation and Logout Button -->
+            <div class="col-auto d-flex align-items-center">
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <!-- Navbar toggler for smaller screens -->
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <!-- Navbar Links -->
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav me-3">
+                            <li class="nav-item"><a class="nav-link" href="../../pages/home.php">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../pages/shop.php">Shop</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../pages/about.php">About Us</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../pages/contactus.php">Contact Us</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../database.php">Database</a></li>
+                            <button id="login-icon" onclick="window.location.href='../logout.php';" aria-label="Logout" class="btn btn-success ms-3">Logout</button>
+                        </ul>
+                    </div>
+                </nav>
+                <!-- Logout Button -->
+                <div class="d-lg-none text-end">
+    <button class="btn btn-primary mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#mobileSideNav" aria-expanded="false" aria-controls="mobileSideNav">
+        Menu
+    </button>
+</div>
             </div>
-            <nav>
-                <a href="../../pages/home.php">Home</a>
-                <a href="../../pages/shop.php">Shop</a>
-                <a href="../../pages/about.php">About Us</a>
-                <a href="../../pages/contactus.php">Contact Us</a>
-                <a href="../database.php">Database</a>
-                <div class="col-auto">
-                <button id="login-icon" onclick="window.location.href='../logout.php';" aria-label="Login" class="btn btn-success">Logout</button>
-                </div>
-            </nav>
         </div>
-    </header>
-    <aside class="side-nav" id="sideNav">
+    </div>
+</header>
+
+
+<aside class="side-nav d-lg-block d-none" id="sideNav">
     <ul>
-    <li><a href="../database.php"><b>Home</b></a></li>
+        <br><br><br>
+        <li><a href="../database.php"><b>Home</b></a></li>
         <li><a href="home.php"><b>Search</b></a></li>
         <li class="has-submenu">
-            <a href="#" ><b>Plants</b></a>
+            <a href="#"><b>Plants</b></a>
             <ul class="submenu">
                 <li><a href="tress.php">Trees</a></li>
                 <li><a href="shrubs.php">Shrubs</a></li>
@@ -79,6 +97,7 @@ if (!isset($_SESSION['username'])) {
                 <li><a href="herbs.php">Herbs</a></li>
             </ul>
         </li>
+        <li><a href="cuttings.php"><b>Cuttings</b></a></li>
         <li> <a href="../plan/plan.php"><b>Plan</b></a></li>
            <li> <a href="../cost/cost.php"><b>Cost and Analytics</b></a></li>
            <li><a href="../sold.php"><b>Sold Units</b></a></li>
@@ -218,6 +237,7 @@ if (!$result) {
 }
 
 if ($result->num_rows > 0) {
+    echo '<div class="table-wrapper">'; 
     echo '<table id="plantTable">';
     echo '<thead><tr><th>Photo</th><th>Common Name</th><th>Scientific Name</th><th>Quantity</th><th>Plastic Size</th><th>Plantation Date</th><th>Plant Type</th><th>Value</th><th>Actions</th></tr></thead>';
     echo '<tbody>';
@@ -241,6 +261,7 @@ if ($result->num_rows > 0) {
     }
 
     echo '</tbody></table>';
+    echo '</div>';
 } else {
     echo '<p>No plant records found for annuals</p>';
 }
@@ -263,10 +284,8 @@ $conn->close();
         }
     </script>
    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
-    <script src="../../js/script2.js">
-        
-    </script>
-    
+    <script src="../../js/script2.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
     </body>
     </html>

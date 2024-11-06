@@ -19,12 +19,20 @@ header {
     background-color: #f8f9fa; /* Light background for the header */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
     padding: 15px 0;
+    position: fixed;
+    top: -100%; /* Start the header off-screen */
+    left: 0;
+    right: 0;
+    width: 100%;
+    transition: top 0.3s ease-in-out; /* Add slide down effect */
+    z-index: 1000;
+    text-align: center;
 }
 
 header .container {
     display: flex;
     align-items: center;
-    justify-content: space-between;
+    justify-content: center; /* Center items horizontally */
     flex-wrap: wrap;
 }
 
@@ -77,6 +85,55 @@ header .col-auto {
     display: flex;
     align-items: center;
 }
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    header {
+        top: 0; /* Slide down to the top */
+    }
+
+    header .container {
+        flex-direction: column; /* Stack items vertically on smaller screens */
+        align-items: center;
+    }
+
+    header h1 {
+        font-size: 20px; /* Smaller font size for smaller screens */
+    }
+
+    header nav {
+        flex-direction: column; /* Stack navigation items vertically */
+        gap: 10px;
+        width: 100%;
+        margin-top: 10px;
+    }
+
+    header nav a {
+        padding: 8px 12px; /* Adjust padding for smaller screens */
+        width: 100%;
+        text-align: center;
+    }
+
+    header .btn-success {
+        width: 100%; /* Make the button full width on smaller screens */
+        padding: 10px 16px;
+    }
+}
+
+@media (max-width: 480px) {
+    header h1 {
+        font-size: 18px; /* Even smaller font size for very small screens */
+    }
+
+    header nav {
+        gap: 8px;
+    }
+
+    header nav a {
+        padding: 6px 10px; /* Reduce padding further for very small screens */
+    }
+}
+
 
 /* Side navigation styles */
 .side-nav {
@@ -189,10 +246,17 @@ header .col-auto {
     padding: 20px;
     background-color: #fff;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    margin-left: 260px; /* Adjusted margin to account for side nav width */
-    width: calc(100% - 280px); /* Calculate the width to fill available space */
+    width: 100%; /* Full width for smaller screens */
     min-height: 100vh;
 }
+
+@media (min-width: 768px) {
+    .main-content {
+        margin-left: 260px; /* Adjusted margin for larger screens */
+        width: calc(100% - 280px); /* Adjust width to fill available space for larger screens */
+    }
+}
+
 
 /* Table enhancements */
 table {
@@ -373,3 +437,67 @@ h1 {
 }
 
 
+.table-wrapper {
+    overflow-x: auto; /* Enable horizontal scrolling */
+    -webkit-overflow-scrolling: touch; /* Improve scrolling experience on mobile */
+    margin-bottom: 20px;
+}
+
+/* Make the table itself responsive */
+#plantTable {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+/* Basic table styling */
+#plantTable th, #plantTable td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #ddd;
+}
+
+/* Styling for the action buttons */
+.action-buttons a {
+    margin: 0 5px;
+    text-decoration: none;
+    padding: 5px 10px;
+    border-radius: 5px;
+}
+
+.action-buttons .editButton {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.action-buttons .deleteButton {
+    background-color: #f44336;
+    color: white;
+}
+
+/* Make table responsive on small screens */
+@media (max-width: 480px) {
+    #plantTable th, #plantTable td {
+        font-size: 12px; /* Smaller font size */
+        padding: 8px; /* Reduced padding */
+    }
+
+    .total-info p {
+        font-size: 14px; /* Adjust font size for total info */
+    }
+}
+.btn.btn-primary {
+    color: #fff;
+    background-color: #28a745; /* Green background color */
+    border-color: #28a745;     /* Green border color */
+    padding: 10px 20px;
+    text-decoration: none;
+    display: inline-block;
+    border-radius: 5px;
+    margin-right: 10px; /* Add margin between buttons */
+}
+
+/* Hover effect for the green buttons */
+.btn.btn-primary:hover {
+    background-color: #218838; /* Darker green on hover */
+    border-color: #1e7e34;     /* Darker border on hover */
+}
