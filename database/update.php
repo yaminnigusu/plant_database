@@ -20,6 +20,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $plantType = isset($_POST['plantType']) ? implode(', ', $_POST['plantType']) : '';
     $plantationDate = $_POST['plantationDate'];
     $value = $_POST['value'];
+    $isFeatured = isset($_POST['is_featured']) ? 1 : 0; // Set to 1 if checked, 0 if not
 
     // Prepare the SQL update query for the non-file data
     $sql_update = "UPDATE plants SET 
@@ -29,7 +30,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         plastic_size = '$plasticSize', 
         plant_type = '$plantType', 
         plantation_date = '$plantationDate', 
-        value = '$value' 
+        value = '$value', 
+        is_featured = '$isFeatured'
         WHERE id = '$id'";
 
     // Execute the query
