@@ -34,9 +34,9 @@ if (isset($_GET['action']) && $_GET['action'] == 'delete' && isset($_GET['id']))
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="icon" href="../images/logo.png" type="image/jpg">
+    <link rel="icon" href="../../images/logo.png" type="image/jpg">
     <link rel="stylesheet" href="../styles.css">
-    
+    <title>Plant Database-herbs</title>
     <style>
         /* Custom CSS for specific styling */
         .checkbox-item {

@@ -13,10 +13,10 @@ if (!isset($_SESSION['username'])) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Plant Database</title>
+    <title>Plant Database-climbers</title>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
-    <link rel="icon" href="../images/logo.png" type="image/jpg">
+    <link rel="icon" href="../../images/logo.png" type="image/jpg">
     <link rel="stylesheet" href="../styles.css">
 
         <style>

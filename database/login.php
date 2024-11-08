@@ -54,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
+    <link rel="icon" href="../images/logo.png" type="image/jpg">
     <link rel="stylesheet" href="styles.css"> <!-- Link to external CSS file -->
     <style>
         body, h2, form, p, footer {
