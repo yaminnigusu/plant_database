@@ -323,10 +323,11 @@ if ($result->num_rows > 0) {
 
     echo '</tbody></table>';
     echo '<div class="total-info">';
+    echo '</div>';
     echo '<p>Total Quantity: ' . $totalQuantity . '</p>';
     echo '<p>Total Value: ' . $totalValue . '</p>';
     echo '</div>';
-    echo '</div>';
+    
 } else {
     echo '<p>No plant records found for perennial</p>';
 }

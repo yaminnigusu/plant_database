@@ -14,6 +14,8 @@ if (!isset($_SESSION['username'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Plant Database-palms</title>
+    <link href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
     <link rel="stylesheet" href="../styles.css">
     <link rel="icon" href="../../images/logo.png" type="image/jpg">
     <style>
@@ -36,36 +38,53 @@ if (!isset($_SESSION['username'])) {
     
 </head>
 <body>
-<header class="sticky-top">
-        <div class="container">
-            <div class="row justify-content-between align-items-center">
-                <div class="col">
-                    <h1>Le Jardin de Kakoo</h1>
-                </div>
-                <div class="col-auto">
-                
+<header class="sticky-top bg-light py-2">
+    <div class="container-fluid">
+        <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
+            <!-- Logo and Title -->
+            <div class="col-auto d-flex align-items-center mb-3 mb-sm-0">
+                <img src="../../images/logo.png" alt="Logo" width="50">
+                <h1 class="h4 mb-0 ms-2">Le Jardin de Kakoo</h1>
             </div>
-                
-            </div>
-            <nav>
-                <a href="../../pages/home.php">Home</a>
-                <a href="../../pages/shop.php">Shop</a>
-                <a href="../../pages/about.php">About Us</a>
-                <a href="../../pages/contactus.php">Contact Us</a>
-                <a href="../database.php">Database</a>
-                <div class="col-auto">
-                <button id="login-icon" onclick="window.location.href='../logout.php';" aria-label="Login" class="btn btn-success">Logout</button>
-                </div>
-            </nav>
-        </div>
-    </header>
 
-    <aside class="side-nav" id="sideNav">
+            <!-- Navigation and Logout Button -->
+            <div class="col-auto d-flex align-items-center">
+                <nav class="navbar navbar-expand-lg navbar-light">
+                    <!-- Navbar toggler for smaller screens -->
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <!-- Navbar Links -->
+                    <div class="collapse navbar-collapse" id="navbarNav">
+                        <ul class="navbar-nav me-3">
+                            <li class="nav-item"><a class="nav-link" href="../../pages/home.php">Home</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../pages/shop.php">Shop</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../pages/about.php">About Us</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../../pages/contactus.php">Contact Us</a></li>
+                            <li class="nav-item"><a class="nav-link" href="../database.php">Database</a></li>
+                            <button id="login-icon" onclick="window.location.href='../logout.php';" aria-label="Logout" class="btn btn-success ms-3">Logout</button>
+                        </ul>
+                    </div>
+                </nav>
+                <!-- Logout Button -->
+                <div class="d-lg-none text-end">
+    <button class="btn btn-primary mt-2" type="button" data-bs-toggle="collapse" data-bs-target="#mobileSideNav" aria-expanded="false" aria-controls="mobileSideNav">
+        Menu
+    </button>
+</div>
+            </div>
+        </div>
+    </div>
+</header>
+
+
+<aside class="side-nav d-lg-block d-none" id="sideNav">
     <ul>
-    <li><a href="../database.php"><b>Home</b></a></li>
+        <br><br><br>
+        <li><a href="../database.php"><b>Home</b></a></li>
         <li><a href="home.php"><b>Search</b></a></li>
         <li class="has-submenu">
-            <a href="#" ><b>Plants</b></a>
+            <a href="#"><b>Plants</b></a>
             <ul class="submenu">
                 <li><a href="tress.php">Trees</a></li>
                 <li><a href="shrubs.php">Shrubs</a></li>
@@ -81,6 +100,7 @@ if (!isset($_SESSION['username'])) {
                 <li><a href="herbs.php">Herbs</a></li>
             </ul>
         </li>
+        <li><a href="cuttings.php"><b>Cuttings</b></a></li>
         <li> <a href="../plan/plan.php"><b>Plan</b></a></li>
            <li> <a href="../cost/cost.php"><b>Cost and Analytics</b></a></li>
            <li><a href="../sold.php"><b>Sold Units</b></a></li>
@@ -89,6 +109,41 @@ if (!isset($_SESSION['username'])) {
         <li><a href="../message/view_messages.php"><b>View Messages</b></a></li>
     </ul>
 </aside>
+
+<!-- Mobile Side Navigation Toggle -->
+
+<div class="collapse" id="mobileSideNav">
+    <aside class="side-nav">
+        <ul>
+            <li><a href="../database.php"><b>Home</b></a></li>
+            <li><a href="home.php"><b>Search</b></a></li>
+            <li class="has-submenu">
+                <a href="#"><b>Plants</b></a>
+                <ul class="submenu">
+                    <li><a href="tress.php">Trees</a></li>
+                    <li><a href="shrubs.php">Shrubs</a></li>
+                    <li><a href="ferns.php">Ferns</a></li>
+                    <li><a href="climbers.php">Climbers</a></li>
+                    <li><a href="waterplants.php">Water Plants</a></li>
+                    <li><a href="palms.php">Palms</a></li>
+                    <li><a href="cactus.php">Cactus</a></li>
+                    <li><a href="succulent.php">Succulent</a></li>
+                    <li><a href="annuals.php">Annuals</a></li>
+                    <li><a href="perinnals.php">Perennials</a></li>
+                    <li><a href="indoorplants.php">Indoor Plants</a></li>
+                    <li><a href="herbs.php">Herbs</a></li>
+                </ul>
+            </li>
+            <li><a href="cuttings.php"><b>Cuttings</b></a></li>
+            <li><a href="../plan/plan.php"><b>Plan</b></a></li>
+            <li><a href="../cost/cost.php"><b>Cost and Analytics</b></a></li>
+            <li><a href="../sold.php"><b>Sold Units</b></a></li>
+            <li><a href="../manage_users.php"><b>Users</b></a></li>
+            <li><a href="../receive_orders.php"><b>Orders</b></a></li>
+            <li><a href="../message/view_messages.php"><b>View Messages</b></a></li>
+        </ul>
+    </aside>
+</div>
 
 <div class="main-content">
     <h1>Plant Database</h1>
@@ -218,15 +273,36 @@ if (!$result) {
     echo "Error executing SQL query: " . $conn->error . "<br>";
     exit; // Exit script if there's an error
 }
+$totalQuantity = 0;
+$totalValue = 0;
 
 if ($result->num_rows > 0) {
+    echo '<div class="table-wrapper">'; 
     echo '<table id="plantTable">';
     echo '<thead><tr><th>Photo</th><th>Common Name</th><th>Scientific Name</th><th>Quantity</th><th>Plastic Size</th><th>Plantation Date</th><th>Plant Type</th><th>Value</th><th>Actions</th></tr></thead>';
     echo '<tbody>';
 
     while ($row = $result->fetch_assoc()) {
         echo '<tr>';
-        echo '<td class="photo-cell"><img src="../uploads/' . htmlspecialchars($row['photo_path']) . '" alt="' . htmlspecialchars($row['plant_name']) . '"></td>';
+        echo '<td class="photo-cell">';
+        
+        // Store images as an array
+        $photos = explode(',', $row['photo_path']);
+        if (count($photos) > 0) {
+            echo '<div class="slider-container">';
+            echo '<div class="slides">';
+            foreach ($photos as $index => $photo) {
+                echo '<img src="../uploads/' . htmlspecialchars(trim($photo)) . '" alt="' . htmlspecialchars($row['plant_name']) . '" class="plant-image" style="display: ' . ($index === 0 ? 'block' : 'none') . ';">';
+            }
+            echo '</div>'; // End of slides
+            echo '<div class="d-flex justify-content-center nav-buttons">';
+            echo '    <button class="btn btn-outline-secondary nav-button prev me-2 text-white" onclick="plusSlides(event, -1)">&lt;</button>';
+            echo '    <button class="btn btn-outline-secondary nav-button next text-white" onclick="plusSlides(event, 1)">&gt;</button>';
+            echo '</div>'; // End of nav-buttons
+            // End of nav-buttons
+            // End of slider-container
+        }
+        echo '</td>';
         echo '<td>' . htmlspecialchars($row['plant_name']) . '</td>';
         echo '<td>' . htmlspecialchars($row['scientific_name']) . '</td>';
         echo '<td>' . htmlspecialchars($row['quantity']) . '</td>';
@@ -240,9 +316,17 @@ if ($result->num_rows > 0) {
         echo '</td>';
         echo '</td>';
         echo '</tr>';
+          // Update total quantity and total value
+          $totalQuantity += intval($row['quantity']);
+          $totalValue += intval($row['value']);
     }
 
     echo '</tbody></table>';
+    echo '</div>';
+    echo '<div class="total-info">';
+    echo '<p>Total Quantity: ' . $totalQuantity . '</p>';
+    echo '<p>Total Value: ' . $totalValue . '</p>';
+    echo '</div>';
 } else {
     echo '<p>No plant records found for palms</p>';
 }
@@ -253,6 +337,29 @@ $conn->close();
 ?>
     </div>
 
+    <script>
+function showSlides(slideContainer, slideIndex) {
+    const slides = slideContainer.querySelectorAll('.plant-image');
+    slides.forEach((slide, index) => {
+        slide.style.display = (index === slideIndex) ? 'block' : 'none';
+    });
+}
+
+function plusSlides(event, n) {
+    const slideContainer = event.target.closest('.slider-container'); // Get the closest slider container
+    const slides = slideContainer.querySelectorAll('.plant-image');
+    let slideIndex = Array.from(slides).findIndex(slide => slide.style.display === 'block'); // Find current slide index
+
+    slideIndex += n; // Change the index by the value of n
+    if (slideIndex >= slides.length) {
+        slideIndex = 0; // Loop to the first slide
+    } else if (slideIndex < 0) {
+        slideIndex = slides.length - 1; // Loop to the last slide
+    }
+
+    showSlides(slideContainer, slideIndex); // Show current slide for this container
+}
+</script>
     <script>
         function toggleFormVisibility() {
             const plantForm = document.getElementById('plantForm');
@@ -265,6 +372,7 @@ $conn->close();
     </script>
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script src="../../js/script2.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
 
     </body>
     </html>

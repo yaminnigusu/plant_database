@@ -355,11 +355,12 @@ function fetchCuttingsData($conn, $search = '', $plasticSizeFilter = '', $startD
                         }
 
                         echo '</tbody></table>';
+                        echo '</div>';
                         echo '<div class="total-info">';
                         echo '<p>Total Quantity: ' . $totalQuantity .  '/3000</p>';
                         echo '<p>Total Value: ' . $totalValue . '</p>';
                         echo '</div>';
-                        echo '</div>';
+                        
                     } else {
                         echo '<p>No cutting records found</p>';
                     }

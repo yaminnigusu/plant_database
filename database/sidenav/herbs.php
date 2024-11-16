@@ -325,11 +325,12 @@ $sql = "SELECT * FROM plants WHERE FIND_IN_SET('herb', REPLACE(plant_type, ', ',
                     }
                 
                     echo '</tbody></table>';
+                    echo '</div>';
                     echo '<div class="total-info">';
                     echo '<p>Total Quantity: ' . $totalQuantity . '</p>';
                     echo '<p>Total Value: ' . $totalValue . '</p>';
                     echo '</div>';
-                    echo '</div>';
+                   
                 } else {
                     echo '<p>No plant records found for perennial</p>';
                 }

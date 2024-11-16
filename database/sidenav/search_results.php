@@ -591,12 +591,13 @@ if ($stmt->execute()) {
 
         echo '</tbody>';
         echo '</table>';
-
+        echo '</div>';
+        echo '</div>';
         // Display total quantity and total value
         echo '<div class="total-info">';
         echo '<p>Total Quantity: ' . $totalQuantity . '</p>';
         echo '<p>Total Value: ' . $totalValue . '</p>';
-        echo '</div>';
+        
     } else {
         echo '<p>No results found.</p>';
     }
