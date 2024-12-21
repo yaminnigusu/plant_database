@@ -353,12 +353,13 @@ $result = $conn->query("SELECT * FROM orders ORDER BY id DESC");
             </tr>
         </tfoot>
     </table>
+    </div>
     <div class="summary-container">
         <h3>Summary</h3>
         <p><span class="total-label">Total Quantity Sold:</span> <span class="total-value"><?php echo htmlspecialchars($total_quantity_sold); ?></span></p>
         <p><span class="total-label">Total Sales Amount:</span> <span class="total-value"><?php echo htmlspecialchars(number_format($total_sales_amount, 2)); ?></span></p>
     </div>
-</div>
+
 <script>
     function toggleSubmenu(element) {
         const submenu = element.nextElementSibling;

@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CuttingsArchive>
+  <Plant>
+    <id>1</id>
+    <plant_name>hibiscus</plant_name>
+    <quantity>200</quantity>
+    <plastic_size>small</plastic_size>
+    <plant_type>shrub</plant_type>
+    <plantation_date>2024-06-14</plantation_date>
+    <value>1000.00</value>
+  </Plant>
+  <Plant>
+    <id>3</id>
+    <plant_name>Oleander</plant_name>
+    <quantity>110</quantity>
+    <plastic_size>small</plastic_size>
+    <plant_type>shrub</plant_type>
+    <plantation_date>2024-06-14</plantation_date>
+    <value>3000.00</value>
+  </Plant>
+  <Plant>
+    <id>4</id>
+    <plant_name>lavendor , lemmon verbena, shefflera, geranium ,lantana ,ficus ,geranium </plant_name>
+    <quantity>185</quantity>
+    <plastic_size>small</plastic_size>
+    <plant_type/>
+    <plantation_date>2024-06-13</plantation_date>
+    <value>3000.00</value>
+  </Plant>
+  <Plant>
+    <id>5</id>
+    <plant_name>hydragenea </plant_name>
+    <quantity>15</quantity>
+    <plastic_size>medium</plastic_size>
+    <plant_type>shrub, perennial</plant_type>
+    <plantation_date>2024-06-14</plantation_date>
+    <value>500.00</value>
+  </Plant>
+  <Plant>
+    <id>6</id>
+    <plant_name>laurel and roses</plant_name>
+    <quantity>170</quantity>
+    <plastic_size>small</plastic_size>
+    <plant_type>shrub</plant_type>
+    <plantation_date>2024-06-27</plantation_date>
+    <value>1000.00</value>
+  </Plant>
+  <Plant>
+    <id>7</id>
+    <plant_name>ficus benjamina</plant_name>
+    <quantity>190</quantity>
+    <plastic_size>small</plastic_size>
+    <plant_type>tree, shrub</plant_type>
+    <plantation_date>2024-07-05</plantation_date>
+    <value>500.00</value>
+  </Plant>
+  <Plant>
+    <id>8</id>
+    <plant_name>duranta</plant_name>
+    <quantity>35</quantity>
+    <plastic_size>small</plastic_size>
+    <plant_type>shrub</plant_type>
+    <plantation_date>2024-07-06</plantation_date>
+    <value>500.00</value>
+  </Plant>
+</CuttingsArchive>

@@ -69,6 +69,7 @@ $result_total_plants->close();
     </style>
 </head>
 <body class="w3-light-gray">
+
 <header class="sticky-top bg-light py-2">
     <div class="container-fluid">
         <div class="d-flex flex-column flex-sm-row justify-content-between align-items-center">
@@ -143,6 +144,7 @@ $result_total_plants->close();
 
 <!-- Mobile Side Navigation Toggle -->
 
+
 <div class="collapse" id="mobileSideNav">
     <aside class="side-nav">
         <ul>
@@ -176,10 +178,30 @@ $result_total_plants->close();
     </aside>
 </div>
 
+
 <body>
     <div class="main-content">
     <div class="container mt-4">
         <h1>Costs & Analytics</h1>
+        <h2>Archived Costs</h2>
+<div class="form-group">
+    <label for="yearSelect">Select Archive Year:</label>
+    <select id="yearSelect" class="form-control" onchange="redirectToArchive(this.value)">
+        <option value="">-- Select Year --</option>
+        <?php
+        $archivePath = __DIR__ . '/archives/';
+        if (is_dir($archivePath)) {
+            $files = scandir($archivePath);
+            foreach ($files as $file) {
+                if (preg_match('/^costs_(\d{4})\.csv$/', $file, $matches)) {
+                    echo '<option value="' . $file . '">Year ' . $matches[1] . '</option>';
+                }
+            }
+        }
+        ?>
+    </select>
+        
+</div>
         
         <div class="row mb-4">
             <div class="col-md-4">
@@ -299,6 +321,13 @@ $result_total_plants->close();
             <!-- Plant table will be filled via AJAX -->
         </div>
     </div>
+    <script>
+    function redirectToArchive(selectedFile) {
+        if (selectedFile) {
+            window.location.href = 'archives/' + selectedFile;
+        }
+    }
+</script>
 
     <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
     <script>
@@ -335,6 +364,7 @@ $result_total_plants->close();
             }
         });
     </script>
+    
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
     </div>
 </body>
